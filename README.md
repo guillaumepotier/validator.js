@@ -10,4 +10,4 @@ MIT Licenced
 
   - `npm install mocha`
   - `npm install expect.js`
-  - `mocha tests/node.js`
+  - `mocha tests/server.js`
