@@ -1,6 +1,7 @@
 ( function ( exports ) {
 
   var Validator = function () {
+    this.__class__ = 'Validator';
     this.constraints = [];
     this.groups = [];
     this.errors = [];
@@ -37,7 +38,13 @@
   };
 
   var Collection = function () {
-    
+    this.__class__ = 'Collection';
+    this.constraints = {};
+  };
+
+  Collection.prototype = {
+
+    constructor: Collection
   };
 
   var Constraint = function ( asserts, groups ) {
@@ -80,23 +87,49 @@
     };
 
     this.__toString = function () {
+      if ( 'undefined' !== typeof this.violation )
+        var violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
+
+      return this.assert + ' assert failed for "' + this.value + violation || '';
+    };
+
+    this.getViolation = function () {
       var constraint, expected;
 
       for ( constraint in this.violation )
         expected = this.violation[ constraint ];
 
-      return this.assert + ' assert failed for "' + this.value + '", ' + constraint + ' expected was ' + expected;
-    }
+      return { constraint: constraint, expected: expected };
+    };
 
     return this;
   };
 
   var Assert = function () {
+    this.__class__ = 'Assert';
+
+    return this;
   };
 
   Assert.prototype = {
 
     construct: Assert,
+
+    NotNull: function () {
+      this.__class__ = 'NotNull';
+
+      this.validate = function ( value ) {
+        return null !== value ? true : new Violation( this, value );
+      };
+    },
+
+    NotBlank: function () {
+      this.__class__ = 'NotBlank';
+
+      this.validate = function ( value ) {
+        return 'string' === typeof value && '' !== value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) ? true : new Violation( this, value );
+      };
+    },
 
     Length: function ( min, max ) {
       this.__class__ = 'Length';
@@ -114,7 +147,7 @@
           return new Violation( this, value, { min: this.min } );
 
         return true;
-      }
+      };
 
       return this;
     }

@@ -1,7 +1,16 @@
-var jsValidator = require('../jsValidator'),
-    sys = require('sys');
+var expect = require( 'expect.js' ),
+    jsValidator = require( '../jsValidator' );
 
-var constraint = new jsValidator.Constraint([new jsValidator.Assert().Length(5, 10)]),
-    validator = new jsValidator.Validator();
+describe( 'jsValidator suite', function () {
+  describe( 'Assert', function () {
+    var Assert = new jsValidator.Assert();
 
-sys.puts(validator.validate('toto', constraint)[0].__toString());
+    it( 'should be an object', function () {
+      expect( Assert ).to.be.an( 'object' );
+    } )
+
+    it( 'should have "Assert" __class__', function () {
+      expect( Assert.__class__).to.be( 'Assert' );
+    } )
+  } )
+} )
