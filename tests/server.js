@@ -24,6 +24,21 @@ describe( 'jsValidator suite', function () {
       expect( assert.__parentClass__ ).to.be( 'Assert' );
     } )
 
+    it( 'should return true if validate success', function () {
+      var Length = new jsValidator.Assert().Length( 10 );
+      expect( Length.validate( 'foo bar baz' ) ).to.be( true );
+    } )
+
+    it( 'should throw a Violation exception if fails', function () {
+      var Length = new jsValidator.Assert().Length( 10 );
+      try {
+        Length.validate( 'foo' );
+        expect().fails();
+      } catch ( violation ) {
+        expect( violation ).to.be.a( jsValidator.Violation );
+      }
+    } )
+
     it( 'should register a group through assertion construct ', function () {
       var Length = new jsValidator.Assert().Length( 10, 15, 'foo' );
       expect( Length.hasGroups() ).to.be( true );

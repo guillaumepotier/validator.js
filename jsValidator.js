@@ -159,10 +159,11 @@
         if ( !group && this.asserts[ i ].hasGroups() )
           continue;
 
-        result = this.asserts[ i ].validate( value );
-
-        if ( true !== result )
-          failures.push( result );
+        try {
+          this.asserts[ i ].validate( value );
+        } catch ( violation ) {
+          failures.push( violation );
+        }
       }
 
       return failures;
@@ -315,12 +316,19 @@
       return this;
     },
 
+    /**
+    * Asserts definitions
+    */
+
     NotNull: function ( groups ) {
       this.__class__ = 'NotNull';
       this._setGroups( groups );
 
       this.validate = function ( value ) {
-        return null !== value ? true : new Violation( this, value );
+        if ( null === value )
+          throw new Violation( this, value );
+
+        return true;
       };
 
       return this;
@@ -331,7 +339,10 @@
       this._setGroups( groups );
 
       this.validate = function ( value ) {
-        return 'string' === typeof value && '' !== value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) ? true : new Violation( this, value );
+        if ( 'string' !== typeof value || '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
+          throw new Violation( this, value );
+
+        return true;
       };
 
       return this;
@@ -345,13 +356,13 @@
 
       this.validate = function ( value ) {
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
-          return new Violation( this, value, { min: this.min, max: this.max } );
+          throw new Violation( this, value, { min: this.min, max: this.max } );
 
         if ( 'undefined' !== typeof this.max && value.length > this.max )
-          return new Violation( this, value, { max: this.max } );
+          throw new Violation( this, value, { max: this.max } );
 
         if ( 'undefined' !== typeof this.min && value.length < this.min )
-          return new Violation( this, value, { min: this.min } );
+          throw new Violation( this, value, { min: this.min } );
 
         return true;
       };
