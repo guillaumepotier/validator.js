@@ -329,15 +329,24 @@ describe( 'Validator', function () {
                          new Assert().Length( 4, 25 )
                        ]),
             email:     new Constraint( new Assert().Email() ),
-            firstname: new Constraint( new Assert().NotBlank() )
+            firstname: new Constraint( new Assert().NotBlank().addGroup( 'edit' ) ),
+            phone:     new Constraint( new Assert().NotBlank().addGroup( 'edit' ) )
           });
 
         var result = validator.validate( object, Collection );
         expect( result ).not.to.be( {} );
         expect( result ).to.have.key( 'email' );
-        expect( result ).to.have.key( 'firstname' );
+        expect( result ).not.to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).not.to.have.key( 'phone' );
+
+        var result = validator.validate( object, Collection, 'edit' );
+        expect( result ).not.to.be( {} );
+        expect( result ).not.to.have.key( 'email' );
+        expect( result ).to.have.key( 'firstname' );
+        expect( result ).not.to.have.key( 'name' );
+        expect( result ).to.have.key( 'phone' );
+
       } )
     } )
   } )

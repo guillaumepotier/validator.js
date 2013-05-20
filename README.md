@@ -78,3 +78,31 @@ Validator.validate( object, Collection );
 ```
 will return `{}` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
+
+
+## Validation Groups
+
+```js
+var Validator = Validator.Validator,
+    Assert = Validator.Assert,
+    Constraint = Validator.Constraint;
+
+var object = {
+    name: 'john doe',
+    email: 'wrong@email',
+    firstname: null,
+    phone: null
+  },
+  Collection = new Validator.Collection({
+    name:      new Constraint([
+                 new Assert().NotBlank(),
+                 new Assert().Length( 4, 25 )
+               ]),
+    email:     new Constraint( new Assert().Email() ),
+    firstname: new Constraint( new Assert().NotBlank().addGroup( 'edit' ) ),
+    phone:     new Constraint( new Assert().NotBlank().addGroup( 'edit' ) )
+  });
+
+Validator.validate( object, Collection, 'edit' );
+```
+will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.

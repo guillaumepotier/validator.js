@@ -74,7 +74,7 @@
         if ( 'function' === typeof object[ i ] )
           continue;
 
-        result = this.constraints[ i ].check( object[ i ], group );
+        result = this.constraints[ i ].check( object[ i ], group, false );
 
         if ( result.length )
           failures[ i ] = result;
