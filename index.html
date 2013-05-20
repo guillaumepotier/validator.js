@@ -89,12 +89,10 @@
     <span class="nx">phone</span><span class="o">:</span> <span class="kc">null</span>
   <span class="p">},</span>
   <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
-    <span class="nx">name</span><span class="o">:</span>      <span class="k">new</span> <span class="nx">Constraint</span><span class="p">([</span>
-                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
-                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span>
-               <span class="p">]),</span>
-    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">),</span>
-    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span> <span class="p">)</span>
+    <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span> <span class="p">],</span>
+    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
+    <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">});</span>
 
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">Collection</span> <span class="p">);</span>
@@ -116,13 +114,10 @@
     <span class="nx">phone</span><span class="o">:</span> <span class="kc">null</span>
   <span class="p">},</span>
   <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
-    <span class="nx">name</span><span class="o">:</span>      <span class="k">new</span> <span class="nx">Constraint</span><span class="p">([</span>
-                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
-                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span>
-               <span class="p">]),</span>
-    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">),</span>
-    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">)</span> <span class="p">),</span>
-    <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span> <span class="p">],</span>
+    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">),</span>
+    <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">)</span>
   <span class="p">});</span>
 
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">Collection</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
