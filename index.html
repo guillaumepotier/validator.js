@@ -30,7 +30,7 @@
 
       </header>
       <section>
-        <h1>Validator.js</h1>
+        <h1>validator.js</h1>
 
 <p>Powerful object and string validation in Javascript.</p>
 
@@ -102,6 +102,33 @@
 
 <p>will return <code>{}</code> if validation passes,
 <code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
+
+<h2>Validation Groups</h2>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
+    <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
+    <span class="nx">Constraint</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="s1">'john doe'</span><span class="p">,</span>
+    <span class="nx">email</span><span class="o">:</span> <span class="s1">'wrong@email'</span><span class="p">,</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nx">phone</span><span class="o">:</span> <span class="kc">null</span>
+  <span class="p">},</span>
+  <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+    <span class="nx">name</span><span class="o">:</span>      <span class="k">new</span> <span class="nx">Constraint</span><span class="p">([</span>
+                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
+                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span>
+               <span class="p">]),</span>
+    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">),</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">)</span> <span class="p">),</span>
+    <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroup</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">)</span> <span class="p">)</span>
+  <span class="p">});</span>
+
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">Collection</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
+</pre></div>
+
+<p>will return <code>{}</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
