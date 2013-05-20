@@ -236,42 +236,67 @@ describe( 'jsValidator suite', function () {
       }
     } )
 
-    it( 'should validate a string', function () {
-      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
-      expect( validator.validate( 'foo', constraint ) ).not.to.be.empty();
-      expect( validator.validate( 'foobar', constraint ) ).to.be.empty();
-    } )
+    describe( 'String validation', function () {
+      it( 'should validate a string', function () {
+        var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
+        expect( validator.validate( 'foo', constraint ) ).not.to.be.empty();
+        expect( validator.validate( 'foobar', constraint ) ).to.be.empty();
+      } )
 
-    it( 'should return violations for a string', function () {
-      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
-      var violations = validator.validate( '', constraint );
-      expect( violations ).to.have.length( 2 );
-      expect( violations[ 0 ] ).to.be.a( jsValidator.Violation );
-      expect( violations[ 0 ].assert ).to.be( 'Length' );
-      expect( violations[ 1 ].assert ).to.be( 'NotBlank' );
-      violations = validator.validate( 'foo', constraint );
-      expect( violations ).to.have.length( 1 );
-      expect( violations[ 0 ].assert ).to.be( 'Length' );
-    } )
+      it( 'should return violations for a string', function () {
+        var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
+        var violations = validator.validate( '', constraint );
+        expect( violations ).to.have.length( 2 );
+        expect( violations[ 0 ] ).to.be.a( jsValidator.Violation );
+        expect( violations[ 0 ].assert ).to.be( 'Length' );
+        expect( violations[ 1 ].assert ).to.be( 'NotBlank' );
+        violations = validator.validate( 'foo', constraint );
+        expect( violations ).to.have.length( 1 );
+        expect( violations[ 0 ].assert ).to.be( 'Length' );
+      } )
 
-    it( 'should use groups for validation', function() {
-      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
-      expect( validator.validate( 'foo', constraint ) ).to.be.empty();
-      expect( validator.validate( 'foo', constraint, 'bar' ) ).not.to.be.empty();
-      expect( validator.validate( 'foofoo', constraint, 'bar' ) ).to.be.empty();
-      expect( validator.validate( 'foofoo', constraint, 'baz' ) ).not.to.be.empty();
-      expect( validator.validate( 'foofoofoo', constraint, 'baz' ) ).to.be.empty();
-    } )
+      it( 'should use groups for validation', function() {
+        var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
+        expect( validator.validate( 'foo', constraint ) ).to.be.empty();
+        expect( validator.validate( 'foo', constraint, 'bar' ) ).not.to.be.empty();
+        expect( validator.validate( 'foofoo', constraint, 'bar' ) ).to.be.empty();
+        expect( validator.validate( 'foofoo', constraint, 'baz' ) ).not.to.be.empty();
+        expect( validator.validate( 'foofoofoo', constraint, 'baz' ) ).to.be.empty();
+      } )
 
-    it( 'should not validate against a non existent group', function () {
-      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
-      try {
-        validator.validate( 'foo', constraint, 'foo' );
-        expect().fail();
-      } catch ( err ) {
-        expect( err.message ).to.be( 'The "foo" group does not exist in any Assert' );
-      }
-    } )
+      it( 'should not validate against a non existent group', function () {
+        var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
+        try {
+          validator.validate( 'foo', constraint, 'foo' );
+          expect().fail();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'The "foo" group does not exist in any Assert' );
+        }
+      } )
+    })
 
+    describe( 'Object validation', function () {
+      it( 'should validate an object', function () {
+        var collection = new jsValidator.Collection()
+            .add( 'name', new jsValidator.Constraint( new jsValidator.Assert().Length( 5, 15 ) ) )
+            .add( 'email', new jsValidator.Constraint( new jsValidator.Assert().NotBlank() ) );
+
+        var result = validator.validate( { name: 'foo', email: '' }, collection );
+        expect( result ).not.to.be.empty();
+        expect( result ).to.have.key( 'name' );
+        expect( result ).to.have.key( 'email' );
+
+        expect( result.name[ 0 ].assert ).to.be( 'Length' );
+        expect( result.email[ 0 ].assert ).to.be( 'NotBlank' );
+
+        result = validator.validate( { name: 'foo bar', email: '' }, collection );
+        expect( result ).not.to.be.empty();
+        expect( result ).not.to.have.key( 'name' );
+        expect( result ).to.have.key( 'email' );
+
+        result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, collection );
+        expect( result ).to.be.empty();
+      } )
+    } )
   } )
 } )

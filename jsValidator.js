@@ -18,7 +18,7 @@
     constructor: Validator,
 
     validate: function ( object, collection, group ) {
-      if ( 'undefined' === typeof collection.__class__ || !( 'Constraint' === collection.__class__ || 'Collection' === collection.__class__ ) )
+      if ( ! ( collection instanceof Constraint ) && ! ( collection instanceof Collection ) )
         throw new Error( 'You must give a Constraint or a constraints Collection' );
 
       if ( 'string' === typeof object) {
@@ -29,14 +29,14 @@
     },
 
     _validateString: function ( string, constraint, group ) {
-      if ( 'Constraint' !== constraint.__class__ )
+      if ( ! ( constraint instanceof Constraint ) )
         typeof new Error( 'You must give a Constraint to validate a string, ' + constraint.__class__ + ' given' );
 
       return constraint.check( string, group );
     },
 
     _validateObject: function ( object, collection, group ) {
-      if ( 'Collection' !== collection.__class__ )
+      if ( ! ( collection instanceof Collection ) )
         typeof new Error( 'You must give a Collection to validate an object, ' + collection.__class__ + ' given' );
 
       return collection.check( object, group );
@@ -49,7 +49,10 @@
 
   var Collection = function ( constraints ) {
     this.__class__ = 'Collection';
-    this.constraints = constraints || {};
+    this.constraints = {};
+
+    if ( 'object' === typeof constraints )
+      this.addJSON( constraints );
 
     return this;
   };
@@ -58,12 +61,43 @@
 
     constructor: Collection,
 
+    check: function ( object, group ) {
+      var result, failures = {};
+
+      if ( group && !this.hasGroup( group ) )
+        throw new Error( 'The "' + group + '" group does not exist in any Constraint Assert' );
+
+      for ( var i in this.constraints ) {
+        if ( 'undefined' === typeof object[ i ] )
+          continue;
+
+        if ( 'function' === typeof object[ i ] )
+          continue;
+
+        result = this.constraints[ i ].check( object[ i ], group );
+
+        if ( result.length )
+          failures[ i ] = result;
+      }
+
+      return failures;
+    },
+
     add: function ( key, constraint, force ) {
-      if ( 'undefined' === typeof constraint.__class__ || 'Constraint' !== constraint.__class__ )
+      if ( ! ( constraint instanceof Constraint ) )
         throw new Error( 'Should be an instance of Constraint' );
 
       if ( ( !this.has( key ) && 'undefined' === typeof force ) || force )
         this.constraints[ key ] = constraint;
+
+      return this;
+    },
+
+    addJSON: function ( constraints ) {
+      for ( var i in constraints ) {
+        if ( constraints[ i ] instanceof Constraint )
+          this.add( i, constraints[ i ] );
+      }
 
       return this;
     },
@@ -80,6 +114,15 @@
       delete this.constraints[ key ];
 
       return this;
+    },
+
+    hasGroup: function ( group ) {
+      for ( var i in this.constraints ) {
+        if ( this.constraints[ i ].hasGroup( group ) )
+          return true;
+      }
+
+      return false;
     }
   };
 
@@ -91,7 +134,7 @@
     this.__class__ = 'Constraint';
     this.asserts = [];
 
-    if ( 'undefined' !== typeof asserts && 'undefined' !== typeof asserts.__parentClass__ && 'Assert' === asserts.__parentClass__ )
+    if ( asserts instanceof Assert )
       asserts = [ asserts ];
 
     this.addMultiple( asserts || [], true );
@@ -103,10 +146,10 @@
 
     constructor: Constraint,
 
-    check: function ( value, group ) {
+    check: function ( value, group, groupCheck ) {
       var result, failures = [];
 
-      if ( group && !this.hasGroup( group ) )
+      if ( group && false !== groupCheck && !this.hasGroup( group ) )
         throw new Error( 'The "' + group + '" group does not exist in any Assert' );
 
       for ( var i = 0; i < this.asserts.length; i++ ) {
@@ -126,7 +169,7 @@
     },
 
     add: function ( assert, deep ) {
-      if ( 'undefined' === typeof assert.__parentClass__ && 'Assert' !== assert.__parentClass__ )
+      if ( ! ( assert instanceof Assert ) )
         throw new Error( 'Should give an Assert object' );
 
       if ( !this.has( assert, deep ) )
@@ -179,38 +222,38 @@
   var Violation = function ( assert, value, violation ) {
     this.__class__ = 'Violation';
 
-    if ( 'undefined' === typeof assert.__class__ )
+    if ( ! ( assert instanceof Assert ) )
       throw new Error( 'Should give an assertion implementing the Assert interface' );
 
     this.assert = assert.__class__;
     this.value = value;
     this.violation = violation;
+  };
 
-    this.show = function () {
+  Violation.prototype = {
+    show: function () {
       return {
         assert: this.assert,
         value: this.value,
         violation: this.violation
       };
-    };
+    },
 
-    this.__toString = function () {
+    __toString: function () {
       if ( 'undefined' !== typeof this.violation )
         var violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
 
       return this.assert + ' assert failed for "' + this.value + violation || '';
-    };
+    },
 
-    this.getViolation = function () {
+    getViolation: function () {
       var constraint, expected;
 
       for ( constraint in this.violation )
         expected = this.violation[ constraint ];
 
       return { constraint: constraint, expected: expected };
-    };
-
-    return this;
+    }
   };
 
   /**
