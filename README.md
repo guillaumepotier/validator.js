@@ -1,6 +1,6 @@
-#jsValidator
+#validator.js
 
-Powerful object and string validation in Javascript
+Powerful object and string validation in Javascript.
 
 ##Licence
 

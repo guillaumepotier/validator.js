@@ -1,3 +1,4 @@
+- set up global and specific configs
 - implement validation for Collection of Models (unicity, range...)
 - implement mutli-group validation (currently only one group at the time)
 - ability to implement custom Asserts

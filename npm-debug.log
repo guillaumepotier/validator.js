@@ -1,0 +1,60 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'validator.js' ]
+2 info using npm@1.2.18
+3 info using node@v0.10.5
+4 verbose read json /Users/guillaumepotier/Sites/package.json
+5 verbose read json /Users/guillaumepotier/Sites/node_modules/expect.js/package.json
+6 verbose read json /Users/guillaumepotier/Sites/node_modules/mocha/package.json
+7 verbose read json /Users/guillaumepotier/Sites/node_modules/validatejs/package.json
+8 verbose read json /Users/guillaumepotier/Sites/package.json
+9 verbose cache add [ 'validator.js', null ]
+10 verbose cache add name=undefined spec="validator.js" args=["validator.js",null]
+11 verbose parsed url { protocol: null,
+11 verbose parsed url   slashes: null,
+11 verbose parsed url   auth: null,
+11 verbose parsed url   host: null,
+11 verbose parsed url   port: null,
+11 verbose parsed url   hostname: null,
+11 verbose parsed url   hash: null,
+11 verbose parsed url   search: null,
+11 verbose parsed url   query: null,
+11 verbose parsed url   pathname: 'validator.js',
+11 verbose parsed url   path: 'validator.js',
+11 verbose parsed url   href: 'validator.js' }
+12 silly lockFile de2ee14b-validator-js validator.js
+13 verbose lock validator.js /Users/guillaumepotier/.npm/de2ee14b-validator-js.lock
+14 silly lockFile de2ee14b-validator-js validator.js
+15 silly lockFile de2ee14b-validator-js validator.js
+16 verbose addNamed [ 'validator.js', '' ]
+17 verbose addNamed [ null, '' ]
+18 silly lockFile 4b6a31e9-validator-js validator.js@
+19 verbose lock validator.js@ /Users/guillaumepotier/.npm/4b6a31e9-validator-js.lock
+20 silly addNameRange { name: 'validator.js', range: '', hasData: false }
+21 verbose url raw validator.js
+22 verbose url resolving [ 'https://registry.npmjs.org/', './validator.js' ]
+23 verbose url resolved https://registry.npmjs.org/validator.js
+24 info trying registry request attempt 1 at 15:39:33
+25 http GET https://registry.npmjs.org/validator.js
+26 http 404 https://registry.npmjs.org/validator.js
+27 silly registry.get cb [ 404,
+27 silly registry.get   { server: 'CouchDB/1.3.0 (Erlang OTP/R15B03)',
+27 silly registry.get     date: 'Mon, 20 May 2013 13:39:33 GMT',
+27 silly registry.get     'content-type': 'application/json',
+27 silly registry.get     'content-length': '52',
+27 silly registry.get     'cache-control': 'must-revalidate' } ]
+28 silly lockFile 4b6a31e9-validator-js validator.js@
+29 silly lockFile 4b6a31e9-validator-js validator.js@
+30 error 404 'validator.js' is not in the npm registry.
+30 error 404 You should bug the author to publish it
+30 error 404
+30 error 404 Maybe try 'npm search validator'
+30 error 404
+30 error 404 Note that you can also install from a
+30 error 404 tarball, folder, or http url, or git url.
+31 error System Darwin 11.4.2
+32 error command "node" "/usr/local/bin/npm" "install" "validator.js"
+33 error cwd /Users/guillaumepotier/Sites/jsValidator
+34 error node -v v0.10.5
+35 error npm -v 1.2.18
+36 error code E404
+37 verbose exit [ 1, true ]
