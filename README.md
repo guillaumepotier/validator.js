@@ -2,9 +2,11 @@
 
 Powerful object and string validation in Javascript.
 
+
 ## Licence
 
-See LICENCE.md
+MIT - See LICENCE.md
+
 
 ## Run Tests
 
@@ -14,18 +16,65 @@ See LICENCE.md
 
 # Documentation
 
+
 ## General use
 
-- On browser:
+- On node:
+
 ```
+$ npm install -g validator.js
+```
+
+Then
+
+```js
+Validator = require( 'validator.js' );
+```
+
+- On browser:
+
+```js
 <script src="../validator.js"></script>
 <script>
     console.log(Validator);
 </script>
 ```
 
-- On node:
+
+## Validate Strings
+
+```js
+var Assert      = Validator.Assert,
+    Constraint  = new Validator.Constraint( new Assert().Lenght( 4 ) );
+
+Validator.Validator().validate( 'foo', Constraint );
 ```
-$ npm install validator.js
-Validator = require( 'validator.js' );
+will return `[]` if validation passes, `[ Violation ]` in this case.
+
+
+## Validate Objects
+
+```js
+var Validator = Validator.Validator,
+    Assert = Validator.Assert,
+    Constraint = Validator.Constraint;
+
+var object = {
+    name: 'john doe',
+    email: 'wrong@email',
+    firstname: null,
+    phone: null
+  },
+  Collection = new Validator.Collection({
+    name:      new Constraint([
+                 new Assert().NotBlank(),
+                 new Assert().Length( 4, 25 )
+               ]),
+    email:     new Constraint( new Assert().Email() ),
+    firstname: new Constraint( new Assert().NotBlank() )
+  });
+
+Validator.validate( object, Collection );
 ```
+will return `{}` if validation passes,
+`{ email: [ Violation ], firstname: [ Violation ] }` in this case.

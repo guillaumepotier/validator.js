@@ -312,6 +312,33 @@ describe( 'Validator', function () {
         result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, collection );
         expect( result ).to.be.empty();
       } )
+
+      it( 'should validate README example', function () {
+        var Assert = Validator.Assert,
+          Constraint = Validator.Constraint;
+
+        var object = {
+            name: 'john doe',
+            email: 'wrong@email',
+            firstname: null,
+            phone: null
+          },
+          Collection = new Validator.Collection({
+            name:      new Constraint([
+                         new Assert().NotBlank(),
+                         new Assert().Length( 4, 25 )
+                       ]),
+            email:     new Constraint( new Assert().Email() ),
+            firstname: new Constraint( new Assert().NotBlank() )
+          });
+
+        var result = validator.validate( object, Collection );
+        expect( result ).not.to.be( {} );
+        expect( result ).to.have.key( 'email' );
+        expect( result ).to.have.key( 'firstname' );
+        expect( result ).not.to.have.key( 'name' );
+        expect( result ).not.to.have.key( 'phone' );
+      } )
     } )
   } )
 } )
