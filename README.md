@@ -80,21 +80,13 @@ will return `{}` if validation passes,
 
 ## Validation Groups
 
-```js
-var Validator = Validator.Validator,
-    Assert = Validator.Assert,
-    Constraint = Validator.Constraint;
+With same objects than above, just by adding validation groups:
 
-var object = {
-    name: 'john doe',
-    email: 'wrong@email',
-    firstname: null,
-    phone: null
-  },
+```js
   Collection = new Validator.Collection({
     name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
     email:     new Assert().Email(),
-    firstname: new Assert().NotBlank().addGroup( 'edit' ),
+    firstname: new Assert().NotBlank().addGroups( [ 'edit', 'register'] ),
     phone:     new Assert().NotBlank().addGroup( 'edit' )
   });
 

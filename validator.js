@@ -94,12 +94,8 @@
     },
 
     addJSON: function ( constraints ) {
-      var constraint;
-
-      for ( var i in constraints ) {
-        constraint = constraints[ i ] instanceof Constraint ? constraints[ i ] : new Constraint( constraints[ i ] );
-        this.add( i, constraint );
-      }
+      for ( var i in constraints )
+        this.add( i, constraints[ i ] instanceof Constraint ? constraints[ i ] : new Constraint( constraints[ i ] ) );
 
       return this;
     },
@@ -118,7 +114,17 @@
       return this;
     },
 
+    hasGroups: function ( groups ) {
+        for ( var i = 0; i < groups.length; i++ )
+          if ( this.hasGroup( groups[ i ] ) ) return true;
+
+      return false;
+    },
+
     hasGroup: function ( group ) {
+      if ( 'object' === typeof group )
+        return this.hasGroups( group );
+
       for ( var i in this.constraints ) {
         if ( this.constraints[ i ].hasGroup( group ) )
           return true;
@@ -135,10 +141,6 @@
   var Constraint = function ( asserts ) {
     this.__class__ = 'Constraint';
     this.asserts = [];
-
-    if ( asserts instanceof Assert )
-      asserts = [ asserts ];
-
     this.addMultiple( asserts || [], true );
 
     return this;
@@ -183,6 +185,9 @@
     },
 
     addMultiple: function ( asserts, deep ) {
+      if ( asserts instanceof Assert )
+        asserts = [ asserts ];
+
       for ( var i = 0; i < asserts.length; i++ ) {
         if ( asserts[ i ] instanceof Assert )
           this.add( asserts[ i ], deep );
@@ -211,7 +216,17 @@
       return this;
     },
 
+    hasGroups: function ( groups ) {
+        for ( var i = 0; i < groups.length; i++ )
+          if ( this.hasGroup( groups[ i ] ) ) return true;
+
+      return false;
+    },
+
     hasGroup: function ( group ) {
+      if ( 'object' === typeof group )
+        return this.hasGroups( group );
+
       for ( var i = 0; i < this.asserts.length; i++ )
         if ( this.asserts[ i ].hasGroup( group ) )
           return true;
@@ -287,7 +302,18 @@
       if ( !this.groups.length )
         return false;
 
+      if ( 'object' === typeof group )
+        return this.hasOneOf( group );
+
       return -1 !== this.groups.indexOf( group );
+    },
+
+    hasOneOf: function ( groups ) {
+      for ( var i = 0; i < groups.length; i++ )
+        if ( this.hasGroup( groups[ i ] ) )
+          return true;
+
+      return false;
     },
 
     hasGroups: function () {
@@ -295,6 +321,9 @@
     },
 
     addGroup: function ( group ) {
+      if ( 'object'=== typeof group )
+        return this.addGroups( group );
+
       if ( !this.hasGroup( group ) )
         this.groups.push( group );
 

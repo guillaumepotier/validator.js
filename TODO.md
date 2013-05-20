@@ -1,3 +1,5 @@
+## TODOs
+
 - set up global and specific configs
 - implement nested objects validation
 - implement validation for Collection of Models (unicity, range...)
@@ -5,3 +7,9 @@
 - ability to implement custom Asserts
 - ability to bind less object oriented and more json oriented validation to objects
 - improve tests and code coverage
+
+## To be determined
+
+- remove groups checks and errors on Constraint / Collection ?
+
+## To be refactored

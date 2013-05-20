@@ -45,14 +45,21 @@ describe( 'Validator', function () {
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
     } )
 
+    it( 'should register mulitple groups through assertion construct', function () {
+      var Length = new Validator.Assert().Length( 10, 15, [ 'foo', 'bar'] );
+      expect( Length.hasGroups() ).to.be( true );
+      expect( Length.hasGroup( 'foo' ) ).to.be( true );
+      expect( Length.hasGroup( 'bar' ) ).to.be( true );
+    } )
+
     it( 'should register a group through addGroup ', function () {
       var Length = new Validator.Assert().Length( 10 ).addGroup( 'foo' );
       expect( Length.hasGroups() ).to.be( true );
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
     } )
 
-    it( 'should register mulitple groups through assertion construct', function () {
-      var Length = new Validator.Assert().Length( 10, 15, [ 'foo', 'bar'] );
+    it( 'should register multiple groups through addGroup', function () {
+      var Length = new Validator.Assert().Length( 10 ).addGroup( [ 'foo', 'bar' ] );
       expect( Length.hasGroups() ).to.be( true );
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
       expect( Length.hasGroup( 'bar' ) ).to.be( true );
@@ -77,6 +84,13 @@ describe( 'Validator', function () {
       expect( Length.hasGroups() ).to.be( true );
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
       expect( Length.hasGroup( 'bar' ) ).to.be( false );
+    } )
+
+    it( 'should test hasOneOf for groups', function () {
+      var Length = new Validator.Assert().Length( 10 ).addGroup( [ 'foo', 'bar' ] );
+      expect( Length.hasOneOf( [ 'foo', 'baz' ] ) ).to.be( true );
+      expect( Length.hasOneOf( [ 'bar', 'baz' ] ) ).to.be( true );
+      expect( Length.hasOneOf( [ 'foobar', 'baz', 'foobaz' ] ) ).to.be( false );
     } )
   } )
 
@@ -326,24 +340,30 @@ describe( 'Validator', function () {
           Collection = new Validator.Collection({
             name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
             email:     new Assert().Email(),
-            firstname: new Assert().NotBlank().addGroup( 'edit' ),
+            firstname: new Assert().NotBlank().addGroup( ['foo', 'register'] ),
             phone:     new Assert().NotBlank().addGroup( 'edit' )
           });
 
         var result = validator.validate( object, Collection );
-        expect( result ).not.to.be( {} );
+        expect( result.isEqualTo( {} ) ).to.be( false );
         expect( result ).to.have.key( 'email' );
         expect( result ).not.to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).not.to.have.key( 'phone' );
 
         var result = validator.validate( object, Collection, 'edit' );
-        expect( result ).not.to.be( {} );
+        expect( result.isEqualTo( {} ) ).to.be( false );
+        expect( result ).not.to.have.key( 'email' );
+        expect( result ).not.to.have.key( 'firstname' );
+        expect( result ).not.to.have.key( 'name' );
+        expect( result ).to.have.key( 'phone' );
+
+        var result = validator.validate( object, Collection, [ 'edit', 'foo' ] );
+        expect( result.isEqualTo( {} ) ).to.be( false );
         expect( result ).not.to.have.key( 'email' );
         expect( result ).to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).to.have.key( 'phone' );
-
       } )
     } )
   } )
