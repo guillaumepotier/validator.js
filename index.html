@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Validator.js by guillaumepotier</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Validator.js</h1>
+        <p class="header">Powerful objects and string validation in javascript</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/guillaumepotier/validator.js/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/guillaumepotier/validator.js/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/guillaumepotier/validator.js">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/guillaumepotier">guillaumepotier</a></p>
+
+
+      </header>
+      <section>
+        <h1>Validator.js</h1>
+
+<p>Powerful object and string validation in Javascript.</p>
+
+<h2>Licence</h2>
+
+<p>MIT - See LICENCE.md</p>
+
+<h2>Run Tests</h2>
+
+<ul>
+<li><code>npm install mocha</code></li>
+<li><code>npm install expect.js</code></li>
+<li><code>mocha tests/server.js</code></li>
+</ul><h1>Documentation</h1>
+
+<h2>General use</h2>
+
+<ul>
+<li>On node:</li>
+</ul><pre><code>$ npm install -g validator.js
+</code></pre>
+
+<p>Then</p>
+
+<div class="highlight"><pre><span class="nx">Validator</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s1">'validator.js'</span> <span class="p">);</span>
+</pre></div>
+
+<ul>
+<li>On browser:</li>
+</ul><div class="highlight"><pre><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"../validator.js"</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Validator</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</pre></div>
+
+<h2>Validate Strings</h2>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span>      <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
+    <span class="nx">Constraint</span>  <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Lenght</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span>
+
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">Constraint</span> <span class="p">);</span>
+</pre></div>
+
+<p>will return <code>[]</code> if validation passes, <code>[ Violation ]</code> in this case.</p>
+
+<h2>Validate Objects</h2>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
+    <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
+    <span class="nx">Constraint</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="s1">'john doe'</span><span class="p">,</span>
+    <span class="nx">email</span><span class="o">:</span> <span class="s1">'wrong@email'</span><span class="p">,</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nx">phone</span><span class="o">:</span> <span class="kc">null</span>
+  <span class="p">},</span>
+  <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+    <span class="nx">name</span><span class="o">:</span>      <span class="k">new</span> <span class="nx">Constraint</span><span class="p">([</span>
+                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
+                 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span>
+               <span class="p">]),</span>
+    <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">),</span>
+    <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span> <span class="p">)</span>
+  <span class="p">});</span>
+
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">Collection</span> <span class="p">);</span>
+</pre></div>
+
+<p>will return <code>{}</code> if validation passes,
+<code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-41082541-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
