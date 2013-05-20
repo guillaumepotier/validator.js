@@ -1,5 +1,9 @@
 ( function ( exports ) {
 
+  /**
+  * Validator
+  */
+
   var Validator = function () {
     this.__class__ = 'Validator';
     this.constraints = [];
@@ -14,30 +18,34 @@
     constructor: Validator,
 
     validate: function ( object, collection, group ) {
-      if ( !collection instanceof Collection && !collection instanceof Constraint )
+      if ( 'undefined' === typeof collection.__class__ || !( 'Constraint' === collection.__class__ || 'Collection' === collection.__class__ ) )
         throw new Error( 'You must give a Constraint or a constraints Collection' );
 
       if ( 'string' === typeof object) {
-        return this.validateString( object, collection, group );
+        return this._validateString( object, collection, group );
       }
 
-      return this.validateObject( object, collection, group );
+      return this._validateObject( object, collection, group );
     },
 
-    validateString: function ( string, constraint, group ) {
+    _validateString: function ( string, constraint, group ) {
       if ( 'Constraint' !== constraint.__class__ )
         typeof new Error( 'You must give a Constraint to validate a string, ' + constraint.__class__ + ' given' );
 
       return constraint.check( string, group );
     },
 
-    validateObject: function ( object, collection, group ) {
+    _validateObject: function ( object, collection, group ) {
       if ( 'Collection' !== collection.__class__ )
         typeof new Error( 'You must give a Collection to validate an object, ' + collection.__class__ + ' given' );
 
       return collection.check( object, group );
     }
   };
+
+  /**
+  * Collection
+  */
 
   var Collection = function ( constraints ) {
     this.__class__ = 'Collection';
@@ -51,7 +59,7 @@
     constructor: Collection,
 
     add: function ( key, constraint, force ) {
-      if ( !constraint instanceof Constraint )
+      if ( 'undefined' === typeof constraint.__class__ || 'Constraint' !== constraint.__class__ )
         throw new Error( 'Should be an instance of Constraint' );
 
       if ( ( !this.has( key ) && 'undefined' === typeof force ) || force )
@@ -75,13 +83,18 @@
     }
   };
 
+  /**
+  * Constraint
+  */
+
   var Constraint = function ( asserts ) {
     this.__class__ = 'Constraint';
+    this.asserts = [];
 
-    if ( 'undefined' !== typeof asserts && 'Assert' === asserts.__parentClass__ )
+    if ( 'undefined' !== typeof asserts && 'undefined' !== typeof asserts.__parentClass__ && 'Assert' === asserts.__parentClass__ )
       asserts = [ asserts ];
 
-    this.asserts = asserts || [];
+    this.addMultiple( asserts || [], true );
 
     return this;
   };
@@ -92,6 +105,9 @@
 
     check: function ( value, group ) {
       var result, failures = [];
+
+      if ( group && !this.hasGroup( group ) )
+        throw new Error( 'The "' + group + '" group does not exist in any Assert' );
 
       for ( var i = 0; i < this.asserts.length; i++ ) {
         if ( group && !this.asserts[ i ].hasGroup( group ) )
@@ -104,25 +120,68 @@
 
         if ( true !== result )
           failures.push( result );
-
-        return failures;
       }
+
+      return failures;
     },
 
-    add: function ( assert ) {
-      return this._add( assert, 'asserts' );
+    add: function ( assert, deep ) {
+      if ( 'undefined' === typeof assert.__parentClass__ && 'Assert' !== assert.__parentClass__ )
+        throw new Error( 'Should give an Assert object' );
+
+      if ( !this.has( assert, deep ) )
+        this.asserts.push( assert );
+
+      return this;
+    },
+
+    addMultiple: function ( asserts, deep ) {
+      for ( var i = 0; i < asserts.length; i++ ) {
+        this.add( asserts[ i ], deep );
+      }
+
+      return this;
     },
 
     has: function ( assert, deep ) {
-      return this._has( assert, 'asserts', deep );
+      for ( var i = 0; i < this.asserts.length; i++ )
+        if ( ( 'undefined' === typeof deep && assert.__class__ === this.asserts[ i ].__class__ ) || ( deep && this.asserts[ i ].isEqualTo( assert ) ) )
+          return true;
+
+      return false;
     },
 
     remove: function ( assert, deep ) {
-      return this._remove( assert, 'asserts', deep );
+      var _asserts = [];
+
+      for ( var i = 0; i < this.asserts.length; i++ )
+        if ( ( 'undefined' === typeof deep && assert.__class__ !== this.asserts[ i ].__class__ ) || ( deep && !this.asserts[ i ].isEqualTo( assert ) ) )
+          _asserts.push( this.asserts[ i ] );
+
+      this.asserts = _asserts;
+
+      return this;
+    },
+
+    hasGroup: function ( group ) {
+      for ( var i = 0; i < this.asserts.length; i++ )
+        if ( this.asserts[ i ].hasGroup( group ) )
+          return true;
+
+      return false;
     }
   };
 
+  /**
+  * Violation
+  */
+
   var Violation = function ( assert, value, violation ) {
+    this.__class__ = 'Violation';
+
+    if ( 'undefined' === typeof assert.__class__ )
+      throw new Error( 'Should give an assertion implementing the Assert interface' );
+
     this.assert = assert.__class__;
     this.value = value;
     this.violation = violation;
@@ -153,6 +212,10 @@
 
     return this;
   };
+
+  /**
+  * Assert
+  */
 
   var Assert = function () {
     this.__class__ = 'Assert';
@@ -254,46 +317,50 @@
     }
   };
 
+  // expose to the world these awesome classes
   exports.Assert = Assert;
   exports.Validator = Validator;
   exports.Violation = Violation;
   exports.Constraint = Constraint;
   exports.Collection = Collection;
 
+  /**
+  * Some useful object prototypes here
+  */
+
   // IE8<= compatibility
   // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
-  if (!Array.prototype.indexOf) {
-      Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-          "use strict";
-          if (this == null) {
-              throw new TypeError();
-          }
-          var t = Object(this);
-          var len = t.length >>> 0;
-          if (len === 0) {
-              return -1;
-          }
-          var n = 0;
-          if (arguments.length > 1) {
-              n = Number(arguments[1]);
-              if (n != n) { // shortcut for verifying if it's NaN
-                  n = 0;
-              } else if (n != 0 && n != Infinity && n != -Infinity) {
-                  n = (n > 0 || -1) * Math.floor(Math.abs(n));
-              }
-          }
-          if (n >= len) {
-              return -1;
-          }
-          var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-          for (; k < len; k++) {
-              if (k in t && t[k] === searchElement) {
-                  return k;
-              }
-          }
-          return -1;
-      };
-  }
+  if (!Array.prototype.indexOf)
+    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
+        "use strict";
+        if (this == null) {
+            throw new TypeError();
+        }
+        var t = Object(this);
+        var len = t.length >>> 0;
+        if (len === 0) {
+            return -1;
+        }
+        var n = 0;
+        if (arguments.length > 1) {
+            n = Number(arguments[1]);
+            if (n != n) { // shortcut for verifying if it's NaN
+                n = 0;
+            } else if (n != 0 && n != Infinity && n != -Infinity) {
+                n = (n > 0 || -1) * Math.floor(Math.abs(n));
+            }
+        }
+        if (n >= len) {
+            return -1;
+        }
+        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+        for (; k < len; k++) {
+            if (k in t && t[k] === searchElement) {
+                return k;
+            }
+        }
+        return -1;
+    };
 
   // Test two objects against each other to detrmine if strictly equal *by properties* only
   Object.prototype.isEqualTo = function ( object ) {
@@ -323,32 +390,5 @@
 
     return true;
   };
-
-  Object.prototype._has = function ( object, property, deep ) {
-    for ( var i = 0; i < this[ property ].length; i++ )
-      if ( ( 'undefined' === typeof deep && object.__class__ === this[ property ][ i ].__class__ ) || ( deep && this[ property ][ i ].isEqualTo( object ) ) )
-        return true;
-
-    return false;
-  }
-
-  Object.prototype._add = function ( object, property ) {
-    if ( !this.has( object ) )
-      this[ property ].push( object );
-
-    return this;
-  }
-
-  Object.prototype._remove = function ( object, property, deep ) {
-    var _property = [];
-
-    for ( var i = 0; i < this[ property ].length; i++ )
-      if ( ( 'undefined' === typeof deep && object.__class__ !== this[ property ][ i ].__class__ ) || ( deep && !this[ property ][ i ].isEqualTo( object ) ) )
-        _property.push( this[ property ][ i ] );
-
-    this[ property ] = _property;
-
-    return this;
-  }
 
 } )( 'undefined' === typeof exports ? this.jsValidator = {} : exports );

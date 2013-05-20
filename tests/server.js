@@ -10,18 +10,18 @@ describe( 'jsValidator suite', function () {
     } )
 
     it( 'should have "Assert" __class__', function () {
-      expect( assert.__class__).to.be( 'Assert' );
+      expect( assert.__class__ ).to.be( 'Assert' );
     } )
 
     it( 'should have "Assert" __parentClass__', function () {
-      expect( assert.__parentClass__).to.be( 'Assert' );
+      expect( assert.__parentClass__ ).to.be( 'Assert' );
     } )
 
     it( 'should instanciate an assertion', function () {
       var Length = new jsValidator.Assert().Length( 10 );
       expect( Length ).to.be.an( 'object' );
       expect( Length.__class__ ).to.be( 'Length' );
-      expect( assert.__parentClass__).to.be( 'Assert' );
+      expect( assert.__parentClass__ ).to.be( 'Assert' );
     } )
 
     it( 'should register a group through assertion construct ', function () {
@@ -73,7 +73,7 @@ describe( 'jsValidator suite', function () {
     } )
 
     it( 'should have "Constraint" __class__', function () {
-      expect( constraint.__class__).to.be( 'Constraint' );
+      expect( constraint.__class__ ).to.be( 'Constraint' );
     } )
 
     it( 'should be instanciated without an assertion', function () {
@@ -90,6 +90,15 @@ describe( 'jsValidator suite', function () {
       var myConstraint = new jsValidator.Constraint();
       myConstraint.add( new jsValidator.Assert().Length( 10 ) );
       expect( myConstraint.asserts.length ).to.be( 1 );
+    } )
+
+    it( 'should throw Error if not assertion given in add method', function () {
+      try {
+        new jsValidator.Constraint().add( 'foo' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'Should give an Assert object' );
+      }
     } )
 
     it( 'should return true with has assertion, not deep', function () {
@@ -138,7 +147,7 @@ describe( 'jsValidator suite', function () {
     } )
 
     it( 'should have "Collection" __class__', function () {
-      expect( collection.__class__).to.be( 'Collection' );
+      expect( collection.__class__ ).to.be( 'Collection' );
     } )
 
     it( 'should be instanciated without a constraint', function () {
@@ -174,6 +183,94 @@ describe( 'jsValidator suite', function () {
       expect( myCollection.has( 'foo' ) ).to.be( true );
       myCollection.remove( 'foo' );
       expect( myCollection.has( 'foo' ) ).to.be( false );
+    } )
+
+  } )
+
+  describe( 'Violation', function () {
+    var violation = new jsValidator.Violation( new jsValidator.Assert().NotBlank(), '' );
+
+    it( 'should be an object', function () {
+      expect( violation ).to.be.an( 'object' );
+    } )
+
+    it( 'should have "Violation" __class__', function () {
+      expect( violation.__class__ ).to.be( 'Violation' );
+    } )
+
+    it( 'should fail if not instanciated with an Assert object having __class__', function () {
+      try {
+        var violation = new jsValidator.Violation( 'foo' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'Should give an assertion implementing the Assert interface' );
+      }
+    } )
+
+  } )
+
+  describe( 'Validator', function () {
+    var validator = new jsValidator.Validator();
+
+    it( 'should be an object', function () {
+      expect( validator ).to.be.an( 'object' );
+    } )
+
+    it( 'should have "Validator" __class__', function () {
+      expect( validator.__class__ ).to.be( 'Validator' );
+    } )
+
+    it( 'sould throw Error if Collection or Constraint not given to validate method', function () {
+      try {
+        validator.validate( 'foo', 'bar', 'baz' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'You must give a Constraint or a constraints Collection' );
+      }
+
+      try {
+        validator.validate( 'foo', { __class__: 'foo' }, 'baz' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'You must give a Constraint or a constraints Collection' );
+      }
+    } )
+
+    it( 'should validate a string', function () {
+      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
+      expect( validator.validate( 'foo', constraint ) ).not.to.be.empty();
+      expect( validator.validate( 'foobar', constraint ) ).to.be.empty();
+    } )
+
+    it( 'should return violations for a string', function () {
+      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 5, 10 ), new jsValidator.Assert().NotBlank() ] );
+      var violations = validator.validate( '', constraint );
+      expect( violations ).to.have.length( 2 );
+      expect( violations[ 0 ] ).to.be.a( jsValidator.Violation );
+      expect( violations[ 0 ].assert ).to.be( 'Length' );
+      expect( violations[ 1 ].assert ).to.be( 'NotBlank' );
+      violations = validator.validate( 'foo', constraint );
+      expect( violations ).to.have.length( 1 );
+      expect( violations[ 0 ].assert ).to.be( 'Length' );
+    } )
+
+    it( 'should use groups for validation', function() {
+      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
+      expect( validator.validate( 'foo', constraint ) ).to.be.empty();
+      expect( validator.validate( 'foo', constraint, 'bar' ) ).not.to.be.empty();
+      expect( validator.validate( 'foofoo', constraint, 'bar' ) ).to.be.empty();
+      expect( validator.validate( 'foofoo', constraint, 'baz' ) ).not.to.be.empty();
+      expect( validator.validate( 'foofoofoo', constraint, 'baz' ) ).to.be.empty();
+    } )
+
+    it( 'should not validate against a non existent group', function () {
+      var constraint = new jsValidator.Constraint( [ new jsValidator.Assert().Length( 4 ).addGroup( 'bar' ), new jsValidator.Assert().Length( 8 ).addGroup( 'baz' ), new jsValidator.Assert().Length( 2 ) ] );
+      try {
+        validator.validate( 'foo', constraint, 'foo' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'The "foo" group does not exist in any Assert' );
+      }
     } )
 
   } )
