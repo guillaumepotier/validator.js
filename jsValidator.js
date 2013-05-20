@@ -67,7 +67,7 @@
     check: function ( value, group ) {
       var result, failures = [];
 
-      for ( var i in this.asserts ) {
+      for ( var i = 0; i < this.asserts.length; i++ ) {
         if ( group && !this.asserts[ i ].hasGroup( group ) )
           continue;
 
@@ -91,7 +91,7 @@
     },
 
     has: function ( assert, deep ) {
-      for ( var i in this.asserts )
+      for ( var i = 0; i < this.asserts.length; i++ )
         if ( assert.__class__ === this.asserts[ i ].__class__ )
           if ( 'undefined' === typeof deep || this.asserts[ i ].isEqualTo( assert ) )
             return true;
@@ -99,10 +99,10 @@
       return false;
     },
 
-    remove: function ( assert ) {
+    remove: function ( assert, deep ) {
       var _asserts = [];
 
-      for ( var i in this.asserts )
+      for ( var i = 0; i < this.asserts.length; i++ )
         if ( assert.__class__ !== this.asserts[ i ].__class__ )
           _asserts.push( this.asserts[ i ] );
 
@@ -183,7 +183,7 @@
     removeGroup: function ( group ) {
       var _groups = [];
 
-      for ( var i in this.groups )
+      for ( var i = 0; i < this.groups.length; i++ )
         if ( group !== this.groups[ i ] )
           _groups.push( this.groups[ i ] );
 
@@ -193,7 +193,7 @@
     },
 
     addGroups: function ( groups ) {
-      for ( var i in groups )
+      for ( var i = 0; i < groups.length; i++ )
         this.addGroup( groups[ i ] );
 
       return this;

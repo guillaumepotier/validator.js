@@ -111,7 +111,12 @@ describe( 'jsValidator suite', function () {
     } )
 
     it( 'should remove an assertion', function () {
-      
+      var myConstraint = new jsValidator.Constraint();
+      myConstraint.add( new jsValidator.Assert().NotBlank() ).add( new jsValidator.Assert().Length( 10 ) );
+      expect( myConstraint.asserts.length ).to.be( 2 );
+      myConstraint.remove( new jsValidator.Assert().NotBlank() );
+      expect( myConstraint.has( new jsValidator.Assert().NotBlank() ) ).to.be( false );
+      expect( myConstraint.asserts.length ).to.be( 1 );
     } )
 
   } )
