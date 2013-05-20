@@ -1,0 +1,10 @@
+language: node_js
+
+node_js:
+  - 0.10.x
+
+before_script:
+  - npm install mocha
+  - npm install expect.js
+
+script: mocha tests/serve.js

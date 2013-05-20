@@ -66,12 +66,10 @@ var object = {
     phone: null
   },
   Collection = new Validator.Collection({
-    name:      new Constraint([
-                 new Assert().NotBlank(),
-                 new Assert().Length( 4, 25 )
-               ]),
-    email:     new Constraint( new Assert().Email() ),
-    firstname: new Constraint( new Assert().NotBlank() )
+    name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
+    email:     new Assert().Email(),
+    firstname: new Assert().NotBlank(),
+    phone:     new Assert().NotBlank()
   });
 
 Validator.validate( object, Collection );
@@ -94,13 +92,10 @@ var object = {
     phone: null
   },
   Collection = new Validator.Collection({
-    name:      new Constraint([
-                 new Assert().NotBlank(),
-                 new Assert().Length( 4, 25 )
-               ]),
-    email:     new Constraint( new Assert().Email() ),
-    firstname: new Constraint( new Assert().NotBlank().addGroup( 'edit' ) ),
-    phone:     new Constraint( new Assert().NotBlank().addGroup( 'edit' ) )
+    name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
+    email:     new Assert().Email(),
+    firstname: new Assert().NotBlank().addGroup( 'edit' ),
+    phone:     new Assert().NotBlank().addGroup( 'edit' )
   });
 
 Validator.validate( object, Collection, 'edit' );

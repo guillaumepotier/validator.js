@@ -94,9 +94,11 @@
     },
 
     addJSON: function ( constraints ) {
+      var constraint;
+
       for ( var i in constraints ) {
-        if ( constraints[ i ] instanceof Constraint )
-          this.add( i, constraints[ i ] );
+        constraint = constraints[ i ] instanceof Constraint ? constraints[ i ] : new Constraint( constraints[ i ] );
+        this.add( i, constraint );
       }
 
       return this;
@@ -170,8 +172,9 @@
     },
 
     add: function ( assert, deep ) {
-      if ( ! ( assert instanceof Assert ) )
+      if ( ! ( assert instanceof Assert ) ) {
         throw new Error( 'Should give an Assert object' );
+      }
 
       if ( !this.has( assert, deep ) )
         this.asserts.push( assert );
@@ -181,7 +184,8 @@
 
     addMultiple: function ( asserts, deep ) {
       for ( var i = 0; i < asserts.length; i++ ) {
-        this.add( asserts[ i ], deep );
+        if ( asserts[ i ] instanceof Assert )
+          this.add( asserts[ i ], deep );
       }
 
       return this;

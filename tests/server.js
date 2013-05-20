@@ -324,13 +324,10 @@ describe( 'Validator', function () {
             phone: null
           },
           Collection = new Validator.Collection({
-            name:      new Constraint([
-                         new Assert().NotBlank(),
-                         new Assert().Length( 4, 25 )
-                       ]),
-            email:     new Constraint( new Assert().Email() ),
-            firstname: new Constraint( new Assert().NotBlank().addGroup( 'edit' ) ),
-            phone:     new Constraint( new Assert().NotBlank().addGroup( 'edit' ) )
+            name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
+            email:     new Assert().Email(),
+            firstname: new Assert().NotBlank().addGroup( 'edit' ),
+            phone:     new Assert().NotBlank().addGroup( 'edit' )
           });
 
         var result = validator.validate( object, Collection );
