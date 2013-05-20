@@ -2,6 +2,13 @@
 
 Powerful object and string validation in Javascript.
 
+## Version
+
+0.0.2
+
+## Status
+
+[![Build Status](https://travis-ci.org/guillaumepotier/validator.js.png?branch=master)](https://travis-ci.org/guillaumepotier/validator.js)
 
 ## Licence
 
