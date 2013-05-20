@@ -1,12 +1,13 @@
-# jsValidator
+#jsValidator
 
 Powerful object and string validation in Javascript
 
-## Licence
+##Licence
 
-MIT Licenced
+See LICENCE.md
 
-## Tests
+
+##Tests
 
   - `npm install mocha`
   - `npm install expect.js`

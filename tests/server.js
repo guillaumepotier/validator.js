@@ -1,7 +1,7 @@
 var expect = require( 'expect.js' ),
     jsValidator = require( '../jsValidator' );
 
-describe( 'jsValidator suite', function () {
+describe( 'jsValidator', function () {
   describe( 'Assert', function () {
     var assert = new jsValidator.Assert();
 
