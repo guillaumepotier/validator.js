@@ -1,0 +1,17 @@
+{
+    "name": "validator.js"
+  , "version": "0.0.1"
+  , "license" : "MIT"
+  , "description": "Powerful object and string validation in Javascript."
+  , "keywords": ["validation", "validator"]
+  , "author": {
+        "name": "Guillaume Potier"
+      , "email" : "guillaume@wisembly.com"
+      , "url" : "http://guillaumepotier.com/"
+  }
+  , "main": "./validator"
+  , "devDependencies": {
+        "mocha": "*"
+      , "expect.js": "*"
+    }
+}

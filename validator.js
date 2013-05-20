@@ -445,4 +445,4 @@
     return true;
   };
 
-} )( 'undefined' === typeof exports ? this.Validator = {} : exports );
+} )( 'undefined' === typeof exports ? this[ validatorjs_ns || 'Validator' ] = {} : exports );
