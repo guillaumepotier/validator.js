@@ -110,13 +110,70 @@ describe( 'jsValidator suite', function () {
       expect( myConstraint.has( new jsValidator.Assert().Length( 15 ), true ) ).to.be( false );
     } )
 
-    it( 'should remove an assertion', function () {
+    it( 'should remove an assertion, not deep', function () {
       var myConstraint = new jsValidator.Constraint();
       myConstraint.add( new jsValidator.Assert().NotBlank() ).add( new jsValidator.Assert().Length( 10 ) );
       expect( myConstraint.asserts.length ).to.be( 2 );
-      myConstraint.remove( new jsValidator.Assert().NotBlank() );
-      expect( myConstraint.has( new jsValidator.Assert().NotBlank() ) ).to.be( false );
+      myConstraint.remove( new jsValidator.Assert().Length( 15 ) );
+      expect( myConstraint.has( new jsValidator.Assert().NotBlank() ) ).to.be( true );
       expect( myConstraint.asserts.length ).to.be( 1 );
+    } )
+
+    it( 'should remove an assertion, with deep', function () {
+      var myConstraint = new jsValidator.Constraint();
+      myConstraint.add( new jsValidator.Assert().NotBlank() ).add( new jsValidator.Assert().Length( 10 ) );
+      expect( myConstraint.asserts.length ).to.be( 2 );
+      myConstraint.remove( new jsValidator.Assert().Length( 15 ), true );
+      expect( myConstraint.asserts.length ).to.be( 2 );
+      myConstraint.remove( new jsValidator.Assert().Length( 10 ), true );
+      expect( myConstraint.asserts.length ).to.be( 1 );
+    } )
+  } )
+
+  describe( 'Collection', function () {
+    var collection = new jsValidator.Collection();
+
+    it( 'should be an object', function () {
+      expect( collection ).to.be.an( 'object' );
+    } )
+
+    it( 'should have "Collection" __class__', function () {
+      expect( collection.__class__).to.be( 'Collection' );
+    } )
+
+    it( 'should be instanciated without a constraint', function () {
+      var myCollection = new jsValidator.Collection();
+      expect( myCollection.constraints.isEqualTo( {} ) ).to.be( true );
+    } )
+
+    it( 'should be instanciated with a constraint', function () {
+      var myCollection = new jsValidator.Collection( { foo: new jsValidator.Constraint() } );
+      expect( myCollection.constraints.isEqualTo( { foo: new jsValidator.Constraint() } ) ).to.be( true );
+    } )
+
+    it( 'should fail if not a Constraint in add method', function () {
+      expect( new jsValidator.Collection().add ).to.throwError();
+    } )
+
+    it( 'should add a Constraint', function () {
+      var myCollection = new jsValidator.Collection().add( 'foo', new jsValidator.Constraint() );
+      expect( myCollection.has( 'foo' ) ).to.be( true );
+    } )
+
+    it( 'should force add a Constraint', function () {
+      var myCollection = new jsValidator.Collection().add( 'foo', new jsValidator.Constraint( new jsValidator.Assert().Length( 10 ) ) );
+      expect( myCollection.get( 'foo' ).isEqualTo( new jsValidator.Constraint( new jsValidator.Assert().Length( 10 ) ) ) ).to.be( true );
+      myCollection.add( 'foo', new jsValidator.Constraint( new jsValidator.Assert().Length( 15 ) ) );
+      expect( myCollection.get( 'foo' ).isEqualTo( new jsValidator.Constraint( new jsValidator.Assert().Length( 10 ) ) ) ).to.be( true );
+      myCollection.add( 'foo', new jsValidator.Constraint( new jsValidator.Assert().Length( 35 ) ), true );
+      expect( myCollection.get( 'foo' ).isEqualTo( new jsValidator.Constraint( new jsValidator.Assert().Length( 35 ) ) ) ).to.be( true );
+    } )
+
+    it( 'should remove a Constraint', function () {
+      var myCollection = new jsValidator.Collection().add( 'foo', new jsValidator.Constraint() );
+      expect( myCollection.has( 'foo' ) ).to.be( true );
+      myCollection.remove( 'foo' );
+      expect( myCollection.has( 'foo' ) ).to.be( false );
     } )
 
   } )
