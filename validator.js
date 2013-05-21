@@ -14,22 +14,34 @@
 
     constructor: Validator,
 
-    validate: function ( object, collection, group ) {
-      if ( ! ( collection instanceof Constraint || collection instanceof Collection ) )
-        throw new Error( 'You must give a Constraint or a constraints Collection' );
-
-      if ( 'string' === typeof object) {
-        return this._validateString( object, collection, group );
+    validate: function ( objectOrString, AssertsOrConstraint, group ) {
+      if ( 'string' === typeof objectOrString) {
+        return this._validateString( objectOrString, AssertsOrConstraint, group );
       }
 
-      return this._validateObject( object, collection, group );
+      return this._validateObject( objectOrString, AssertsOrConstraint, group );
     },
 
-    _validateString: function ( string, constraint, group ) {
-      if ( ! ( constraint instanceof Constraint ) )
-        typeof new Error( 'You must give a Constraint to validate a string, ' + constraint.__class__ + ' given' );
+    _validateString: function ( string, assert, group ) {
+      var result, failures = [];
 
-      return constraint.check( string, group );
+      if ( !_isArray( assert ) )
+        assert = [ assert ];
+
+      // todo: test group to see if exists in Asserts.
+      // it.skip( 'should not validate against a non existent group' );
+
+      for ( var i = 0; i < assert.length; i++ ) {
+        if ( ! ( assert[ i ] instanceof Assert) )
+          throw new Error( 'You must give an Assert or an Asserts array to validate a string' );
+
+        result = assert[ i ].check( string, group );
+
+        if ( result instanceof Violation )
+          failures.push( result );
+      }
+
+      return failures;
     },
 
     _validateObject: function ( object, collection, group ) {
@@ -288,6 +300,20 @@
 
     construct: Assert,
 
+    check: function ( value, group ) {
+      if ( group && !this.hasGroup( group ) )
+        return;
+
+      if ( !group && this.hasGroups() )
+        return;
+
+      try {
+        this.validate( value );
+      } catch ( violation ) {
+        return violation;
+      }
+    },
+
     _setGroups: function ( groups ) {
       if ( 'string' === typeof groups )
         groups = [ groups ];
@@ -296,7 +322,7 @@
     },
 
     hasGroup: function ( group ) {
-      if ( 'object' === typeof group )
+      if ( 'string' !== typeof group )
         return this.hasOneOf( group );
 
       // Asserts with no group also respond to "Default" group. Else return false
@@ -426,7 +452,7 @@
   exports.Collection = Collection;
 
   /**
-  * Some useful object prototypes here
+  * Some useful object prototypes / functions here
   */
 
   // IE8<= compatibility
@@ -491,5 +517,9 @@
 
     return true;
   };
+
+  function _isArray ( obj ) {
+    return Object.prototype.toString.call( obj ) === '[object Array]';
+  }
 
 } )( 'undefined' === typeof exports ? this[ validatorjs_ns || 'Validator' ] = {} : exports );

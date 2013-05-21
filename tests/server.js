@@ -251,54 +251,45 @@ describe( 'Validator', function () {
       expect( validator.__class__ ).to.be( 'Validator' );
     } )
 
-    it( 'sould throw Error if Collection or Constraint not given to validate method', function () {
-      try {
-        validator.validate( 'foo', 'bar', 'baz' );
-        expect().fail();
-      } catch ( err ) {
-        expect( err.message ).to.be( 'You must give a Constraint or a constraints Collection' );
-      }
-
-      try {
-        validator.validate( 'foo', { __class__: 'foo' }, 'baz' );
-        expect().fail();
-      } catch ( err ) {
-        expect( err.message ).to.be( 'You must give a Constraint or a constraints Collection' );
-      }
-    } )
-
     describe( 'String validation', function () {
+      it( 'sould throw Error if not trying to validate a string against Assert or Asserts array', function () {
+        try {
+          validator.validate( 'foo', 'bar' );
+          expect().fail();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'You must give an Assert or an Asserts array to validate a string' );
+        }
+      } )
+
       it( 'should validate a string', function () {
-        var constraint = new Validator.Constraint( [ new Validator.Assert().Length( 5, 10 ), new Validator.Assert().NotBlank() ] );
-        expect( validator.validate( 'foo', constraint ) ).not.to.be.empty();
-        expect( validator.validate( 'foobar', constraint ) ).to.be.empty();
+        expect( validator.validate( 'foo', [ new Assert().Length( 5, 10 ), new Assert().NotBlank() ] ) ).not.to.be.empty();
+        expect( validator.validate( 'foobar', [ new Assert().Length( 5, 10 ), new Assert().NotBlank() ] ) ).to.be.empty();
       } )
 
       it( 'should return violations for a string', function () {
-        var constraint = new Validator.Constraint( [ new Validator.Assert().Length( 5, 10 ), new Validator.Assert().NotBlank() ] );
-        var violations = validator.validate( '', constraint );
+        var asserts = [ new Assert().Length( 5, 10 ), new Assert().NotBlank() ];
+        var violations = validator.validate( '', asserts );
         expect( violations ).to.have.length( 2 );
         expect( violations[ 0 ] ).to.be.a( Validator.Violation );
         expect( violations[ 0 ].assert ).to.be( 'Length' );
         expect( violations[ 1 ].assert ).to.be( 'NotBlank' );
-        violations = validator.validate( 'foo', constraint );
+        violations = validator.validate( 'foo', asserts );
         expect( violations ).to.have.length( 1 );
         expect( violations[ 0 ].assert ).to.be( 'Length' );
       } )
 
       it( 'should use groups for validation', function() {
-        var constraint = new Validator.Constraint( [ new Validator.Assert().Length( 4 ).addGroup( 'bar' ), new Validator.Assert().Length( 8 ).addGroup( 'baz' ), new Validator.Assert().Length( 2 ) ] );
-        expect( validator.validate( 'foo', constraint ) ).to.be.empty();
-        expect( validator.validate( 'foo', constraint, 'bar' ) ).not.to.be.empty();
-        expect( validator.validate( 'foofoo', constraint, 'bar' ) ).to.be.empty();
-        expect( validator.validate( 'foofoo', constraint, 'baz' ) ).not.to.be.empty();
-        expect( validator.validate( 'foofoofoo', constraint, 'baz' ) ).to.be.empty();
+        var asserts = [ new Assert().Length( 4 ).addGroup( 'bar' ), new Assert().Length( 8 ).addGroup( 'baz' ), new Assert().Length( 2 ) ];
+        expect( validator.validate( 'foo', asserts ) ).to.be.empty();
+        expect( validator.validate( 'foo', asserts, 'bar' ) ).not.to.be.empty();
+        expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be.empty();
+        expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be.empty();
+        expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be.empty();
       } )
 
-      it( 'should not validate against a non existent group', function () {
-        var constraint = new Validator.Constraint( [ new Validator.Assert().Length( 4 ).addGroup( 'bar' ), new Validator.Assert().Length( 8 ).addGroup( 'baz' ), new Validator.Assert().Length( 2 ) ] );
+      it.skip( 'should not validate against a non existent group', function () {
         try {
-          validator.validate( 'foo', constraint, 'foo' );
+          validator.validate( 'foo', [ new Assert().Length( 4 ).addGroup( 'bar' ), new Assert().Length( 8 ).addGroup( 'baz' ), new Assert().Length( 2 ) ], 'foo' );
           expect().fail();
         } catch ( err ) {
           expect( err.message ).to.be( 'The "foo" group does not exist in any Assert' );

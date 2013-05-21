@@ -51,12 +51,13 @@ Validator = require( 'validator.js' );
 ## Validate Strings
 
 ```js
-var Assert      = Validator.Assert,
-    Constraint  = new Validator.Constraint( new Assert().Lenght( 4 ) );
+var Assert = Validator.Assert;
 
-Validator.Validator().validate( 'foo', Constraint );
+Validator.Validator().validate( 'foo', new Assert().Lenght( 4 ) );
+Validator.Validator().validate( 'foo', [ new Assert().Lenght( 4 ), new Assert().Email() ] );
+
 ```
-will return `[]` if validation passes, `[ Violation ]` in this case.
+will return `[]` if validation passes, a `Violation` array otherwise.
 
 
 ## Validate Objects
