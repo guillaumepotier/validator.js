@@ -239,7 +239,9 @@ describe( 'Validator', function () {
   } )
 
   describe( 'Validator', function () {
-    var validator = new Validator.Validator();
+    var validator = new Validator.Validator(),
+      Assert = Validator.Assert,
+      Constraint = Validator.Constraint;
 
     it( 'should be an object', function () {
       expect( validator ).to.be.an( 'object' );
@@ -328,9 +330,6 @@ describe( 'Validator', function () {
       } )
 
       it( 'should validate README example', function () {
-        var Assert = Validator.Assert,
-          Constraint = Validator.Constraint;
-
         var object = {
             name: 'john doe',
             email: 'wrong@email',
@@ -364,6 +363,69 @@ describe( 'Validator', function () {
         expect( result ).to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).to.have.key( 'phone' );
+      } )
+
+      describe( 'Validation groups', function () {
+        var object, Collection;
+
+        before( function () {
+          object = { foo: null, bar: null, baz: null, qux: null };
+          Collection = new Validator.Collection({
+            foo: [ new Assert().NotNull( [ 'foo', 'bar' ] ), new Assert().NotBlank() ],
+            bar: new Assert().NotNull( [ 'baz' ] ),
+            baz: new Assert().NotNull(),
+            qux: new Assert().NotNull( [ 'foo', 'qux' ] )
+          });
+        })
+
+        it( 'should validate asserts without validation groups', function () {
+          var result = validator.validate( object, Collection );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).not.to.have.key( 'bar' );
+          expect( result ).to.have.key( 'baz' );
+          expect( result ).not.to.have.key( 'qux' );
+        } )
+
+        it( 'should be the same with "Default" group', function () {
+          var result = validator.validate( object, Collection, 'Default' );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).not.to.have.key( 'bar' );
+          expect( result ).to.have.key( 'baz' );
+          expect( result ).not.to.have.key( 'qux' );
+        } )
+
+        it( 'should validate only a specific validation group', function () {
+          var result = validator.validate( object, Collection, 'foo' );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).not.to.have.key( 'bar' );
+          expect( result ).not.to.have.key( 'baz' );
+          expect( result ).to.have.key( 'qux' );
+        } )
+
+        it( 'should validate only two specific validation groups', function () {
+          var result = validator.validate( object, Collection, [ 'foo', 'baz' ] );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).to.have.key( 'bar' );
+          expect( result ).not.to.have.key( 'baz' );
+          expect( result ).to.have.key( 'qux' );
+        } )
+
+        it( 'should validate more validation groups', function () {
+          var result = validator.validate( object, Collection, [ 'foo', 'qux', 'bar' ] );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).not.to.have.key( 'bar' );
+          expect( result ).not.to.have.key( 'baz' );
+          expect( result ).to.have.key( 'qux' );
+        } )
+
+        it( 'should validate groups with "Default"', function () {
+          var result = validator.validate( object, Collection, [ 'foo', 'Default' ] );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).not.to.have.key( 'bar' );
+          expect( result ).to.have.key( 'baz' );
+          expect( result ).to.have.key( 'qux' );
+        } )
+
       } )
     } )
   } )

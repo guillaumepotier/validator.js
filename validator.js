@@ -299,11 +299,12 @@
     },
 
     hasGroup: function ( group ) {
-      if ( !this.groups.length )
-        return false;
-
       if ( 'object' === typeof group )
         return this.hasOneOf( group );
+
+      // Asserts with no group also respond to "Default" group. Else return false
+      if ( !this.hasGroups() )
+        return 'Default' === group;
 
       return -1 !== this.groups.indexOf( group );
     },

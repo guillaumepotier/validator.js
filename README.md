@@ -4,7 +4,7 @@ Powerful object and string validation in Javascript.
 
 ## Version
 
-0.0.2
+0.0.3
 
 ## Status
 
