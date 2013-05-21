@@ -6,9 +6,6 @@
 
   var Validator = function () {
     this.__class__ = 'Validator';
-    this.constraints = [];
-    this.groups = [];
-    this.errors = [];
 
     return this;
   };
@@ -18,7 +15,7 @@
     constructor: Validator,
 
     validate: function ( object, collection, group ) {
-      if ( ! ( collection instanceof Constraint ) && ! ( collection instanceof Collection ) )
+      if ( ! ( collection instanceof Constraint || collection instanceof Collection ) )
         throw new Error( 'You must give a Constraint or a constraints Collection' );
 
       if ( 'string' === typeof object) {
