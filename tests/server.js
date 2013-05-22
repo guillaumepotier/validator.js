@@ -2,6 +2,11 @@ var expect = require( 'expect.js' ),
     Validator = require( '../validator.js' );
 
 describe( 'Validator', function () {
+  var validator = new Validator.Validator(),
+    Violation = Validator.Violation,
+    Assert = Validator.Assert,
+    Constraint = Validator.Constraint;
+
   describe( 'Assert', function () {
     var assert = new Validator.Assert();
 
@@ -35,7 +40,7 @@ describe( 'Validator', function () {
         Length.validate( 'foo' );
         expect().fails();
       } catch ( violation ) {
-        expect( violation ).to.be.a( Validator.Violation );
+        expect( violation ).to.be.a( Violation );
       }
     } )
 
@@ -107,113 +112,65 @@ describe( 'Validator', function () {
 
     it( 'should be instanciated without an assertion', function () {
       var myConstraint = new Validator.Constraint();
-      expect( myConstraint.asserts.length ).to.be( 0 );
+      expect( myConstraint.nodes ).to.eql( {} );
     } )
 
-    it( 'should be instanciated with an assertion', function () {
-      var myConstraint = new Validator.Constraint( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.asserts.length ).to.be( 1 );
-    } )
-
-    it( 'should add an assertion', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.asserts.length ).to.be( 1 );
-    } )
-
-    it( 'should throw Error if not assertion given in add method', function () {
+    it( 'should throw an error if not instanciated with an object', function () {
       try {
-        new Validator.Constraint().add( 'foo' );
-        expect().fail();
+        new Constraint( new Assert().Length( 10 ) );
+        expect().fails();
       } catch ( err ) {
-        expect( err.message ).to.be( 'Should give an Assert object' );
+        expect( err.message ).to.be( 'Should give a valid mapping object to Constraint' );
       }
     } )
 
-    it( 'should return true with has assertion, not deep', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.has( new Validator.Assert().Length( 15 ) ) ).to.be( true );
+    it( 'should be instanciated with a simple object', function () {
+      var myConstraint = new Constraint( { foo: new Assert().Length( 10 ) } );
+      expect( myConstraint.has( 'foo' ) ).to.be( true );
     } )
 
-    it( 'should return true with has assertion, with deep', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.has( new Validator.Assert().Length( 10 ), true ) ).to.be( true );
+    it( 'should add a node', function () {
+      var myConstraint = new Constraint();
+      myConstraint.add( 'foo', new Assert().Length( 10 ) );
+      expect( myConstraint.has( 'foo' ) ).to.be( true );
     } )
 
-    it( 'should return false with has assertion, with deep', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.has( new Validator.Assert().Length( 15 ), true ) ).to.be( false );
-    } )
+    it( 'should be instanciated with a nested object', function () {
+      var object = {
+          foo: null,
+          bar: {
+            baz: null,
+            qux: {
+              bux: null
+            }
+          }
+        },
+        constraint = new Constraint({
+          foo: [ new Assert().NotNull(), new Assert().NotNull() ],
+          bar: {
+            baz: new Assert().NotNull(),
+            qux: {
+              bux: new Assert().NotNull()
+            }
+          }   
+        });
 
-    it( 'should remove an assertion, not deep', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().NotBlank() ).add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.asserts.length ).to.be( 2 );
-      myConstraint.remove( new Validator.Assert().Length( 15 ) );
-      expect( myConstraint.has( new Validator.Assert().NotBlank() ) ).to.be( true );
-      expect( myConstraint.asserts.length ).to.be( 1 );
-    } )
-
-    it( 'should remove an assertion, with deep', function () {
-      var myConstraint = new Validator.Constraint();
-      myConstraint.add( new Validator.Assert().NotBlank() ).add( new Validator.Assert().Length( 10 ) );
-      expect( myConstraint.asserts.length ).to.be( 2 );
-      myConstraint.remove( new Validator.Assert().Length( 15 ), true );
-      expect( myConstraint.asserts.length ).to.be( 2 );
-      myConstraint.remove( new Validator.Assert().Length( 10 ), true );
-      expect( myConstraint.asserts.length ).to.be( 1 );
+        expect( constraint ).to.be.a( Constraint );
+        expect( constraint.get( 'foo' ) ).to.be.an( Array );
+        expect( constraint.get( 'foo' )[0] ).to.be.an( Assert );
+        expect( constraint.get( 'foo' )[0].__class__ ).to.be( 'NotNull' );
+        expect( constraint.get( 'foo' )[1] ).to.be.an( Assert );
+        expect( constraint.get( 'foo' )[1].__class__ ).to.be( 'NotNull' );
+        expect( constraint.get( 'bar' ) ).to.be.a( Constraint );
+        expect( constraint.get( 'bar' ).get( 'baz' ) ).to.be.an( Assert );
+        expect( constraint.get( 'bar' ).get( 'baz' ).__class__ ).to.be( 'NotNull' );
+        expect( constraint.get( 'bar' ).get( 'qux' ) ).to.be.a( Constraint );
+        expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ) ).to.be.an( Assert );
+        expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ).__class__ ).to.be( 'NotNull' );
     } )
   } )
 
-  describe( 'Collection', function () {
-    var collection = new Validator.Collection();
-
-    it( 'should be an object', function () {
-      expect( collection ).to.be.an( 'object' );
-    } )
-
-    it( 'should have "Collection" __class__', function () {
-      expect( collection.__class__ ).to.be( 'Collection' );
-    } )
-
-    it( 'should be instanciated without a constraint', function () {
-      var myCollection = new Validator.Collection();
-      expect( myCollection.constraints.isEqualTo( {} ) ).to.be( true );
-    } )
-
-    it( 'should be instanciated with a constraint', function () {
-      var myCollection = new Validator.Collection( { foo: new Validator.Constraint() } );
-      expect( myCollection.constraints.isEqualTo( { foo: new Validator.Constraint() } ) ).to.be( true );
-    } )
-
-    it( 'should fail if not a Constraint in add method', function () {
-      expect( new Validator.Collection().add ).to.throwError();
-    } )
-
-    it( 'should add a Constraint', function () {
-      var myCollection = new Validator.Collection().add( 'foo', new Validator.Constraint() );
-      expect( myCollection.has( 'foo' ) ).to.be( true );
-    } )
-
-    it( 'should force add a Constraint', function () {
-      var myCollection = new Validator.Collection().add( 'foo', new Validator.Constraint( new Validator.Assert().Length( 10 ) ) );
-      expect( myCollection.get( 'foo' ).isEqualTo( new Validator.Constraint( new Validator.Assert().Length( 10 ) ) ) ).to.be( true );
-      myCollection.add( 'foo', new Validator.Constraint( new Validator.Assert().Length( 15 ) ) );
-      expect( myCollection.get( 'foo' ).isEqualTo( new Validator.Constraint( new Validator.Assert().Length( 10 ) ) ) ).to.be( true );
-      myCollection.add( 'foo', new Validator.Constraint( new Validator.Assert().Length( 35 ) ), true );
-      expect( myCollection.get( 'foo' ).isEqualTo( new Validator.Constraint( new Validator.Assert().Length( 35 ) ) ) ).to.be( true );
-    } )
-
-    it( 'should remove a Constraint', function () {
-      var myCollection = new Validator.Collection().add( 'foo', new Validator.Constraint() );
-      expect( myCollection.has( 'foo' ) ).to.be( true );
-      myCollection.remove( 'foo' );
-      expect( myCollection.has( 'foo' ) ).to.be( false );
-    } )
-
+  describe.skip( 'Collection', function () {
   } )
 
   describe( 'Violation', function () {
@@ -239,9 +196,6 @@ describe( 'Validator', function () {
   } )
 
   describe( 'Validator', function () {
-    var validator = new Validator.Validator(),
-      Assert = Validator.Assert,
-      Constraint = Validator.Constraint;
 
     it( 'should be an object', function () {
       expect( validator ).to.be.an( 'object' );
@@ -286,82 +240,102 @@ describe( 'Validator', function () {
         expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be.empty();
         expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be.empty();
       } )
-
-      it.skip( 'should not validate against a non existent group', function () {
-        try {
-          validator.validate( 'foo', [ new Assert().Length( 4 ).addGroup( 'bar' ), new Assert().Length( 8 ).addGroup( 'baz' ), new Assert().Length( 2 ) ], 'foo' );
-          expect().fail();
-        } catch ( err ) {
-          expect( err.message ).to.be( 'The "foo" group does not exist in any Assert' );
-        }
-      } )
     })
 
     describe( 'Object validation', function () {
       it( 'should validate an object', function () {
-        var collection = new Validator.Collection()
-            .add( 'name', new Validator.Constraint( new Validator.Assert().Length( 5, 15 ) ) )
-            .add( 'email', new Validator.Constraint( new Validator.Assert().NotBlank() ) );
+        var constraint = new Constraint()
+            .add( 'name', new Validator.Assert().Length( 5, 15 ) )
+            .add( 'email', new Validator.Assert().NotBlank() );
 
-        var result = validator.validate( { name: 'foo', email: '' }, collection );
-        expect( result ).not.to.be.empty();
+        var result = validator.validate( { name: 'foo', email: '' }, constraint );
+
+        expect( result ).not.to.eql( {} );
         expect( result ).to.have.key( 'name' );
         expect( result ).to.have.key( 'email' );
 
+        expect( result.name[ 0 ] ).to.be.a( Violation );
+        expect( result.email[ 0 ] ).to.be.a( Violation );
         expect( result.name[ 0 ].assert ).to.be( 'Length' );
         expect( result.email[ 0 ].assert ).to.be( 'NotBlank' );
 
-        result = validator.validate( { name: 'foo bar', email: '' }, collection );
-        expect( result ).not.to.be.empty();
+        result = validator.validate( { name: 'foo bar', email: '' }, constraint );
+        expect( result ).not.to.eql( {} );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).to.have.key( 'email' );
 
-        result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, collection );
-        expect( result ).to.be.empty();
+        result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, constraint );
+        expect( result ).to.eql( {} );
       } )
 
-      it( 'should validate README example', function () {
+      it( 'should validate non nested object', function () {
         var object = {
             name: 'john doe',
             email: 'wrong@email',
             firstname: null,
             phone: null
           },
-          Collection = new Validator.Collection({
+          constraint = new Constraint({
             name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
             email:     new Assert().Email(),
             firstname: new Assert().NotBlank().addGroup( ['foo', 'register'] ),
             phone:     new Assert().NotBlank().addGroup( 'edit' )
           });
 
-        var result = validator.validate( object, Collection );
-        expect( result.isEqualTo( {} ) ).to.be( false );
+        var result = validator.validate( object, constraint );
+        expect( result ).not.to.eql( {} );
         expect( result ).to.have.key( 'email' );
         expect( result ).not.to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).not.to.have.key( 'phone' );
 
-        var result = validator.validate( object, Collection, 'edit' );
-        expect( result.isEqualTo( {} ) ).to.be( false );
+        var result = validator.validate( object, constraint, 'edit' );
+        expect( result ).not.to.eql( {} );
         expect( result ).not.to.have.key( 'email' );
         expect( result ).not.to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).to.have.key( 'phone' );
 
-        var result = validator.validate( object, Collection, [ 'edit', 'foo' ] );
-        expect( result.isEqualTo( {} ) ).to.be( false );
+        var result = validator.validate( object, constraint, [ 'edit', 'foo' ] );
+        expect( result ).not.to.eql( {} );
         expect( result ).not.to.have.key( 'email' );
         expect( result ).to.have.key( 'firstname' );
         expect( result ).not.to.have.key( 'name' );
         expect( result ).to.have.key( 'phone' );
       } )
 
+      it.skip( 'should validate nested objects', function () {
+        var object = {
+            foo: null,
+            bar: {
+              baz: null,
+              qux: {
+                bux: null
+              }
+            }
+          },
+          constraint = new Constraint({
+            foo: [ new Assert().NotNull(), new Assert().NotNull() ],
+            bar: {
+              baz: new Assert().NotNull(),
+              qux: {
+                bux: new Assert().NotNull()
+              }
+            }   
+          });
+
+          var result = validator.validate( object, constraint );
+          expect( result ).not.to.eql( {} );
+
+          console.log( result )
+      } )
+
       describe( 'Validation groups', function () {
-        var object, Collection;
+        var object, constraint;
 
         before( function () {
           object = { foo: null, bar: null, baz: null, qux: null };
-          Collection = new Validator.Collection({
+          constraint = new Constraint({
             foo: [ new Assert().NotNull( [ 'foo', 'bar' ] ), new Assert().NotBlank() ],
             bar: new Assert().NotNull( [ 'baz' ] ),
             baz: new Assert().NotNull(),
@@ -370,7 +344,7 @@ describe( 'Validator', function () {
         })
 
         it( 'should validate asserts without validation groups', function () {
-          var result = validator.validate( object, Collection );
+          var result = validator.validate( object, constraint );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
@@ -378,7 +352,7 @@ describe( 'Validator', function () {
         } )
 
         it( 'should be the same with "Default" group', function () {
-          var result = validator.validate( object, Collection, 'Default' );
+          var result = validator.validate( object, constraint, 'Default' );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
@@ -386,7 +360,7 @@ describe( 'Validator', function () {
         } )
 
         it( 'should validate only a specific validation group', function () {
-          var result = validator.validate( object, Collection, 'foo' );
+          var result = validator.validate( object, constraint, 'foo' );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -394,7 +368,7 @@ describe( 'Validator', function () {
         } )
 
         it( 'should validate only two specific validation groups', function () {
-          var result = validator.validate( object, Collection, [ 'foo', 'baz' ] );
+          var result = validator.validate( object, constraint, [ 'foo', 'baz' ] );
           expect( result ).to.have.key( 'foo' );
           expect( result ).to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -402,7 +376,7 @@ describe( 'Validator', function () {
         } )
 
         it( 'should validate more validation groups', function () {
-          var result = validator.validate( object, Collection, [ 'foo', 'qux', 'bar' ] );
+          var result = validator.validate( object, constraint, [ 'foo', 'qux', 'bar' ] );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -410,13 +384,12 @@ describe( 'Validator', function () {
         } )
 
         it( 'should validate groups with "Default"', function () {
-          var result = validator.validate( object, Collection, [ 'foo', 'Default' ] );
+          var result = validator.validate( object, constraint, [ 'foo', 'Default' ] );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
         } )
-
       } )
     } )
   } )

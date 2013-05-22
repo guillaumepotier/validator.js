@@ -28,9 +28,6 @@
       if ( !_isArray( assert ) )
         assert = [ assert ];
 
-      // todo: test group to see if exists in Asserts.
-      // it.skip( 'should not validate against a non existent group' );
-
       for ( var i = 0; i < assert.length; i++ ) {
         if ( ! ( assert[ i ] instanceof Assert) )
           throw new Error( 'You must give an Assert or an Asserts array to validate a string' );
@@ -147,10 +144,18 @@
   * Constraint
   */
 
-  var Constraint = function ( asserts ) {
+  var Constraint = function ( data ) {
     this.__class__ = 'Constraint';
-    this.asserts = [];
-    this.addMultiple( asserts || [], true );
+
+    this.nodes = {};
+
+    if ( data ) {
+      try {
+        this._bootstrap( data );
+      } catch ( err ) {
+        throw new Error( 'Should give a valid mapping object to Constraint', err, data );
+      }
+    }
 
     return this;
   };
@@ -159,89 +164,95 @@
 
     constructor: Constraint,
 
-    check: function ( value, group, groupCheck ) {
-      var result, failures = [];
+    check: function ( object, group ) {
+      var result, failures = {};
 
-      if ( group && false !== groupCheck && !this.hasGroup( group ) )
-        throw new Error( 'The "' + group + '" group does not exist in any Assert' );
+      for ( var property in object ) {
+        if ( this.has( property ) ) {
+          result = this._check( property, object[ property ], group );
 
-      for ( var i = 0; i < this.asserts.length; i++ ) {
-        if ( group && !this.asserts[ i ].hasGroup( group ) )
-          continue;
-
-        if ( !group && this.asserts[ i ].hasGroups() )
-          continue;
-
-        try {
-          this.asserts[ i ].validate( value );
-        } catch ( violation ) {
-          failures.push( violation );
+          // check returned an array of Violations or an object mapping Violations
+          if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) )
+            failures[ property ] = result;
         }
       }
 
       return failures;
     },
 
-    add: function ( assert, deep ) {
-      if ( ! ( assert instanceof Assert ) ) {
-        throw new Error( 'Should give an Assert object' );
-      }
+    _check: function ( node, value, group ) {
+      var result, failures = {};
 
-      if ( !this.has( assert, deep ) )
-        this.asserts.push( assert );
+      // Assert
+      if ( this.nodes[ node ] instanceof Assert )
+        this.nodes[ node ] = [ this.nodes[ node ] ];
 
-      return this;
+      // Asserts
+      if ( _isArray( this.nodes[ node ] ) )
+        return this._checkAsserts( value, this.nodes[ node ], group );
+
+      // Constraint
+      if ( this.nodes[ node ] instanceof Constraint )
+        failures[ node ] = this.nodes[ node ].check( value, group );
+
+      // Collection
+      if ( this.nodes[ node ] instanceof Collection )
+        failures[ node ] = this.nodes[ node ].check( value, group );
     },
 
-    addMultiple: function ( asserts, deep ) {
-      if ( asserts instanceof Assert )
-        asserts = [ asserts ];
+    _checkAsserts: function ( value, asserts, group ) {
+      var result, failures = [];
 
       for ( var i = 0; i < asserts.length; i++ ) {
-        if ( asserts[ i ] instanceof Assert )
-          this.add( asserts[ i ], deep );
+        result = asserts[ i ].check( value, group );
+
+        if ( result instanceof Violation )
+          failures.push( result );
       }
 
+      return failures;
+    },
+
+    add: function ( node, object ) {
+      if ( object instanceof Assert  || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
+        this.nodes[ node ] = object;
+
+        return this;
+      }
+
+      if ( 'object' === typeof object && !_isArray( object ) ) {
+        this.nodes[ node ] = new Constraint( object );
+
+        return this;
+      }
+
+      throw new Error( 'Should give an Assert, an Asserts array, a Constraint or a Collection', object );
+    },
+
+    _bootstrap: function ( data ) {
+      for ( var node in data )
+        this.add( node, data[ node ] );
+    },
+
+    has: function ( node ) {
+      return 'undefined' !== typeof this.nodes[ node.toLowerCase() ];
+    },
+
+    get: function ( node, placeholder ) {
+      return 'undefined' !== typeof this.nodes[ node ] ? this.nodes[ node ] : placeholder || null;
+    },
+
+    remove: function ( node ) {
+      var _nodes = [];
+
+      for ( var i in this.nodes )
+        if ( i !== node )
+          _nodes[ i ] = this.nodes[ i ];
+
+      this.nodes = _nodes;
+
       return this;
     },
-
-    has: function ( assert, deep ) {
-      for ( var i = 0; i < this.asserts.length; i++ )
-        if ( ( 'undefined' === typeof deep && assert.__class__ === this.asserts[ i ].__class__ ) || ( deep && this.asserts[ i ].isEqualTo( assert ) ) )
-          return true;
-
-      return false;
-    },
-
-    remove: function ( assert, deep ) {
-      var _asserts = [];
-
-      for ( var i = 0; i < this.asserts.length; i++ )
-        if ( ( 'undefined' === typeof deep && assert.__class__ !== this.asserts[ i ].__class__ ) || ( deep && !this.asserts[ i ].isEqualTo( assert ) ) )
-          _asserts.push( this.asserts[ i ] );
-
-      this.asserts = _asserts;
-
-      return this;
-    },
-
-    hasGroups: function ( groups ) {
-        for ( var i = 0; i < groups.length; i++ )
-          if ( this.hasGroup( groups[ i ] ) ) return true;
-
-      return false;
-    },
-
-    hasGroup: function ( group ) {
-      if ( 'object' === typeof group )
-        return this.hasGroups( group );
-
-      for ( var i = 0; i < this.asserts.length; i++ )
-        if ( this.asserts[ i ].hasGroup( group ) )
-          return true;
-
-      return false;
-    }
   };
 
   /**
@@ -489,31 +500,10 @@
         return -1;
     };
 
-  // Test two objects against each other to detrmine if strictly equal *by properties* only
-  Object.prototype.isEqualTo = function ( object ) {
-    for ( var i in this ) {
-      if ( 'function' === typeof this[ i ] )
-        continue;
-
-      if ( 'undefined' === typeof this[ i ] && 'undefined' !== typeof object[ i ] )
-        return false;
-
-      if ( 'undefined' !== typeof this[ i ] && 'undefined' === typeof object[ i ] )
-        return false;
-
-      if ( 'object' === typeof this[ i ] ) {
-        if ( this[ i ].length > 0 && this[ i ].length !== object[ i ].length )
-          return false;
-
-        if ( false === this[ i ].isEqualTo( object[ i ] ) )
-          return false;
-        else
-          continue;
-      }
-
-      if ( this[ i ] !== object[ i ] )
-        return false;
-    }
+  // Test if object is empty, useful for Constraint violations check
+  _isEmptyObject = function ( obj ) {
+    for ( var property in obj )
+      return false;
 
     return true;
   };
