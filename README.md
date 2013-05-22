@@ -4,7 +4,7 @@ Powerful object and string validation in Javascript.
 
 ## Version
 
-0.0.3
+0.1.0
 
 ## Status
 
@@ -73,14 +73,14 @@ var object = {
     firstname: null,
     phone: null
   },
-  Collection = new Validator.Collection({
+  constraint = new Constraint({
     name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank(),
     phone:     new Assert().NotBlank()
   });
 
-Validator.validate( object, Collection );
+Validator.validate( object, constraint );
 ```
 will return `{}` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
@@ -91,7 +91,7 @@ will return `{}` if validation passes,
 With same objects than above, just by adding validation groups:
 
 ```js
-  Collection = new Validator.Collection({
+  Collection = new Constraint({
     name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank().addGroups( [ 'edit', 'register'] ),

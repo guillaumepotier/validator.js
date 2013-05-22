@@ -180,39 +180,6 @@
       return failures;
     },
 
-    _check: function ( node, value, group ) {
-      var result, failures = {};
-
-      // Assert
-      if ( this.nodes[ node ] instanceof Assert )
-        this.nodes[ node ] = [ this.nodes[ node ] ];
-
-      // Asserts
-      if ( _isArray( this.nodes[ node ] ) )
-        return this._checkAsserts( value, this.nodes[ node ], group );
-
-      // Constraint
-      if ( this.nodes[ node ] instanceof Constraint )
-        failures[ node ] = this.nodes[ node ].check( value, group );
-
-      // Collection
-      if ( this.nodes[ node ] instanceof Collection )
-        failures[ node ] = this.nodes[ node ].check( value, group );
-    },
-
-    _checkAsserts: function ( value, asserts, group ) {
-      var result, failures = [];
-
-      for ( var i = 0; i < asserts.length; i++ ) {
-        result = asserts[ i ].check( value, group );
-
-        if ( result instanceof Violation )
-          failures.push( result );
-      }
-
-      return failures;
-    },
-
     add: function ( node, object ) {
       if ( object instanceof Assert  || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
         this.nodes[ node ] = object;
@@ -227,11 +194,6 @@
       }
 
       throw new Error( 'Should give an Assert, an Asserts array, a Constraint or a Collection', object );
-    },
-
-    _bootstrap: function ( data ) {
-      for ( var node in data )
-        this.add( node, data[ node ] );
     },
 
     has: function ( node ) {
@@ -253,6 +215,40 @@
 
       return this;
     },
+
+    _bootstrap: function ( data ) {
+      for ( var node in data )
+        this.add( node, data[ node ] );
+    },
+
+    _check: function ( node, value, group ) {
+      // Assert
+      if ( this.nodes[ node ] instanceof Assert )
+        return this._checkAsserts( value, [ this.nodes[ node ] ], group );
+
+      // Asserts
+      if ( _isArray( this.nodes[ node ] ) )
+        return this._checkAsserts( value, this.nodes[ node ], group );
+
+      // Constraint & Collection -> check api
+      if ( this.nodes[ node ] instanceof Constraint || this.nodes[ node ] instanceof Collection )
+        return this.nodes[ node ].check( value, group );
+
+      throw new Error( 'Invalid node', this.nodes[ node ] );
+    },
+
+    _checkAsserts: function ( value, asserts, group ) {
+      var result, failures = [];
+
+      for ( var i = 0; i < asserts.length; i++ ) {
+        result = asserts[ i ].check( value, group );
+
+        if ( result instanceof Violation )
+          failures.push( result );
+      }
+
+      return failures;
+    }
   };
 
   /**

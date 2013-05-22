@@ -304,7 +304,7 @@ describe( 'Validator', function () {
         expect( result ).to.have.key( 'phone' );
       } )
 
-      it.skip( 'should validate nested objects', function () {
+      it( 'should validate nested objects', function () {
         var object = {
             foo: null,
             bar: {
@@ -325,9 +325,32 @@ describe( 'Validator', function () {
           });
 
           var result = validator.validate( object, constraint );
-          expect( result ).not.to.eql( {} );
+          expect( result ).to.have.key( 'foo' );
+          expect( result.foo ).to.be.an( Array );
+          expect( result.foo ).to.have.length( 2 );
+          expect( result.foo[ 0 ] ).to.be.a( Violation );
+          expect( result.foo[ 0 ].assert ).to.be( 'NotNull' );
+          expect( result.bar ).to.have.key( 'baz' );
+          expect( result.bar ).to.have.key( 'qux' );
+          expect( result.bar.baz ).to.be.an( Array );
+          expect( result.bar.baz[ 0 ] ).to.be.a( Violation );
+          expect( result.bar.qux.bux[ 0 ] ).to.be.a( Violation );
 
-          console.log( result )
+          object = {
+            foo: 'foo',
+            bar: {
+              baz: 'baz',
+              qux: {
+                bux: null
+              }
+            }
+          };
+          result = validator.validate( object, constraint );
+          expect( result ).not.to.have.key( 'foo' );
+          expect( result ).to.have.key( 'bar' );
+          expect( result.bar ).not.to.have.key( 'baz' );
+          expect( result.bar ).to.have.key( 'qux' );
+          expect( result.bar.qux ).to.have.key( 'bux' );
       } )
 
       describe( 'Validation groups', function () {

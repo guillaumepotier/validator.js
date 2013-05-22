@@ -1,7 +1,7 @@
 ## TODOs
 
 - set up global and specific configs
-- implement nested objects validation
+- [DONE] implement nested objects validation
 - implement validation for Collection of Models (unicity, range...)
 - [DONE] implement mutli-group validation (currently only one group at the time)
 - ability to implement custom Asserts
@@ -9,6 +9,6 @@
 
 ## To be determined
 
-- remove groups checks and errors on Constraint / Collection ?
+- [REMOVED] remove groups checks and errors on Constraint / Collection ?
 
 ## To be refactored
