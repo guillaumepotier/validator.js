@@ -36,7 +36,7 @@
 
 <h2>Version</h2>
 
-<p>0.0.2</p>
+<p>0.1.0</p>
 
 <h2>Status</h2>
 
@@ -76,13 +76,14 @@
 
 <h2>Validate Strings</h2>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span>      <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
-    <span class="nx">Constraint</span>  <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">(</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Lenght</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
 
-<span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">Constraint</span> <span class="p">);</span>
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Lenght</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span>
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Lenght</span><span class="p">(</span> <span class="mi">4</span> <span class="p">),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">]</span> <span class="p">);</span>
+
 </pre></div>
 
-<p>will return <code>[]</code> if validation passes, <code>[ Violation ]</code> in this case.</p>
+<p>will return <code>[]</code> if validation passes, a <code>Violation</code> array otherwise.</p>
 
 <h2>Validate Objects</h2>
 
@@ -96,14 +97,14 @@
     <span class="nx">firstname</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
     <span class="nx">phone</span><span class="o">:</span> <span class="kc">null</span>
   <span class="p">},</span>
-  <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+  <span class="nx">constraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">({</span>
     <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span> <span class="p">],</span>
     <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
     <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span>
     <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">});</span>
 
-<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">Collection</span> <span class="p">);</span>
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 </pre></div>
 
 <p>will return <code>{}</code> if validation passes,
@@ -113,7 +114,7 @@
 
 <p>With same objects than above, just by adding validation groups:</p>
 
-<div class="highlight"><pre>  <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Collection</span><span class="p">({</span>
+<div class="highlight"><pre>  <span class="nx">Collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">({</span>
     <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span> <span class="p">)</span> <span class="p">],</span>
     <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
     <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">().</span><span class="nx">addGroups</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'register'</span><span class="p">]</span> <span class="p">),</span>
