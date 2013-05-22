@@ -188,7 +188,7 @@
       }
 
       if ( 'object' === typeof object && !_isArray( object ) ) {
-        this.nodes[ node ] = new Constraint( object );
+        this.nodes[ node ] = object instanceof Constraint || object instanceof Collection ? object : new Constraint( object );
 
         return this;
       }

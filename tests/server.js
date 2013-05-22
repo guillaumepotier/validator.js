@@ -129,10 +129,17 @@ describe( 'Validator', function () {
       expect( myConstraint.has( 'foo' ) ).to.be( true );
     } )
 
-    it( 'should add a node', function () {
+    it( 'should add a node: Assert', function () {
       var myConstraint = new Constraint();
       myConstraint.add( 'foo', new Assert().Length( 10 ) );
       expect( myConstraint.has( 'foo' ) ).to.be( true );
+    } )
+
+    it( 'should add a node: Constraint', function () {
+      var myConstraint = new Constraint();
+      myConstraint.add( 'foo', new Constraint( { bar: new Assert().Length( 10 ) } ) );
+      expect( myConstraint.has( 'foo' ) ).to.be( true );
+      expect( myConstraint.get( 'foo' ).has( 'bar' ) ).to.be( true );
     } )
 
     it( 'should be instanciated with a nested object', function () {
