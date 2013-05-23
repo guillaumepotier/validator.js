@@ -184,11 +184,15 @@
 
   Violation.prototype = {
     show: function () {
-      return {
+      var show =  {
         assert: this.assert,
         value: this.value,
-        violation: this.violation
       };
+
+      if ( this.violation )
+        show.violation = this.violation;
+
+      return show;
     },
 
     __toString: function () {

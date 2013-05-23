@@ -129,3 +129,14 @@ var constraint = new Constraint( { foo: length, bar: notBlank } );
 
 constraint.check( { foo: 'foo', bar: 'bar' } );
 ```
+
+# Available asserts
+
+```js
+new Assert().Blank();
+new Assert().NotBlank();
+new Assert().Null();
+new Assert().NotNull();
+new Assert().Length( { min: min_val, max: max_val } );
+new Assert().Email();
+```

@@ -188,6 +188,15 @@ describe( 'Validator', function () {
       expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { max: 10 } } );
     } )
 
+    it( 'Email', function () {
+      assert = new Assert().Email();
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo@bar', assert ) ).not.to.be( true );
+      expect( validate( 'foo@bar', assert ).show() ).to.eql( { assert: 'Email', value: 'foo@bar' } );
+
+      expect( validate( 'foo@bar.baz', assert ) ).to.be( true );
+    } )
   } )
 
   describe( 'Constraint', function () {
