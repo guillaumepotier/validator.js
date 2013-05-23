@@ -317,6 +317,22 @@
       return this;
     },
 
+    Callback: function ( fn ) {
+      this.__class__ = 'Callback';
+      this.fn = fn;
+
+      this.validate = function ( value ) {
+        var result = fn( value, this );
+
+        if ( true !== result )
+          throw new Violation( this, value, { result: result } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Email: function () {
       this.__class__ = 'Email';
 

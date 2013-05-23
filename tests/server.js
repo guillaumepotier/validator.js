@@ -206,6 +206,19 @@ describe( 'Validator', function () {
       expect( validate( 4, assert ) ).not.to.be( true );
       expect( validate( 42, assert ) ).to.be( true );
     } )
+
+    it( 'Callback', function () {
+      assert = new Assert().Callback( function ( value ) {
+        var calc = ( 42 / value ) % 2;
+
+        return calc ? true : calc;
+      } );
+
+      expect( validate( 3, assert ) ).not.to.be( true );
+      expect( validate( 3, assert ).show() ).to.eql( { assert: 'Callback', value: 3, violation: { result: 0 } } );
+      expect( validate( 42, assert ) ).to.be( true );
+
+    } )
   } )
 
   describe( 'Constraint', function () {
