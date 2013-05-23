@@ -1,6 +1,6 @@
 {
     "name": "validator.js"
-  , "version": "0.2.0"
+  , "version": "0.2.1"
   , "license" : "MIT"
   , "description": "Powerful object and string validation in Javascript."
   , "keywords": ["validation", "validator"]

@@ -52,6 +52,10 @@
     }
   };
 
+  Validator.const = {
+    must_be_a_string: 'must_be_a_string'
+  };
+
   /**
   * Constraint
   */
@@ -297,7 +301,20 @@
       this.__class__ = 'NotNull';
 
       this.validate = function ( value ) {
-        if ( null === value )
+        if ( null === value || 'undefined' === typeof value )
+          throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    Null: function () {
+      this.__class__ = 'Null';
+
+      this.validate = function ( value ) {
+        if ( null !== value )
           throw new Violation( this, value );
 
         return true;
@@ -310,7 +327,10 @@
       this.__class__ = 'NotBlank';
 
       this.validate = function ( value ) {
-        if ( 'string' !== typeof value || '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
           throw new Violation( this, value );
 
         return true;
@@ -319,12 +339,35 @@
       return this;
     },
 
-    Length: function ( min, max ) {
-      this.__class__ = 'Length';
-      this.min = min;
-      this.max = max;
+    Blank: function () {
+      this.__class__ = 'Blank';
 
       this.validate = function ( value ) {
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( '' !== value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
+          throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    Length: function ( boundaries ) {
+      this.__class__ = 'Length';
+
+      if ( !boundaries.min && !boundaries.max )
+        throw new Error( 'Lenth assert needs { min: x, max: y } object' );
+
+      this.min = boundaries.min;
+      this.max = boundaries.max;
+
+      this.validate = function ( value ) {
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
           throw new Violation( this, value, { min: this.min, max: this.max } );
 
@@ -346,7 +389,10 @@
       this.validate = function ( value ) {
         var regExp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
 
-        if ( '' !== value || !regExp.test( value ) )
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( !regExp.test( value ) )
           throw new Violation( this, value );
 
         return true;

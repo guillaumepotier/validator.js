@@ -4,7 +4,7 @@ Powerful object and string validation in Javascript.
 
 ## Version
 
-0.2.0
+0.2.1
 
 ## Status
 
@@ -53,8 +53,8 @@ Validator = require( 'validator.js' );
 ```js
 var Assert = Validator.Assert;
 
-Validator.Validator().validate( 'foo', new Assert().Length( 4 ) );
-Validator.Validator().validate( 'foo', [ new Assert().Length( 4 ), new Assert().Email() ] );
+Validator.Validator().validate( 'foo', new Assert().Length( { min: 4 } ) );
+Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new Assert().Email() ] );
 
 ```
 will return `[]` if validation passes, a `Violation` array otherwise.
@@ -74,7 +74,7 @@ var object = {
     phone: null
   },
   constraint = {
-    name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
+    name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank(),
     phone:     new Assert().NotBlank()
@@ -92,7 +92,7 @@ With same objects than above, just by adding validation groups:
 
 ```js
   collection = {
-    name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
+    name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank().addGroups( [ 'edit', 'register'] ),
     phone:     new Assert().NotBlank().addGroup( 'edit' )
@@ -112,7 +112,7 @@ property must pass during validation process. There are several Asserts built in
 Validator.js (see below), but you can implement yourself for your needs as well.
 
 ```js
-var length = new Validator.Assert().Length( 10 );
+var length = new Validator.Assert().Length( { min: 10 } );
 try {
   length.check( 'foo' );
 } catch ( violation ) {}
@@ -123,7 +123,7 @@ try {
 A Constraint is a set of asserts nodes that would be used to validate an object.
 
 ```js
-var length = new Validator.Assert().Length( 10 );
+var length = new Validator.Assert().Length( { min: 10 } );
 var notBlank = new Validator.Assert().NotBlank();
 var constraint = new Constraint( { foo: length, bar: notBlank } );
 
