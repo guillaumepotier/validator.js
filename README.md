@@ -24,7 +24,7 @@ MIT - See LICENCE.md
 # Documentation
 
 
-## General use
+## General usage
 
 - On node:
 
@@ -48,7 +48,7 @@ Validator = require( 'validator.js' );
 ```
 
 
-## Validate Strings
+# Validate Strings
 
 ```js
 var Assert = Validator.Assert;
@@ -60,7 +60,7 @@ Validator.Validator().validate( 'foo', [ new Assert().Lenght( 4 ), new Assert().
 will return `[]` if validation passes, a `Violation` array otherwise.
 
 
-## Validate Objects
+# Validate Objects
 
 ```js
 var Validator = Validator.Validator,
@@ -73,12 +73,12 @@ var object = {
     firstname: null,
     phone: null
   },
-  constraint = new Constraint({
+  constraint = {
     name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank(),
     phone:     new Assert().NotBlank()
-  });
+  };
 
 Validator.validate( object, constraint );
 ```
@@ -86,18 +86,46 @@ will return `{}` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
 
 
-## Validation Groups
+# Validation Groups
 
 With same objects than above, just by adding validation groups:
 
 ```js
-  Collection = new Constraint({
+  collection = {
     name:      [ new Assert().NotBlank(), new Assert().Length( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank().addGroups( [ 'edit', 'register'] ),
     phone:     new Assert().NotBlank().addGroup( 'edit' )
-  });
+  };
 
-Validator.validate( object, Collection, 'edit' );
+Validator.validate( object, collection, 'edit' );
 ```
 will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
+
+
+# Documentation
+
+# Assert
+
+An assert implements Assert Interface, and is an assertion that your string or object
+property must pass during validation process. There are several Asserts built in
+Validator.js (see below), but you can implement yourself for your needs as well.
+
+```js
+var length = new Validator.Assert().Length( 10 );
+try {
+  length.check( 'foo' );
+} catch ( violation ) {}
+```
+
+# Constraint
+
+A Constraint is a set of asserts nodes that would be used to validate an object.
+
+```js
+var length = new Validator.Assert().Length( 10 );
+var notBlank = new Validator.Assert().NotBlank();
+var constraint = new Constraint( { foo: length, bar: notBlank } );
+
+constraint.check( { foo: 'foo', bar: 'bar' } );
+```

@@ -41,11 +41,14 @@
       return failures;
     },
 
-    _validateObject: function ( object, collection, group ) {
-      if ( ! ( collection instanceof Collection ) )
-        typeof new Error( 'You must give a Collection to validate an object, ' + collection.__class__ + ' given' );
+    _validateObject: function ( object, constraint, group ) {
+      if ( 'object' !== typeof constraint )
+        throw new Error( 'You must give an object or a Constraint' );
 
-      return collection.check( object, group );
+      if ( ! ( constraint instanceof Constraint ) )
+        constraint = new Constraint( constraint );
+
+      return constraint.check( object, group );
     }
   };
 

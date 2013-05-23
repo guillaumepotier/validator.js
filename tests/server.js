@@ -250,10 +250,10 @@ describe( 'Validator', function () {
     })
 
     describe( 'Object validation', function () {
-      it( 'should validate an object', function () {
+      it( 'should validate an object with a constraint', function () {
         var constraint = new Constraint()
-            .add( 'name', new Validator.Assert().Length( 5, 15 ) )
-            .add( 'email', new Validator.Assert().NotBlank() );
+            .add( 'name', new Assert().Length( 5, 15 ) )
+            .add( 'email', new Assert().NotBlank() );
 
         var result = validator.validate( { name: 'foo', email: '' }, constraint );
 
@@ -273,6 +273,16 @@ describe( 'Validator', function () {
 
         result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, constraint );
         expect( result ).to.eql( {} );
+      } )
+
+      it( 'should validate an object against a validation object', function () {
+        var result = validator.validate( { name: 'foo', email: '' }, {
+          name: new Assert().Length( 5 ),
+          email: new Assert().NotBlank()
+        } );
+
+        expect( result ).to.have.key( 'name' );
+        expect( result ).to.have.key( 'email' );
       } )
 
       it( 'should validate non nested object', function () {
