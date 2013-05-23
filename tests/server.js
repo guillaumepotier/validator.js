@@ -248,6 +248,27 @@ describe( 'Validator', function () {
       expect( validate( 'qux', assert ).show() ).to.eql( { assert: 'Choice', value: 'qux', violation: { choices: [ 'foo', 'bar', 'baz' ] } } );
       expect( validate( 'foo', assert ) ).to.be( true );
     } )
+
+    it( 'Count', function () {
+      assert = new Assert().Count( 3 );
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Count', value: 'foo', violation: { value: 'must_be_an_array' } } );
+      expect( validate( [ 1, 2 ], assert ) ).not.to.be( true );
+      expect( validate( [ 1, 2 ], assert ).show() ).to.eql( { assert: 'Count', value: [ 1, 2 ], violation: { count: 3 } } );
+      expect( validate( [ 1, 2, 3 ], assert ) ).to.be( true );
+    } )
+
+    it( 'Count w/ function', function () {
+      assert = new Assert().Count( function () { return 3; } );
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Count', value: 'foo', violation: { value: 'must_be_an_array' } } );
+      expect( validate( [ 1, 2 ], assert ) ).not.to.be( true );
+      expect( validate( [ 1, 2 ], assert ).show() ).to.eql( { assert: 'Count', value: [ 1, 2 ], violation: { count: 3 } } );
+      expect( validate( [ 1, 2, 3 ], assert ) ).to.be( true );
+    } )
+
   } )
 
   describe( 'Constraint', function () {

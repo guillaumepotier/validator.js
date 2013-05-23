@@ -53,7 +53,8 @@
   };
 
   Validator.const = {
-    must_be_a_string: 'must_be_a_string'
+    must_be_a_string: 'must_be_a_string',
+    must_be_an_array: 'must_be_an_array'
   };
 
   /**
@@ -353,6 +354,28 @@
             return true;
 
         throw new Violation( this, value, { choices: list } );
+      };
+
+      return this;
+    },
+
+    Count: function ( count ) {
+      this.__class__ = 'Count';
+      this.count = count;
+
+      this.validate = function ( array ) {
+        var count = 'function' === typeof this.count ? this.count( array ) : this.count;
+
+        if ( isNaN( Number( count ) ) )
+          throw new Error( 'Count must be a valid interger', count );
+
+        if ( !_isArray( array ) )
+          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+
+        if ( count !== array.length )
+          throw new Violation( this, array, { count: count } );
+
+        return true;
       };
 
       return this;
