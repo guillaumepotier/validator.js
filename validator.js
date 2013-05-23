@@ -53,97 +53,6 @@
   };
 
   /**
-  * Collection
-  */
-
-  var Collection = function ( constraints ) {
-    this.__class__ = 'Collection';
-    this.constraints = {};
-
-    if ( 'object' === typeof constraints )
-      this.addJSON( constraints );
-
-    return this;
-  };
-
-  Collection.prototype = {
-
-    constructor: Collection,
-
-    check: function ( object, group ) {
-      var result, failures = {};
-
-      if ( group && !this.hasGroup( group ) )
-        throw new Error( 'The "' + group + '" group does not exist in any Constraint Assert' );
-
-      for ( var i in this.constraints ) {
-        if ( 'undefined' === typeof object[ i ] )
-          continue;
-
-        if ( 'function' === typeof object[ i ] )
-          continue;
-
-        result = this.constraints[ i ].check( object[ i ], group, false );
-
-        if ( result.length )
-          failures[ i ] = result;
-      }
-
-      return failures;
-    },
-
-    add: function ( key, constraint, force ) {
-      if ( ! ( constraint instanceof Constraint ) )
-        throw new Error( 'Should be an instance of Constraint' );
-
-      if ( ( !this.has( key ) && 'undefined' === typeof force ) || force )
-        this.constraints[ key ] = constraint;
-
-      return this;
-    },
-
-    addJSON: function ( constraints ) {
-      for ( var i in constraints )
-        this.add( i, constraints[ i ] instanceof Constraint ? constraints[ i ] : new Constraint( constraints[ i ] ) );
-
-      return this;
-    },
-
-    get: function ( key, placeholder ) {
-      return 'undefined' !== typeof this.constraints[ key ] ? this.constraints[ key ] : placeholder || null;
-    },
-
-    has: function ( key ) {
-      return 'undefined' !== typeof this.constraints[ key ];
-    },
-
-    remove: function ( key ) {
-      delete this.constraints[ key ];
-
-      return this;
-    },
-
-    hasGroups: function ( groups ) {
-        for ( var i = 0; i < groups.length; i++ )
-          if ( this.hasGroup( groups[ i ] ) ) return true;
-
-      return false;
-    },
-
-    hasGroup: function ( group ) {
-      if ( 'object' === typeof group )
-        return this.hasGroups( group );
-
-      for ( var i in this.constraints ) {
-        if ( this.constraints[ i ].hasGroup( group ) )
-          return true;
-      }
-
-      return false;
-    }
-  };
-
-  /**
   * Constraint
   */
 
@@ -191,12 +100,12 @@
       }
 
       if ( 'object' === typeof object && !_isArray( object ) ) {
-        this.nodes[ node ] = object instanceof Constraint || object instanceof Collection ? object : new Constraint( object );
+        this.nodes[ node ] = object instanceof Constraint ? object : new Constraint( object );
 
         return this;
       }
 
-      throw new Error( 'Should give an Assert, an Asserts array, a Constraint or a Collection', object );
+      throw new Error( 'Should give an Assert, an Asserts array, a Constraint', object );
     },
 
     has: function ( node ) {
@@ -233,8 +142,8 @@
       if ( _isArray( this.nodes[ node ] ) )
         return this._checkAsserts( value, this.nodes[ node ], group );
 
-      // Constraint & Collection -> check api
-      if ( this.nodes[ node ] instanceof Constraint || this.nodes[ node ] instanceof Collection )
+      // Constraint -> check api
+      if ( this.nodes[ node ] instanceof Constraint )
         return this.nodes[ node ].check( value, group );
 
       throw new Error( 'Invalid node', this.nodes[ node ] );
@@ -299,9 +208,13 @@
   * Assert
   */
 
-  var Assert = function () {
+  var Assert = function ( group ) {
     this.__class__ = 'Assert';
     this.__parentClass__ = this.__class__;
+    this.groups = [];
+
+    if ( 'undefined' !== typeof group )
+      this.addGroup( group );
 
     return this;
   };
@@ -322,13 +235,6 @@
       } catch ( violation ) {
         return violation;
       }
-    },
-
-    _setGroups: function ( groups ) {
-      if ( 'string' === typeof groups )
-        groups = [ groups ];
-
-      this.groups = groups || [];
     },
 
     hasGroup: function ( group ) {
@@ -355,7 +261,7 @@
     },
 
     addGroup: function ( group ) {
-      if ( 'object'=== typeof group )
+      if ( _isArray( group ) )
         return this.addGroups( group );
 
       if ( !this.hasGroup( group ) )
@@ -387,9 +293,8 @@
     * Asserts definitions
     */
 
-    NotNull: function ( groups ) {
+    NotNull: function () {
       this.__class__ = 'NotNull';
-      this._setGroups( groups );
 
       this.validate = function ( value ) {
         if ( null === value )
@@ -401,9 +306,8 @@
       return this;
     },
 
-    NotBlank: function ( groups ) {
+    NotBlank: function () {
       this.__class__ = 'NotBlank';
-      this._setGroups( groups );
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value || '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
@@ -415,9 +319,8 @@
       return this;
     },
 
-    Length: function ( min, max, groups ) {
+    Length: function ( min, max ) {
       this.__class__ = 'Length';
-      this._setGroups( groups );
       this.min = min;
       this.max = max;
 
@@ -437,9 +340,8 @@
       return this;
     },
 
-    Email: function ( groups ) {
+    Email: function () {
       this.__class__ = 'Email';
-      this._setGroups( groups );
 
       this.validate = function ( value ) {
         var regExp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
@@ -459,7 +361,6 @@
   exports.Validator = Validator;
   exports.Violation = Violation;
   exports.Constraint = Constraint;
-  exports.Collection = Collection;
 
   /**
   * Some useful object prototypes / functions here

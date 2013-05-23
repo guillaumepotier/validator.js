@@ -45,13 +45,13 @@ describe( 'Validator', function () {
     } )
 
     it( 'should register a group through assertion construct ', function () {
-      var Length = new Validator.Assert().Length( 10, 15, 'foo' );
+      var Length = new Validator.Assert( 'foo' ).Length( 10, 15 );
       expect( Length.hasGroups() ).to.be( true );
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
     } )
 
     it( 'should register mulitple groups through assertion construct', function () {
-      var Length = new Validator.Assert().Length( 10, 15, [ 'foo', 'bar'] );
+      var Length = new Validator.Assert( [ 'foo', 'bar'] ).Length( 10, 15 );
       expect( Length.hasGroups() ).to.be( true );
       expect( Length.hasGroup( 'foo' ) ).to.be( true );
       expect( Length.hasGroup( 'bar' ) ).to.be( true );
@@ -96,6 +96,43 @@ describe( 'Validator', function () {
       expect( Length.hasOneOf( [ 'foo', 'baz' ] ) ).to.be( true );
       expect( Length.hasOneOf( [ 'bar', 'baz' ] ) ).to.be( true );
       expect( Length.hasOneOf( [ 'foobar', 'baz', 'foobaz' ] ) ).to.be( false );
+    } )
+  } )
+
+  describe( 'Violation', function () {
+    var violation = new Validator.Violation( new Validator.Assert().NotBlank(), '' );
+
+    it( 'should be an object', function () {
+      expect( violation ).to.be.an( 'object' );
+    } )
+
+    it( 'should have "Violation" __class__', function () {
+      expect( violation.__class__ ).to.be( 'Violation' );
+    } )
+
+    it( 'should fail if not instanciated with an Assert object having __class__', function () {
+      try {
+        var violation = new Validator.Violation( 'foo' );
+        expect().fail();
+      } catch ( err ) {
+        expect( err.message ).to.be( 'Should give an assertion implementing the Assert interface' );
+      }
+    } )
+
+  } )
+
+  describe( 'asserts', function () {
+    var assert;
+
+    it( 'NotNull', function () {
+      assert = new Assert().NotNull();
+
+      try {
+        assert.validate( null );
+        expect().fail();
+      } catch ( violation ) {
+        expect( violation ).to.be.a( Violation );
+      }
     } )
   } )
 
@@ -175,31 +212,6 @@ describe( 'Validator', function () {
         expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ) ).to.be.an( Assert );
         expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ).__class__ ).to.be( 'NotNull' );
     } )
-  } )
-
-  describe.skip( 'Collection', function () {
-  } )
-
-  describe( 'Violation', function () {
-    var violation = new Validator.Violation( new Validator.Assert().NotBlank(), '' );
-
-    it( 'should be an object', function () {
-      expect( violation ).to.be.an( 'object' );
-    } )
-
-    it( 'should have "Violation" __class__', function () {
-      expect( violation.__class__ ).to.be( 'Violation' );
-    } )
-
-    it( 'should fail if not instanciated with an Assert object having __class__', function () {
-      try {
-        var violation = new Validator.Violation( 'foo' );
-        expect().fail();
-      } catch ( err ) {
-        expect( err.message ).to.be( 'Should give an assertion implementing the Assert interface' );
-      }
-    } )
-
   } )
 
   describe( 'Validator', function () {
@@ -376,10 +388,10 @@ describe( 'Validator', function () {
         before( function () {
           object = { foo: null, bar: null, baz: null, qux: null };
           constraint = new Constraint({
-            foo: [ new Assert().NotNull( [ 'foo', 'bar' ] ), new Assert().NotBlank() ],
-            bar: new Assert().NotNull( [ 'baz' ] ),
+            foo: [ new Assert( [ 'foo', 'bar' ] ).NotNull(), new Assert().NotBlank() ],
+            bar: new Assert( 'baz' ).NotNull(),
             baz: new Assert().NotNull(),
-            qux: new Assert().NotNull( [ 'foo', 'qux' ] )
+            qux: new Assert( [ 'foo', 'qux' ] ).NotNull()
           });
         })
 
