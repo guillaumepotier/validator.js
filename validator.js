@@ -319,6 +319,10 @@
 
     Callback: function ( fn ) {
       this.__class__ = 'Callback';
+
+      if ( 'function' !== typeof fn )
+        throw new Error( 'Callback must be instanciated with a function' );
+
       this.fn = fn;
 
       this.validate = function ( value ) {
@@ -328,6 +332,27 @@
           throw new Violation( this, value, { result: result } );
 
         return true;
+      };
+
+      return this;
+    },
+
+    Choice: function ( list ) {
+      this.__class__ = 'Choice';
+
+      if ( !_isArray( list ) && 'function' !== typeof list )
+        throw new Error( 'Choice must be instanciated with an array or a function' );
+
+      this.list = list;
+
+      this.validate = function ( value ) {
+        var list = 'function' === typeof this.list ? this.list() : this.list;
+
+        for ( var i = 0; i < list.length; i++ )
+          if ( value === list[ i ] )
+            return true;
+
+        throw new Violation( this, value, { choices: list } );
       };
 
       return this;
@@ -351,13 +376,19 @@
       return this;
     },
 
-    EqualTo: function ( value ) {
+    EqualTo: function ( reference ) {
       this.__class__ = 'EqualTo';
-      this.value = value;
+
+      if ( 'undefined' === typeof reference )
+        throw new Error( 'EqualTo must be instanciated with a value or a function' );
+
+      this.reference = reference;
 
       this.validate = function ( value ) {
-        if ( this.value !== value )
-          throw new Violation( this, value, { value: this.value } );
+        var reference = 'function' === typeof this.reference ? this.reference( value ) : this.reference;
+
+        if ( reference !== value )
+          throw new Violation( this, value, { value: reference } );
 
         return true;
       };
@@ -369,7 +400,7 @@
       this.__class__ = 'Length';
 
       if ( !boundaries.min && !boundaries.max )
-        throw new Error( 'Lenth assert needs { min: x, max: y } object' );
+        throw new Error( 'Lenth assert must be instanciated with a { min: x, max: y } object' );
 
       this.min = boundaries.min;
       this.max = boundaries.max;

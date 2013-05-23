@@ -135,9 +135,12 @@ constraint.check( { foo: 'foo', bar: 'bar' } );
 ```js
 new Assert().Blank();
 new Assert().Callback( fn ( value ) {} );
+new Assert().Choice( Array );
+new Assert().Choice( fn () {} );
 new Assert().Email();
 new Assert().Length( { min: min_val, max: max_val } );
 new Assert().EqualTo( value );
+new Assert().EqualTo( fn ( value ) {} );
 new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();

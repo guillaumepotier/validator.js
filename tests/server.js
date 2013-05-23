@@ -207,6 +207,17 @@ describe( 'Validator', function () {
       expect( validate( 42, assert ) ).to.be( true );
     } )
 
+    it( 'EqualTo w/ function', function () {
+      assert = new Assert().EqualTo( function ( value ) {
+        return 42;
+      } );
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'EqualTo', value: 'foo', violation: { value: 42 } } );
+      expect( validate( 4, assert ) ).not.to.be( true );
+      expect( validate( 42, assert ) ).to.be( true );
+    } )
+
     it( 'Callback', function () {
       assert = new Assert().Callback( function ( value ) {
         var calc = ( 42 / value ) % 2;
@@ -217,7 +228,25 @@ describe( 'Validator', function () {
       expect( validate( 3, assert ) ).not.to.be( true );
       expect( validate( 3, assert ).show() ).to.eql( { assert: 'Callback', value: 3, violation: { result: 0 } } );
       expect( validate( 42, assert ) ).to.be( true );
+    } )
 
+    it ( 'Choice', function () {
+      assert = new Assert().Choice( [ 'foo', 'bar', 'baz' ] );
+
+      expect( validate( 'qux', assert ) ).not.to.be( true );
+      expect( validate( 'qux', assert ).show() ).to.eql( { assert: 'Choice', value: 'qux', violation: { choices: [ 'foo', 'bar', 'baz' ] } } );
+      expect( validate( 'foo', assert ) ).to.be( true );
+    } )
+
+    it( 'Choice w/ function', function () {
+      var val1 = 'foo', val2 = 'bar', val3 = 'baz', fn = function () {
+        return [ val1, val2, val3 ];
+      };
+
+      assert = new Assert().Choice( fn );
+      expect( validate( 'qux', assert ) ).not.to.be( true );
+      expect( validate( 'qux', assert ).show() ).to.eql( { assert: 'Choice', value: 'qux', violation: { choices: [ 'foo', 'bar', 'baz' ] } } );
+      expect( validate( 'foo', assert ) ).to.be( true );
     } )
   } )
 
