@@ -53,8 +53,8 @@ Validator = require( 'validator.js' );
 ```js
 var Assert = Validator.Assert;
 
-Validator.Validator().validate( 'foo', new Assert().Lenght( 4 ) );
-Validator.Validator().validate( 'foo', [ new Assert().Lenght( 4 ), new Assert().Email() ] );
+Validator.Validator().validate( 'foo', new Assert().Length( 4 ) );
+Validator.Validator().validate( 'foo', [ new Assert().Length( 4 ), new Assert().Email() ] );
 
 ```
 will return `[]` if validation passes, a `Violation` array otherwise.
