@@ -92,10 +92,10 @@ With same objects than above, just by adding validation groups:
 
 ```js
   collection = {
-    name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
+    name:      [ new Assert().NotBlank(), new Assert( 'edit' ).Length( { min: 4, max: 25 } ) ],
     email:     new Assert().Email(),
-    firstname: new Assert().NotBlank().addGroups( [ 'edit', 'register'] ),
-    phone:     new Assert().NotBlank().addGroup( 'edit' )
+    firstname: new Assert( [ 'edit', 'register'] ).NotBlank(),
+    phone:     new Assert( 'edit' ).NotBlank()
   };
 
 Validator.validate( object, collection, 'edit' );
@@ -134,9 +134,10 @@ constraint.check( { foo: 'foo', bar: 'bar' } );
 
 ```js
 new Assert().Blank();
-new Assert().NotBlank();
-new Assert().Null();
-new Assert().NotNull();
-new Assert().Length( { min: min_val, max: max_val } );
 new Assert().Email();
+new Assert().Length( { min: min_val, max: max_val } );
+new Assert().EqualTo( value );
+new Assert().NotBlank();
+new Assert().NotNull();
+new Assert().Null();
 ```

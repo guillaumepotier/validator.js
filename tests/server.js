@@ -197,6 +197,15 @@ describe( 'Validator', function () {
 
       expect( validate( 'foo@bar.baz', assert ) ).to.be( true );
     } )
+
+    it( 'EqualTo', function () {
+      assert = new Assert().EqualTo( 42 );
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'EqualTo', value: 'foo', violation: { value: 42 } } );
+      expect( validate( 4, assert ) ).not.to.be( true );
+      expect( validate( 42, assert ) ).to.be( true );
+    } )
   } )
 
   describe( 'Constraint', function () {
