@@ -4,7 +4,7 @@ Powerful object and string validation in Javascript.
 
 ## Version
 
-0.2.2
+0.2.3
 
 ## Status
 
@@ -135,8 +135,9 @@ constraint.check( { foo: 'foo', bar: 'bar' } );
 ```js
 new Assert().Blank();
 new Assert().Callback( fn ( value ) {} );
-new Assert().Choice( [ ] );
+new Assert().Choice( [] );
 new Assert().Choice( fn () {} );
+new Assert().Collection ( Constraint );
 new Assert().Count( value );
 new Assert().Count( fn ( [] ) {} );
 new Assert().Email();

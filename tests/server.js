@@ -276,6 +276,34 @@ describe( 'Validator', function () {
       expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
     } )
 
+    it ( 'Collection', function () {
+      var itemConstraint = new Constraint( { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() } ),
+        object = {
+          foo: null,
+          items: [
+            { foobar: null, foobaz: 'foo', fooqux: null },
+            { foobar: 'bar', foobaz: 'baz' },
+            { foobar: null, foobaz: null }
+          ]
+        },
+        constraint = {
+          foo: new Assert().NotNull(),
+          items: [ new Assert().Collection( itemConstraint ), new Assert().Count( 2 ) ]
+        };
+
+      var result = validator.validate( object, constraint );
+      expect( result ).to.have.key( 'foo' );
+      expect( result ).to.have.key( 'items' );
+      expect( result.items[ 0 ] ).to.have.key( '0' );
+      expect( result.items[ 0 ] ).to.have.key( '2' );
+      expect( result.items[ 0 ][ 0 ] ).to.have.key( 'foobar' );
+      expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'foobaz' );
+      expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobar' );
+      expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobaz' );
+      expect( result.items[ 1 ] ).to.be.a( Violation );
+      expect( result.items[ 1 ].assert ).to.be( 'Count' );
+    } )
+
   } )
 
   describe( 'Constraint', function () {

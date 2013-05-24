@@ -1,3 +1,10 @@
+/*!
+* Validator.js
+* <guillaume@wisembly.com>
+* MIT Licenced
+*
+*/
+
 ( function ( exports ) {
 
   /**
@@ -160,8 +167,16 @@
       for ( var i = 0; i < asserts.length; i++ ) {
         result = asserts[ i ].check( value, group );
 
-        if ( result instanceof Violation )
+        if ( 'undefined' !== typeof result && true !== result )
           failures.push( result );
+
+        // Some asserts (Collection for example) could return an object
+        // if ( result && ! ( result instanceof Violation ) )
+        //   return result;
+        // 
+        // // Vast assert majority return Violation
+        // if ( result instanceof Violation )
+        //   failures.push( result );
       }
 
       return failures;
@@ -180,7 +195,9 @@
 
     this.assert = assert.__class__;
     this.value = value;
-    this.violation = violation;
+
+    if ( 'undefined' !== typeof violation)
+      this.violation = violation;
   };
 
   Violation.prototype = {
@@ -240,7 +257,7 @@
         return;
 
       try {
-        this.validate( value );
+        return this.validate( value );
       } catch ( violation ) {
         return violation;
       }
@@ -354,6 +371,32 @@
             return true;
 
         throw new Violation( this, value, { choices: list } );
+      };
+
+      return this;
+    },
+
+    Collection: function ( constraint ) {
+      this.__class__ = 'Collection';
+
+      if ( 'undefined' !== typeof constraint && ! ( constraint instanceof Constraint ) )
+        throw new Error( 'Collection assert excpect a Constraint', constraint );
+
+      this.constraint = constraint || false;
+
+      this.validate = function ( collection ) {
+        var result, count = 0, failures = {};
+
+        for ( var object in collection ) {
+          result = this.constraint.check( collection[ object ], this.groups.length ? this.groups : undefined );
+
+          if ( !_isEmptyObject( result ) )
+            failures[ count ] = result;
+
+          count++;
+        }
+
+        return !_isEmptyObject( failures ) ? failures : true;
       };
 
       return this;
