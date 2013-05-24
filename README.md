@@ -146,4 +146,5 @@ new Assert().EqualTo( fn ( value ) {} );
 new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();
+new Assert().Required();
 ```

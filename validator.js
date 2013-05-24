@@ -487,6 +487,26 @@
       };
 
       return this;
+    },
+
+    Required: function () {
+      this.__class__ = 'Required';
+
+      this.validate = function ( value ) {
+        if ( 'undefined' === typeof value )
+          throw new Violation( this, value );
+
+        if ( 'string' === typeof value )
+          try {
+            this.NotNull.validate( value ) && this.NotBlank.validate( value );
+          } catch ( violation ) {
+            throw new Violation( this, value );
+          }
+
+        return true;
+      };
+
+      return this;
     }
 
   };

@@ -269,6 +269,13 @@ describe( 'Validator', function () {
       expect( validate( [ 1, 2, 3 ], assert ) ).to.be( true );
     } )
 
+    it( 'Required', function () {
+      assert = new Assert().Required();
+
+      expect( validate( '', assert ) ).not.to.be( true );
+      expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
+    } )
+
   } )
 
   describe( 'Constraint', function () {
