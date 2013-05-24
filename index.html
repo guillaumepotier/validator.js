@@ -36,7 +36,7 @@
 
 <h2>Version</h2>
 
-<p>0.2.2</p>
+<p>0.2.3</p>
 
 <h2>Status</h2>
 
@@ -155,8 +155,9 @@ Validator.js (see below), but you can implement yourself for your needs as well.
 
 <div class="highlight"><pre><span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Blank</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
-<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Choice</span><span class="p">(</span> <span class="p">[</span> <span class="p">]</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Choice</span><span class="p">(</span> <span class="p">[]</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Choice</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">()</span> <span class="p">{}</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Collection</span> <span class="p">(</span> <span class="nx">Constraint</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Count</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Count</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="p">[]</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">();</span>
