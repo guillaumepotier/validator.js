@@ -377,6 +377,15 @@ describe( 'Validator', function () {
       expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Regexp', value: 'foo', violation: { regexp: '^[A-Z]', flag: '' } } );
       expect( validate( 'FOO', assert ) ).to.be( true );
     } )
+
+    it( 'Range', function () {
+      assert = new Assert().Range( 5, 10 );
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Range', value: 'foo', violation: { min: 5 } } );
+      expect( validate( 'foo bar', assert ) ).to.be( true );
+      expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
+      expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Range', value: 'foo bar baz', violation: { max: 10 } } );
+    } )
   } )
 
   describe( 'Constraint', function () {

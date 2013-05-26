@@ -592,6 +592,26 @@
       return this;
     },
 
+    Range: function ( min, max ) {
+      if ( !min || !max )
+        throw new Error( 'Range assert expects min and max values' );
+
+      this.LengthValidator = new Assert().Length( { min: min, max: max } );
+      this.__class__ = 'Range';
+
+      this.validate = function ( value ) {
+        try {
+          this.LengthValidator.validate( value );
+        } catch ( violation ) {
+          throw new Violation( this, value, violation.violation );
+        }
+
+        return true;
+      };
+
+      return this;
+    },
+
     Regexp: function ( regexp, flag ) {
       this.__class__ = 'Regexp';
 
