@@ -21,12 +21,52 @@
 
     constructor: Validator,
 
-    validate: function ( objectOrString, AssertsOrConstraint, group ) {
+    /*
+    * Validate string: validate( string, string ) || validate( string, [ string, string] )
+    * Validate object: validate( object, constraint, string ) || validate( object, constraint, [ string, string ] )
+    * Validate binded object: validate( object, string ) || validate( object, [ string, string] )
+    */
+    validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
+      // string validation
       if ( 'string' === typeof objectOrString) {
-        return this._validateString( objectOrString, AssertsOrConstraint, group );
+        return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
       }
 
-      return this._validateObject( objectOrString, AssertsOrConstraint, group );
+      // binded object validation
+      if ( 'object' === typeof objectOrString && this.isBinded( objectOrString ) )
+        return this._validateBindedObject( objectOrString, AssertsOrConstraintOrGroup );
+
+      // regular object validation
+      return this._validateObject( objectOrString, AssertsOrConstraintOrGroup, group );
+    },
+
+    bind: function ( object, constraint ) {
+      if ( 'object' !== typeof object )
+        throw new Error( 'Must bind a Constraint to an object' );
+
+      // be sure to have a proper Constraint
+      constraint = new Constraint( constraint );
+
+      object._validatorjsConstraint = constraint;
+
+      return this;
+    },
+
+    unbind: function ( object ) {
+      if ( 'undefined' === typeof object._validatorjsConstraint )
+        return this;
+
+      delete object._validatorjsConstraint;
+
+      return this;
+    },
+
+    isBinded: function ( object ) {
+      return 'undefined' !== typeof object._validatorjsConstraint;
+    },
+
+    getConstraint: function ( object ) {
+      this.isBinded( object ) ? object._validatorjsConstraint : null;
     },
 
     _validateString: function ( string, assert, group ) {
@@ -56,6 +96,14 @@
         constraint = new Constraint( constraint );
 
       return constraint.check( object, group );
+    },
+
+    _validateBindedObject: function ( object, group ) {
+      // check if we have a Constraint binded in object.
+      if ( 'undefined' === typeof object._validatorjsConstraint )
+        throw new Error( 'You must bind a Constraint to this object to validate it this way' );
+
+      return object._validatorjsConstraint.check( object, this.getConstraint( object ) );
     }
   };
 
@@ -141,6 +189,9 @@
     },
 
     _bootstrap: function ( data ) {
+      if ( data instanceof Constraint )
+        data = data.nodes;
+
       for ( var node in data )
         this.add( node, data[ node ] );
     },

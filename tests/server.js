@@ -121,7 +121,7 @@ describe( 'Validator', function () {
 
   } )
 
-  describe( 'asserts', function () {
+  describe( 'Asserts', function () {
     var assert, validate;
 
     before( function () {
@@ -382,6 +382,15 @@ describe( 'Validator', function () {
         expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ) ).to.be.an( Assert );
         expect( constraint.get( 'bar' ).get( 'qux' ).get( 'bux' ).__class__ ).to.be( 'NotNull' );
     } )
+
+    it( 'should be instanciated with a constraint', function () {
+      var constraint = new Constraint( { foo: new Assert().NotNull(), bar: [ new Assert().NotNull(), new Assert().NotBlank() ] } );
+
+      constraint = new Constraint( constraint );
+      expect( constraint ).to.be.a( Constraint );
+      expect( constraint.has( 'foo' ) ).to.be( true );
+      expect( constraint.has( 'bar' ) ).to.be( true );
+    } )
   } )
 
   describe( 'Validator', function () {
@@ -612,6 +621,36 @@ describe( 'Validator', function () {
           expect( result ).to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
         } )
+      } )
+    } )
+
+    describe( 'Binded object validation', function () {
+      it( 'should bind a Constraint to an object', function () {
+        var object = { foo: 'foo', bar: 'bar' },
+          constraint = new Constraint( { foo: new Assert().NotNull() } );
+
+        validator.bind( object, constraint );
+        expect( object ).to.have.key( '_validatorjsConstraint' );
+        expect( validator.isBinded( object ) ).to.be( true );
+      } )
+
+      it( 'should unbind Constraint from an object', function () {
+        var object = { foo: 'foo', bar: 'bar' },
+          constraint = new Constraint( { foo: new Assert().NotNull() } );
+
+          validator.bind( object, constraint ).unbind( object );
+          expect( object ).not.to.have.key( '_validatorjsConstraint' );
+          expect( validator.isBinded( object ) ).to.be( false );
+      } )
+
+      it( 'should validate object with binded Constraint', function () {
+        var object = { foo: null, bar: 'bar' },
+          constraint = new Constraint( { foo: new Assert().NotNull() } );
+
+        validator.bind( object, constraint );
+        var result = validator.validate( object );
+        expect( result ).not.to.eql( {} );
+        expect( result ).to.have.key( 'foo' );
       } )
     } )
   } )
