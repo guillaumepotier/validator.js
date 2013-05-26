@@ -1,35 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Validator.js by guillaumepotier</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Validator.js : Powerful objects and string validation in javascript" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Validator.js</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Validator.js</h1>
-        <p class="header">Powerful objects and string validation in javascript</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/guillaumepotier/validator.js/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/guillaumepotier/validator.js/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/guillaumepotier/validator.js">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/guillaumepotier/validator.js">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/guillaumepotier">guillaumepotier</a></p>
+          <h1 id="project_title">Validator.js</h1>
+          <h2 id="project_tagline">Powerful objects and string validation in javascript</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/guillaumepotier/validator.js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/guillaumepotier/validator.js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>validator.js</h1>
 
 <p>Powerful object and string validation in Javascript.</p>
@@ -52,9 +53,20 @@
 <li><code>npm install mocha</code></li>
 <li><code>npm install expect.js</code></li>
 <li><code>mocha tests/server.js</code></li>
-</ul><h1>Documentation</h1>
+</ul><h1>Summary</h1>
 
-<h2>General usage</h2>
+<ul>
+<li><a href="#general-usage">General usage</a></li>
+<li><a href="#validate-a-string">Validate string</a></li>
+<li><a href="#validate-an-object">Validate object</a></li>
+<li><a href="#validation-groups">Validation groups</a></li>
+<li><a href="#bind-a-constraint-to-an-object">Bind constraint to an object</a></li>
+<li><a href="#assert-definition">Assert definition</a></li>
+<li><a href="#constraint-definition">Constraint definition</a></li>
+<li><a href="#available-asserts">Available asserts</a></li>
+<li><a href="#collection-assert">Collection Assert</a></li>
+<li><a href="#callback-assert">Callback Assert</a></li>
+</ul><h2>General usage</h2>
 
 <ul>
 <li>On node:</li>
@@ -74,7 +86,7 @@
 <span class="o">&lt;</span><span class="err">/script&gt;</span>
 </pre></div>
 
-<h2>Validate Strings</h2>
+<h2>Validate a string</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
 
@@ -85,7 +97,7 @@
 
 <p>will return <code>[]</code> if validation passes, a <code>Violation</code> array otherwise.</p>
 
-<h2>Validate Objects</h2>
+<h2>Validate an object</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
     <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
@@ -110,7 +122,7 @@
 <p>will return <code>{}</code> if validation passes,
 <code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
 
-<h2>Validation Groups</h2>
+<h2>Validation groups</h2>
 
 <p>With same objects than above, just by adding validation groups:</p>
 
@@ -126,7 +138,7 @@
 
 <p>will return <code>{}</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
 
-<h2>Bind constraint to an object</h2>
+<h2>Bind a constraint to an object</h2>
 
 <div class="highlight"><pre><span class="nx">Validator</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">groups</span> <span class="p">);</span>
@@ -134,7 +146,7 @@
 
 <h1>Documentation</h1>
 
-<h2>Assert</h2>
+<h2>Assert definition</h2>
 
 <p>An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
@@ -147,7 +159,7 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span> <span class="nx">violation</span> <span class="p">)</span> <span class="p">{}</span>
 </pre></div>
 
-<h2>Constraint</h2>
+<h2>Constraint definition</h2>
 
 <p>A Constraint is a set of asserts nodes that would be used to validate an object.</p>
 
@@ -234,12 +246,17 @@ Return true for validation success, everything else if there is an error.</p>
 <span class="p">}</span> <span class="p">)</span>
 </pre></div>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Validator.js maintained by <a href="https://github.com/guillaumepotier">guillaumepotier</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		          <script type="text/javascript">
+
+              <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -249,6 +266,7 @@ Return true for validation success, everything else if there is an error.</p>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
