@@ -444,13 +444,13 @@
       this.count = count;
 
       this.validate = function ( array ) {
+        if ( !_isArray( array ) )
+          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+
         var count = 'function' === typeof this.count ? this.count( array ) : this.count;
 
         if ( isNaN( Number( count ) ) )
           throw new Error( 'Count must be a valid interger', count );
-
-        if ( !_isArray( array ) )
-          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
 
         if ( count !== array.length )
           throw new Violation( this, array, { count: count } );
@@ -582,6 +582,37 @@
           } catch ( violation ) {
             throw new Violation( this, value );
           }
+
+        return true;
+      };
+
+      return this;
+    },
+
+    // Unique() or Unique ( { key: foo } )
+    Unique: function ( object ) {
+      this.__class__ = 'Unique';
+
+      if ( 'object' === typeof object )
+        this.key = object.key;
+
+      this.validate = function ( array ) {
+        var value, store = [];
+
+        if ( !_isArray( array ) )
+          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+
+        for ( var i = 0; i < array.length; i++ ) {
+          value = 'object' === typeof array[ i ] ? array[ i ][ this.key ] : array[ i ];
+
+          if ( 'undefined' === typeof value )
+            continue;
+
+          if ( -1 !== store.indexOf( value ) )
+            throw new Violation( this, array, { value: value } );
+
+          store.push( value );
+        }
 
         return true;
       };

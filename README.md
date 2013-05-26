@@ -1,6 +1,6 @@
 # validator.js
 
-Powerful object and string validation in Javascript.
+Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
@@ -166,6 +166,8 @@ new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();
 new Assert().Required();
+new Assert().Unique();
+new Assert().Unique( { key: value } );
 ```
 
 ### Collection Assert

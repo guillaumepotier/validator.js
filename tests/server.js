@@ -333,6 +333,25 @@ describe( 'Validator', function () {
           expect( result.items[ 1 ] ).to.be.a( Violation );
           expect( result.items[ 1 ].assert ).to.be( 'Count' );
     } )
+
+    it( 'Unique', function () {
+      assert = new Assert().Unique();
+
+      expect( validate( [ 'foo', 'bar', 'baz', 'foo' ], assert ) ).not.to.be( true );
+      expect( validate( [ 'foo', 'bar', 'baz', 'foo' ], assert ).show() ).to.eql( { assert: 'Unique', value: [ 'foo', 'bar', 'baz', 'foo' ], violation: { value: 'foo' } } );
+      expect( validate( [ 'foo', 'bar', 'baz' ], assert ) ).to.be( true );
+    } )
+
+    it( 'Unique with objects', function () {
+      assert = new Assert().Unique( { key: 'foo' } );
+      var array = [ { foo: 'bar' }, { foo: 'baz' }, { foo: 'bar' } ];
+
+      expect( validate( array, assert ) ).not.to.be( true );
+      expect( validate( array, assert ).show() ).to.eql( { assert: 'Unique', value: array, violation: { value: 'bar' } } );
+      expect( validate( [ { foo: 'bar' }, { foo: 'baz' } ], assert ) ).to.be( true );
+
+      expect( validate( [ { bar: 'bar' }, { baz: 'baz' } ], assert ) ).to.be( true );
+    } )
   } )
 
   describe( 'Constraint', function () {
