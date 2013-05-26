@@ -36,7 +36,7 @@
 
 <h2>Version</h2>
 
-<p>0.2.3</p>
+<p>0.3.0</p>
 
 <h2>Status</h2>
 
@@ -74,7 +74,7 @@
 <span class="o">&lt;</span><span class="err">/script&gt;</span>
 </pre></div>
 
-<h1>Validate Strings</h1>
+<h2>Validate Strings</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
 
@@ -85,7 +85,7 @@
 
 <p>will return <code>[]</code> if validation passes, a <code>Violation</code> array otherwise.</p>
 
-<h1>Validate Objects</h1>
+<h2>Validate Objects</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
     <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
@@ -110,29 +110,36 @@
 <p>will return <code>{}</code> if validation passes,
 <code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
 
-<h1>Validation Groups</h1>
+<h2>Validation Groups</h2>
 
 <p>With same objects than above, just by adding validation groups:</p>
 
-<div class="highlight"><pre>  <span class="nx">collection</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight"><pre>  <span class="nx">constraint</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">).</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">25</span> <span class="p">}</span> <span class="p">)</span> <span class="p">],</span>
     <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
     <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'register'</span><span class="p">]</span> <span class="p">).</span><span class="nx">NotBlank</span><span class="p">(),</span>
     <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">).</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">};</span>
 
-<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">collection</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
 </pre></div>
 
 <p>will return <code>{}</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
 
+<h2>Bind constraint to an object</h2>
+
+<div class="highlight"><pre><span class="nx">Validator</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
+<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">groups</span> <span class="p">);</span>
+</pre></div>
+
 <h1>Documentation</h1>
 
-<h1>Assert</h1>
+<h2>Assert</h2>
 
 <p>An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
-Validator.js (see below), but you can implement yourself for your needs as well.</p>
+Validator.js (see below), but you can implement yours for your needs using the
+<code>Callback()</code> assert (see below).</p>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
 <span class="k">try</span> <span class="p">{</span>
@@ -140,7 +147,7 @@ Validator.js (see below), but you can implement yourself for your needs as well.
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span> <span class="nx">violation</span> <span class="p">)</span> <span class="p">{}</span>
 </pre></div>
 
-<h1>Constraint</h1>
+<h2>Constraint</h2>
 
 <p>A Constraint is a set of asserts nodes that would be used to validate an object.</p>
 
@@ -151,7 +158,7 @@ Validator.js (see below), but you can implement yourself for your needs as well.
 <span class="nx">constraint</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">bar</span><span class="o">:</span> <span class="s1">'bar'</span> <span class="p">}</span> <span class="p">);</span>
 </pre></div>
 
-<h1>Available asserts</h1>
+<h2>Available asserts</h2>
 
 <div class="highlight"><pre><span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Blank</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
@@ -168,6 +175,63 @@ Validator.js (see below), but you can implement yourself for your needs as well.
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Null</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Required</span><span class="p">();</span>
+</pre></div>
+
+<h3>Collection Assert</h3>
+
+<p>Collection Assert is quite special yet powerful. It allows you to validate
+an object's array by checking each one of them against a constraint.</p>
+
+<p>Here is an example of test suite test showing how this assert works:</p>
+
+<div class="highlight"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Collection'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">itemConstraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foobar</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">(),</span> <span class="nx">foobaz</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">()</span> <span class="p">}</span> <span class="p">),</span>
+    <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">foo</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="nx">foobar</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">foobaz</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">fooqux</span><span class="o">:</span> <span class="kc">null</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="nx">foobar</span><span class="o">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="nx">foobaz</span><span class="o">:</span> <span class="s1">'baz'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="nx">foobar</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">foobaz</span><span class="o">:</span> <span class="kc">null</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nx">constraint</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">foo</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">(),</span>
+      <span class="nx">items</span><span class="o">:</span> <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Collection</span><span class="p">(</span> <span class="nx">itemConstraint</span> <span class="p">),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Count</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">]</span>
+    <span class="p">};</span>
+
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'foo'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'items'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'0'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'2'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">][</span> <span class="mi">0</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'foobar'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">][</span> <span class="mi">0</span> <span class="p">]</span> <span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'foobaz'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">][</span> <span class="mi">2</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'foobar'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">0</span> <span class="p">][</span> <span class="mi">2</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">have</span><span class="p">.</span><span class="nx">key</span><span class="p">(</span> <span class="s1">'foobaz'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">1</span> <span class="p">]</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="nx">a</span><span class="p">(</span> <span class="nx">Violation</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span> <span class="mi">1</span> <span class="p">].</span><span class="nx">assert</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="s1">'Count'</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">)</span>
+</pre></div>
+
+<h3>Callback Assert</h3>
+
+<p>This assert allows you to all the custom rules / assert you want. Just give a
+callback function that will be called with the value to be tested against.
+Return true for validation success, everything else if there is an error.</p>
+
+<p>Here is an example of test suite test showing how this assert works:</p>
+
+<div class="highlight"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Callback'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">assert</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">calc</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">42</span> <span class="o">/</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">calc</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="nx">calc</span><span class="p">;</span>
+  <span class="p">}</span> <span class="p">);</span>
+
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">).</span><span class="nx">show</span><span class="p">()</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">eql</span><span class="p">(</span> <span class="p">{</span> <span class="nx">assert</span><span class="o">:</span> <span class="s1">'Callback'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">violation</span><span class="o">:</span> <span class="p">{</span> <span class="nx">result</span><span class="o">:</span> <span class="mi">0</span> <span class="p">}</span> <span class="p">}</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">42</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+<span class="p">}</span> <span class="p">)</span>
 </pre></div>
       </section>
       <footer>
