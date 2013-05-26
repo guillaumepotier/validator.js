@@ -169,6 +169,7 @@ new Assert().EqualTo( fn ( value ) {} );
 new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();
+new Assert().Regexp( value );
 new Assert().Required();
 new Assert().Unique();
 new Assert().Unique( { key: value } );

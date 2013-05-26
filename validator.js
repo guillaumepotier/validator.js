@@ -592,6 +592,28 @@
       return this;
     },
 
+    Regexp: function ( regexp, flag ) {
+      this.__class__ = 'Regexp';
+
+      if ( 'undefined' === typeof regexp )
+        throw new Error( 'You must give a regexp' );
+
+      this.regexp = regexp;
+      this.flag = flag || '';
+
+      this.validate = function ( value ) {
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( !new RegExp( this.regexp ).test( value, this.flag ) )
+          throw new Violation( this, value, { regexp: this.regexp, flag: this.flag } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Required: function () {
       this.__class__ = 'Required';
 
@@ -702,7 +724,7 @@
 
   // https://github.com/LearnBoost/expect.js/blob/master/expect.js
   expect = {
-    eql: function (actual, expected) {
+    eql: function ( actual, expected ) {
       if ( actual === expected ) {
         return true;
       } else if ( 'undefined' !== typeof Buffer
@@ -728,7 +750,7 @@
     isArguments: function ( object ) {
       return Object.prototype.toString.call(object) == '[object Arguments]';
     },
-    keys: function (obj) {
+    keys: function ( obj ) {
       if ( Object.keys )
         return Object.keys( obj );
 

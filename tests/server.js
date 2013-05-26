@@ -369,6 +369,14 @@ describe( 'Validator', function () {
       expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
       expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
     } )
+
+    it( 'Regexp', function () {
+      assert = new Assert().Regexp( '^[A-Z]' );
+
+      expect( validate( 'foo', assert ) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Regexp', value: 'foo', violation: { regexp: '^[A-Z]', flag: '' } } );
+      expect( validate( 'FOO', assert ) ).to.be( true );
+    } )
   } )
 
   describe( 'Constraint', function () {
