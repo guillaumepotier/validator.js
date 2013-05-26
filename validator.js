@@ -63,8 +63,8 @@
       return 'undefined' !== typeof object[ this.bindingKey ];
     },
 
-    getBindedConstraint: function ( object ) {
-      this.isBinded( object ) ? object[ this.bindingKey ] : null;
+    getBinded: function ( object ) {
+      return this.isBinded( object ) ? object[ this.bindingKey ] : null;
     },
 
     _validateString: function ( string, assert, group ) {
@@ -91,7 +91,7 @@
     },
 
     _validateBindedObject: function ( object, group ) {
-      return object[ this.bindingKey ].check( object, this.getBindedConstraint( object ) );
+      return object[ this.bindingKey ].check( object, group );
     }
   };
 
@@ -296,7 +296,7 @@
         return;
 
       try {
-        return this.validate( value );
+        return this.validate( value, group );
       } catch ( violation ) {
         return violation;
       }
@@ -417,13 +417,15 @@
 
     Collection: function ( constraint ) {
       this.__class__ = 'Collection';
-      this.constraint = new Constraint( constraint ) || false;
+      this.constraint = 'undefined' !== typeof constraint ? new Constraint( constraint ) : false;
 
-      this.validate = function ( collection ) {
-        var result, count = 0, failures = {};
+      this.validate = function ( collection, group ) {
+        var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
         for ( var object in collection ) {
-          result = this.constraint.check( collection[ object ], this.groups.length ? this.groups : undefined );
+          result = this.constraint ?
+            validator.validate( collection[ object ], this.constraint, groups ) :
+            validator.validate( collection[ object ], groups );
 
           if ( !_isEmptyObject( result ) )
             failures[ count ] = result;

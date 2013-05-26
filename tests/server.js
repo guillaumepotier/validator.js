@@ -118,7 +118,6 @@ describe( 'Validator', function () {
         expect( err.message ).to.be( 'Should give an assertion implementing the Assert interface' );
       }
     } )
-
   } )
 
   describe( 'Asserts', function () {
@@ -276,7 +275,7 @@ describe( 'Validator', function () {
       expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
     } )
 
-    it ( 'Collection', function () {
+    it( 'Collection', function () {
       var itemConstraint = new Constraint( { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() } ),
         object = {
           foo: null,
@@ -304,6 +303,36 @@ describe( 'Validator', function () {
       expect( result.items[ 1 ].assert ).to.be( 'Count' );
     } )
 
+    it( 'Collection with binded objects', function () {
+      var itemConstraint = { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() },
+        object = {
+          foo: null,
+          items: [
+            { foobar: null, foobaz: 'foo', fooqux: null },
+            { foobar: 'bar', foobaz: 'baz' },
+            { foobar: null, foobaz: null }
+          ]
+        },
+        constraint = {
+          foo: new Assert().NotNull(),
+          items: [ new Assert().Collection(), new Assert().Count( 2 ) ]
+        };
+
+        for ( var i = 0; i < object.items.length; i++ )
+          validator.bind( object.items[ i ], itemConstraint );
+
+          var result = validator.validate( object, constraint );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).to.have.key( 'items' );
+          expect( result.items[ 0 ] ).to.have.key( '0' );
+          expect( result.items[ 0 ] ).to.have.key( '2' );
+          expect( result.items[ 0 ][ 0 ] ).to.have.key( 'foobar' );
+          expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'foobaz' );
+          expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobar' );
+          expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobaz' );
+          expect( result.items[ 1 ] ).to.be.a( Violation );
+          expect( result.items[ 1 ].assert ).to.be( 'Count' );
+    } )
   } )
 
   describe( 'Constraint', function () {
@@ -560,68 +589,6 @@ describe( 'Validator', function () {
           expect( result.bar ).to.have.key( 'qux' );
           expect( result.bar.qux ).to.have.key( 'bux' );
       } )
-
-      describe( 'Validation groups', function () {
-        var object, constraint;
-
-        before( function () {
-          object = { foo: null, bar: null, baz: null, qux: null };
-          constraint = new Constraint({
-            foo: [ new Assert( [ 'foo', 'bar' ] ).NotNull(), new Assert().NotBlank() ],
-            bar: new Assert( 'baz' ).NotNull(),
-            baz: new Assert().NotNull(),
-            qux: new Assert( [ 'foo', 'qux' ] ).NotNull()
-          });
-        })
-
-        it( 'should validate asserts without validation groups', function () {
-          var result = validator.validate( object, constraint );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).not.to.have.key( 'bar' );
-          expect( result ).to.have.key( 'baz' );
-          expect( result ).not.to.have.key( 'qux' );
-        } )
-
-        it( 'should be the same with "Default" group', function () {
-          var result = validator.validate( object, constraint, 'Default' );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).not.to.have.key( 'bar' );
-          expect( result ).to.have.key( 'baz' );
-          expect( result ).not.to.have.key( 'qux' );
-        } )
-
-        it( 'should validate only a specific validation group', function () {
-          var result = validator.validate( object, constraint, 'foo' );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).not.to.have.key( 'bar' );
-          expect( result ).not.to.have.key( 'baz' );
-          expect( result ).to.have.key( 'qux' );
-        } )
-
-        it( 'should validate only two specific validation groups', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'baz' ] );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).to.have.key( 'bar' );
-          expect( result ).not.to.have.key( 'baz' );
-          expect( result ).to.have.key( 'qux' );
-        } )
-
-        it( 'should validate more validation groups', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'qux', 'bar' ] );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).not.to.have.key( 'bar' );
-          expect( result ).not.to.have.key( 'baz' );
-          expect( result ).to.have.key( 'qux' );
-        } )
-
-        it( 'should validate groups with "Default"', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'Default' ] );
-          expect( result ).to.have.key( 'foo' );
-          expect( result ).not.to.have.key( 'bar' );
-          expect( result ).to.have.key( 'baz' );
-          expect( result ).to.have.key( 'qux' );
-        } )
-      } )
     } )
 
     describe( 'Binded object validation', function () {
@@ -639,7 +606,7 @@ describe( 'Validator', function () {
           constraint = new Constraint( { foo: new Assert().NotNull() } );
 
           validator.bind( object, constraint ).unbind( object );
-          expect( object ).not.to.have.key( '_validatorjsConstraint' );
+          expect( object ).not.to.have.key( validator.bindedKey );
           expect( validator.isBinded( object ) ).to.be( false );
       } )
 
@@ -647,10 +614,94 @@ describe( 'Validator', function () {
         var object = { foo: null, bar: 'bar' },
           constraint = new Constraint( { foo: new Assert().NotNull() } );
 
-        validator.bind( object, constraint );
-        var result = validator.validate( object );
-        expect( result ).not.to.eql( {} );
+        var result = validator.bind( object, constraint ).validate( object );
         expect( result ).to.have.key( 'foo' );
+      } )
+    } )
+
+    describe( 'Validation groups', function () {
+      var object, constraint;
+
+      before( function () {
+        object = { foo: null, bar: null, baz: null, qux: null };
+        constraint = new Constraint({
+          foo: [ new Assert( [ 'foo', 'bar' ] ).NotNull(), new Assert().NotBlank() ],
+          bar: new Assert( 'baz' ).NotNull(),
+          baz: new Assert().NotNull(),
+          qux: new Assert( [ 'foo', 'qux' ] ).NotNull()
+        });
+      })
+
+      it( 'should validate asserts without validation groups', function () {
+        var result = validator.validate( object, constraint );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).to.have.key( 'baz' );
+        expect( result ).not.to.have.key( 'qux' );
+      } )
+
+      it( 'should be the same with "Default" group', function () {
+        var result = validator.validate( object, constraint, 'Default' );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).to.have.key( 'baz' );
+        expect( result ).not.to.have.key( 'qux' );
+      } )
+
+      it( 'should validate only a specific validation group', function () {
+        var result = validator.validate( object, constraint, 'foo' );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).not.to.have.key( 'baz' );
+        expect( result ).to.have.key( 'qux' );
+      } )
+
+      it( 'should validate only two specific validation groups', function () {
+        var result = validator.validate( object, constraint, [ 'foo', 'baz' ] );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).to.have.key( 'bar' );
+        expect( result ).not.to.have.key( 'baz' );
+        expect( result ).to.have.key( 'qux' );
+      } )
+
+      it( 'should validate more validation groups', function () {
+        var result = validator.validate( object, constraint, [ 'foo', 'qux', 'bar' ] );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).not.to.have.key( 'baz' );
+        expect( result ).to.have.key( 'qux' );
+      } )
+
+      it( 'should validate groups with "Default"', function () {
+        var result = validator.validate( object, constraint, [ 'foo', 'Default' ] );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).to.have.key( 'baz' );
+        expect( result ).to.have.key( 'qux' );
+      } )
+
+      it( 'should validate groups with binded object', function () {
+        validator.bind( object, constraint );
+
+        var result = validator.validate( object, [ 'foo', 'Default' ] );
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).not.to.have.key( 'bar' );
+        expect( result ).to.have.key( 'baz' );
+        expect( result ).to.have.key( 'qux' );
+      } )
+
+      it( 'should validate groups in Collection constraint', function () {
+        validator.bind( object, constraint );
+        var nestedObj = { foo: null, items: [ object, object ] },
+          result = validator.validate( nestedObj, { items: new Assert().Collection() }, [ 'foo', 'Default' ] );
+
+        expect( result ).to.have.key( 'items' );
+        expect( result.items[ 0 ] ).to.have.key( '0' );
+        expect( result.items[ 0 ] ).to.have.key( '1' );
+        expect( result.items[ 0 ][ 0 ] ).to.have.key( 'foo' );
+        expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'bar' );
+        expect( result.items[ 0 ][ 0 ] ).to.have.key( 'baz' );
+        expect( result.items[ 0 ][ 0 ] ).to.have.key( 'qux' );
       } )
     } )
   } )
