@@ -21,8 +21,18 @@ MIT - See LICENCE.md
   - `npm install expect.js`
   - `mocha tests/server.js`
 
-# Documentation
+# Summary
 
+  - [General usage](#general-usage)
+  - [Validate string](#validate-a-string)
+  - [Validate object](#validate-an-object)
+  - [Validation groups](#validation-groups)
+  - [Bind constraint to an object](#bind-a-constraint-to-an-object)
+  - [Assert definition](#assert-definition)
+  - [Constraint definition](#constraint-definition)
+  - [Available asserts](#available-asserts)
+  - [Collection Assert](#collection-assert)
+  - [Callback Assert](#callback-assert)
 
 ## General usage
 
@@ -48,7 +58,7 @@ Validator = require( 'validator.js' );
 ```
 
 
-## Validate Strings
+## Validate a string
 
 ```js
 var Assert = Validator.Assert;
@@ -60,7 +70,7 @@ Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new 
 will return `[]` if validation passes, a `Violation` array otherwise.
 
 
-## Validate Objects
+## Validate an object
 
 ```js
 var Validator = Validator.Validator,
@@ -86,7 +96,7 @@ will return `{}` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
 
 
-## Validation Groups
+## Validation groups
 
 With same objects than above, just by adding validation groups:
 
@@ -103,7 +113,7 @@ Validator.validate( object, constraint, 'edit' );
 will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
 
 
-## Bind constraint to an object
+## Bind a constraint to an object
 
 ```js
 Validator.bind( object, constraint );
@@ -112,7 +122,7 @@ Validator.validate( object, groups );
 
 # Documentation
 
-## Assert
+## Assert definition
 
 An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
@@ -126,7 +136,7 @@ try {
 } catch ( violation ) {}
 ```
 
-## Constraint
+## Constraint definition
 
 A Constraint is a set of asserts nodes that would be used to validate an object.
 
