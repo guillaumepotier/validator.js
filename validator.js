@@ -422,10 +422,13 @@
       this.validate = function ( collection, group ) {
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
-        for ( var object in collection ) {
+        if ( !_isArray( collection ) )
+          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+
+        for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
-            validator.validate( collection[ object ], this.constraint, groups ) :
-            validator.validate( collection[ object ], groups );
+            validator.validate( collection[ i ], this.constraint, groups ) :
+            validator.validate( collection[ i ], groups );
 
           if ( !_isEmptyObject( result ) )
             failures[ count ] = result;
@@ -472,6 +475,26 @@
 
         if ( !regExp.test( value ) )
           throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    Eql: function ( eql ) {
+      this.__class__ = 'Eql';
+
+      if ( 'undefined' === typeof eql )
+        throw new Error( 'Equal must be instanciated with an Array or an Object' );
+
+      this.eql = eql;
+
+      this.validate = function ( value ) {
+        var eql = 'function' === typeof this.eql ? this.eql( value ) : this.eql;
+
+        if ( !expect.eql( eql, value ) )
+          throw new Violation( this, value, { eql: eql } );
 
         return true;
       };
@@ -619,7 +642,6 @@
 
       return this;
     }
-
   };
 
   // expose to the world these awesome classes
@@ -678,4 +700,82 @@
     return Object.prototype.toString.call( obj ) === '[object Array]';
   }
 
+  // https://github.com/LearnBoost/expect.js/blob/master/expect.js
+  expect = {
+    eql: function (actual, expected) {
+      if ( actual === expected ) {
+        return true;
+      } else if ( 'undefined' !== typeof Buffer
+          && Buffer.isBuffer( actual ) && Buffer.isBuffer( expected ) ) {
+        if ( actual.length !== expected.length ) return false;
+
+        for ( var i = 0; i < actual.length; i++ )
+          if ( actual[i] !== expected[i] ) return false;
+
+        return true;
+      } else if ( actual instanceof Date && expected instanceof Date ) {
+        return actual.getTime() === expected.getTime();
+      } else if ( typeof actual !== 'object' && typeof expected !== 'object' ) {
+        // loosy ==
+        return actual == expected;
+      } else {
+        return this.objEquiv(actual, expected);
+      }
+    },
+    isUndefinedOrNull: function ( value ) {
+      return value === null || typeof value === 'undefined';
+    },
+    isArguments: function ( object ) {
+      return Object.prototype.toString.call(object) == '[object Arguments]';
+    },
+    keys: function (obj) {
+      if ( Object.keys )
+        return Object.keys( obj );
+
+      var keys = [];
+
+      for ( var i in obj )
+        if ( Object.prototype.hasOwnProperty.call( obj, i ) )
+          keys.push(i);
+
+      return keys;
+    },
+    objEquiv: function ( a, b ) {
+      if ( this.isUndefinedOrNull( a ) || this.isUndefinedOrNull( b ) )
+        return false;
+
+      if ( a.prototype !== b.prototype ) return false;
+
+      if ( this.isArguments( a ) ) {
+        if ( !this.isArguments( b ) )
+          return false;
+
+        return eql( pSlice.call( a ) , pSlice.call( b ) );
+      }
+
+      try {
+        var ka = this.keys( a ), kb = this.keys( b ), key, i;
+      } catch ( e ) {
+        return false;
+      }
+
+      if ( ka.length !== kb.length )
+        return false;
+
+      ka.sort();
+      kb.sort();
+
+      for ( i = ka.length - 1; i >= 0; i-- )
+        if ( ka[ i ] != kb[ i ] )
+          return false;
+
+      for ( i = ka.length - 1; i >= 0; i-- ) {
+        key = ka[i];
+        if ( !this.eql( a[ key ], b[ key ] ) )
+           return false;
+      }
+
+      return true;
+    }
+  };
 } )( 'undefined' === typeof exports ? this[ validatorjs_ns || 'Validator' ] = {} : exports );

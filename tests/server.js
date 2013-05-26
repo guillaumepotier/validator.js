@@ -352,6 +352,23 @@ describe( 'Validator', function () {
 
       expect( validate( [ { bar: 'bar' }, { baz: 'baz' } ], assert ) ).to.be( true );
     } )
+
+    it( 'Eql', function () {
+      assert = new Assert().Eql( { foo: 'foo', bar: 'bar' } );
+
+      expect( validate( 'foo', assert) ).not.to.be( true );
+      expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Eql', value: 'foo', violation: { eql: { foo: 'foo', bar: 'bar' } } } );
+      expect( validate( { foo: 'foo' }, assert ) ).not.to.be( true );
+      expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
+      expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
+    } )
+
+    it( 'Eql w/ function', function () {
+      assert = new Assert().Eql( function ( value ) { return { foo: 'foo', bar: 'bar' } } );
+
+      expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
+      expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
+    } )
   } )
 
   describe( 'Constraint', function () {
