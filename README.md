@@ -4,7 +4,7 @@ Powerful object and string validation in Javascript.
 
 ## Version
 
-0.2.3
+0.3.0
 
 ## Status
 
@@ -48,7 +48,7 @@ Validator = require( 'validator.js' );
 ```
 
 
-# Validate Strings
+## Validate Strings
 
 ```js
 var Assert = Validator.Assert;
@@ -60,7 +60,7 @@ Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new 
 will return `[]` if validation passes, a `Violation` array otherwise.
 
 
-# Validate Objects
+## Validate Objects
 
 ```js
 var Validator = Validator.Validator,
@@ -86,30 +86,38 @@ will return `{}` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
 
 
-# Validation Groups
+## Validation Groups
 
 With same objects than above, just by adding validation groups:
 
 ```js
-  collection = {
+  constraint = {
     name:      [ new Assert().NotBlank(), new Assert( 'edit' ).Length( { min: 4, max: 25 } ) ],
     email:     new Assert().Email(),
     firstname: new Assert( [ 'edit', 'register'] ).NotBlank(),
     phone:     new Assert( 'edit' ).NotBlank()
   };
 
-Validator.validate( object, collection, 'edit' );
+Validator.validate( object, constraint, 'edit' );
 ```
 will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
 
 
+## Bind constraint to an object
+
+```js
+Validator.bind( object, constraint );
+Validator.validate( object, groups );
+```
+
 # Documentation
 
-# Assert
+## Assert
 
 An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
-Validator.js (see below), but you can implement yourself for your needs as well.
+Validator.js (see below), but you can implement yours for your needs using the
+`Callback()` assert (see below).
 
 ```js
 var length = new Validator.Assert().Length( { min: 10 } );
@@ -118,7 +126,7 @@ try {
 } catch ( violation ) {}
 ```
 
-# Constraint
+## Constraint
 
 A Constraint is a set of asserts nodes that would be used to validate an object.
 
@@ -130,7 +138,7 @@ var constraint = new Constraint( { foo: length, bar: notBlank } );
 constraint.check( { foo: 'foo', bar: 'bar' } );
 ```
 
-# Available asserts
+## Available asserts
 
 ```js
 new Assert().Blank();
@@ -148,4 +156,63 @@ new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();
 new Assert().Required();
+```
+
+### Collection Assert
+
+Collection Assert is quite special yet powerful. It allows you to validate
+an object's array by checking each one of them against a constraint.
+
+Here is an example of test suite test showing how this assert works:
+
+```js
+it( 'Collection', function () {
+  var itemConstraint = new Constraint( { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() } ),
+    object = {
+      foo: null,
+      items: [
+        { foobar: null, foobaz: 'foo', fooqux: null },
+        { foobar: 'bar', foobaz: 'baz' },
+        { foobar: null, foobaz: null }
+      ]
+    },
+    constraint = {
+      foo: new Assert().NotNull(),
+      items: [ new Assert().Collection( itemConstraint ), new Assert().Count( 2 ) ]
+    };
+
+  var result = validator.validate( object, constraint );
+  expect( result ).to.have.key( 'foo' );
+  expect( result ).to.have.key( 'items' );
+  expect( result.items[ 0 ] ).to.have.key( '0' );
+  expect( result.items[ 0 ] ).to.have.key( '2' );
+  expect( result.items[ 0 ][ 0 ] ).to.have.key( 'foobar' );
+  expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'foobaz' );
+  expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobar' );
+  expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobaz' );
+  expect( result.items[ 1 ] ).to.be.a( Violation );
+  expect( result.items[ 1 ].assert ).to.be( 'Count' );
+} )
+```
+
+### Callback Assert
+
+This assert allows you to all the custom rules / assert you want. Just give a
+callback function that will be called with the value to be tested against.
+Return true for validation success, everything else if there is an error.
+
+Here is an example of test suite test showing how this assert works:
+
+```js
+it( 'Callback', function () {
+  assert = new Assert().Callback( function ( value ) {
+    var calc = ( 42 / value ) % 2;
+
+    return calc ? true : calc;
+  } );
+
+  expect( validate( 3, assert ) ).not.to.be( true );
+  expect( validate( 3, assert ).show() ).to.eql( { assert: 'Callback', value: 3, violation: { result: 0 } } );
+  expect( validate( 42, assert ) ).to.be( true );
+} )
 ```
