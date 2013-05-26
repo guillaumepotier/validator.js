@@ -19,7 +19,7 @@
 
         <header>
           <h1>Validator.js</h1>
-          <h2>Powerful objects and string validation in javascript</h2>
+          <h2>Powerful objects and strings validation in javascript for Node and the browser </h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -37,7 +37,7 @@
 
 <h2>Version</h2>
 
-<p>0.3.0</p>
+<p>0.3.1</p>
 
 <h2>Status</h2>
 
@@ -184,12 +184,18 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Eql</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">EqualTo</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">EqualTo</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">GreaterThan</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">GreaterThanOrEqual</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="nx">value</span> <span class="p">}</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">LessThan</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">LessThanOrEqual</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">EqualTo</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">EqualTo</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Null</span><span class="p">();</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Range</span><span class="p">(</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Regexp</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Required</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Unique</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Unique</span><span class="p">(</span> <span class="p">{</span> <span class="nx">key</span><span class="o">:</span> <span class="nx">value</span> <span class="p">}</span> <span class="p">);</span>
