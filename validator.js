@@ -97,7 +97,8 @@
 
   Validator.const = {
     must_be_a_string: 'must_be_a_string',
-    must_be_an_array: 'must_be_an_array'
+    must_be_an_array: 'must_be_an_array',
+    must_be_a_number: 'must_be_a_number'
   };
 
   /**
@@ -522,6 +523,45 @@
       return this;
     },
 
+    GreaterThan: function ( threshold ) {
+      this.__class__ = 'GreaterThan';
+
+      if ( 'undefined' === typeof threshold )
+        throw new Error( 'Should give a threshold value' );
+
+      this.threshold = threshold;
+
+      this.validate = function ( value ) {
+        if ( isNaN( Number( value ) ) )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_number } );
+
+        if ( this.threshold >= value )
+          throw new Violation( this, value, { threshold: this.threshold } );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    GreaterThanOrEqual: function ( threshold ) {
+      this.__class__ = 'GreaterThanOrEqual';
+
+      if ( 'undefined' === typeof threshold )
+        throw new Error( 'Should give a threshold value' );
+
+      this.threshold = threshold;
+
+      this.validate = function ( value ) {
+        if ( this.threshold > value )
+          throw new Violation( this, value, { threshold: this.threshold } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 
@@ -543,6 +583,45 @@
 
         if ( 'undefined' !== typeof this.min && value.length < this.min )
           throw new Violation( this, value, { min: this.min } );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    LessThan: function ( threshold ) {
+      this.__class__ = 'LessThan';
+
+      if ( 'undefined' === typeof threshold )
+        throw new Error( 'Should give a threshold value' );
+
+      this.threshold = threshold;
+
+      this.validate = function ( value ) {
+        if ( isNaN( Number( value ) ) )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_number } );
+
+        if ( this.threshold <= value )
+          throw new Violation( this, value, { threshold: this.threshold } );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    LessThanOrEqual: function ( threshold ) {
+      this.__class__ = 'LessThanOrEqual';
+
+      if ( 'undefined' === typeof threshold )
+        throw new Error( 'Should give a threshold value' );
+
+      this.threshold = threshold;
+
+      this.validate = function ( value ) {
+        if ( this.threshold < value )
+          throw new Violation( this, value, { threshold: this.threshold } );
 
         return true;
       };

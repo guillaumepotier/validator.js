@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.3.0
+0.3.1
 
 ## Status
 
@@ -163,7 +163,11 @@ new Assert().Eql( object );
 new Assert().Eql( fn ( value ) {} );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
+new Assert().GreaterThan( threshold );
+new Assert().GreaterThanOrEqual( threshold );
 new Assert().Length( { min: value, max: value } );
+new Assert().LessThan( threshold );
+new Assert().LessThanOrEqual( threshold );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
 new Assert().NotBlank();
