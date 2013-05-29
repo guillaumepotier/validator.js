@@ -31,29 +31,35 @@
         <hr>
 
         <section id="main_content">
-          <h1>validator.js</h1>
+          <h1>
+<a name="validatorjs" class="anchor" href="#validatorjs"><span class="octicon octicon-link"></span></a>validator.js</h1>
 
 <p>Powerful objects and strings validation in javascript for Node and the browser</p>
 
-<h2>Version</h2>
+<h2>
+<a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
 
 <p>0.3.1</p>
 
-<h2>Status</h2>
+<h2>
+<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h2>
 
 <p><a href="https://travis-ci.org/guillaumepotier/validator.js"><img src="https://travis-ci.org/guillaumepotier/validator.js.png?branch=master" alt="Build Status"></a></p>
 
-<h2>Licence</h2>
+<h2>
+<a name="licence" class="anchor" href="#licence"><span class="octicon octicon-link"></span></a>Licence</h2>
 
 <p>MIT - See LICENCE.md</p>
 
-<h2>Run Tests</h2>
+<h2>
+<a name="run-tests" class="anchor" href="#run-tests"><span class="octicon octicon-link"></span></a>Run Tests</h2>
 
 <ul>
 <li><code>npm install mocha</code></li>
 <li><code>npm install expect.js</code></li>
 <li><code>mocha tests/server.js</code></li>
-</ul><h1>Summary</h1>
+</ul><h1>
+<a name="summary" class="anchor" href="#summary"><span class="octicon octicon-link"></span></a>Summary</h1>
 
 <ul>
 <li><a href="#general-usage">General usage</a></li>
@@ -66,7 +72,8 @@
 <li><a href="#available-asserts">Available asserts</a></li>
 <li><a href="#collection-assert">Collection Assert</a></li>
 <li><a href="#callback-assert">Callback Assert</a></li>
-</ul><h2>General usage</h2>
+</ul><h2>
+<a name="general-usage" class="anchor" href="#general-usage"><span class="octicon octicon-link"></span></a>General usage</h2>
 
 <ul>
 <li>On node:</li>
@@ -86,7 +93,8 @@
 <span class="o">&lt;</span><span class="err">/script&gt;</span>
 </pre></div>
 
-<h2>Validate a string</h2>
+<h2>
+<a name="validate-a-string" class="anchor" href="#validate-a-string"><span class="octicon octicon-link"></span></a>Validate a string</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
 
@@ -97,7 +105,8 @@
 
 <p>will return <code>[]</code> if validation passes, a <code>Violation</code> array otherwise.</p>
 
-<h2>Validate an object</h2>
+<h2>
+<a name="validate-an-object" class="anchor" href="#validate-an-object"><span class="octicon octicon-link"></span></a>Validate an object</h2>
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
     <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
@@ -122,7 +131,8 @@
 <p>will return <code>{}</code> if validation passes,
 <code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
 
-<h2>Validation groups</h2>
+<h2>
+<a name="validation-groups" class="anchor" href="#validation-groups"><span class="octicon octicon-link"></span></a>Validation groups</h2>
 
 <p>With same objects than above, just by adding validation groups:</p>
 
@@ -138,15 +148,18 @@
 
 <p>will return <code>{}</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
 
-<h2>Bind a constraint to an object</h2>
+<h2>
+<a name="bind-a-constraint-to-an-object" class="anchor" href="#bind-a-constraint-to-an-object"><span class="octicon octicon-link"></span></a>Bind a constraint to an object</h2>
 
 <div class="highlight"><pre><span class="nx">Validator</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">groups</span> <span class="p">);</span>
 </pre></div>
 
-<h1>Documentation</h1>
+<h1>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h1>
 
-<h2>Assert definition</h2>
+<h2>
+<a name="assert-definition" class="anchor" href="#assert-definition"><span class="octicon octicon-link"></span></a>Assert definition</h2>
 
 <p>An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
@@ -159,7 +172,8 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span> <span class="nx">violation</span> <span class="p">)</span> <span class="p">{}</span>
 </pre></div>
 
-<h2>Constraint definition</h2>
+<h2>
+<a name="constraint-definition" class="anchor" href="#constraint-definition"><span class="octicon octicon-link"></span></a>Constraint definition</h2>
 
 <p>A Constraint is a set of asserts nodes that would be used to validate an object.</p>
 
@@ -170,7 +184,8 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="nx">constraint</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">bar</span><span class="o">:</span> <span class="s1">'bar'</span> <span class="p">}</span> <span class="p">);</span>
 </pre></div>
 
-<h2>Available asserts</h2>
+<h2>
+<a name="available-asserts" class="anchor" href="#available-asserts"><span class="octicon octicon-link"></span></a>Available asserts</h2>
 
 <div class="highlight"><pre><span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Blank</span><span class="p">();</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
@@ -201,7 +216,8 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Unique</span><span class="p">(</span> <span class="p">{</span> <span class="nx">key</span><span class="o">:</span> <span class="nx">value</span> <span class="p">}</span> <span class="p">);</span>
 </pre></div>
 
-<h3>Collection Assert</h3>
+<h3>
+<a name="collection-assert" class="anchor" href="#collection-assert"><span class="octicon octicon-link"></span></a>Collection Assert</h3>
 
 <p>Collection Assert is quite special yet powerful. It allows you to validate
 an object's array by checking each one of them against a constraint.</p>
@@ -237,7 +253,8 @@ an object's array by checking each one of them against a constraint.</p>
 <span class="p">}</span> <span class="p">)</span>
 </pre></div>
 
-<h3>Callback Assert</h3>
+<h3>
+<a name="callback-assert" class="anchor" href="#callback-assert"><span class="octicon octicon-link"></span></a>Callback Assert</h3>
 
 <p>This assert allows you to all the custom rules / assert you want. Just give a
 callback function that will be called with the value to be tested against.
