@@ -7,4 +7,4 @@ before_script:
   - npm install mocha
   - npm install expect.js
 
-script: mocha tests/server.js -R dot
+script: mocha tests/server.js -R dot && mocha tests/server.min.js -R dot

@@ -1,9 +1,25 @@
 <html>
-<script>
-    validatorjs_ns = 'foo';
-</script>
+<link rel="stylesheet" href="./resources/mocha.css" />
+
 <script src="../validator.js"></script>
+<script src="./resources/expect.js"></script>
+<script src="./resources/mocha.js"></script>
+<script src="./tests.js"></script>
+
+<div id="mocha"></div>
+
 <script>
-    console.log(foo);
+  window.onload = function() {
+
+    mocha.setup( 'bdd' );
+    mocha.reporter( 'html' );
+    Tests.Suite( Validator, expect );
+
+    if ( window.mochaPhantomJS ) {
+      mochaPhantomJS.run();
+    } else {
+      mocha.run();
+    }
+  };
 </script>
 </html>

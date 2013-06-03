@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.3.1
+0.3.2
 
 ## Status
 
@@ -17,9 +17,13 @@ MIT - See LICENCE.md
 
 ## Run Tests
 
+- On node:
   - `npm install mocha`
   - `npm install expect.js`
   - `mocha tests/server.js`
+
+- On browser:
+  - open tests/browser.html in your browser
 
 # Summary
 
@@ -37,26 +41,20 @@ MIT - See LICENCE.md
 ## General usage
 
 - On node:
-
 ```
 $ npm install -g validator.js
 ```
-
 Then
-
 ```js
 Validator = require( 'validator.js' );
 ```
-
 - On browser:
-
 ```js
 <script src="../validator.js"></script>
 <script>
     console.log(Validator);
 </script>
 ```
-
 
 ## Validate a string
 

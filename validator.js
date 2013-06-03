@@ -12,6 +12,7 @@
   */
 
   var Validator = function ( options ) {
+    this.__version__ = '0.3.2';
     this.__class__ = 'Validator';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
@@ -39,6 +40,10 @@
 
       // regular object validation
       return this._validateObject( objectOrString, AssertsOrConstraintOrGroup, group );
+    },
+
+    version: function () {
+      return this.__version__;
     },
 
     bind: function ( object, constraint ) {
@@ -899,4 +904,4 @@
       return true;
     }
   };
-} )( 'undefined' === typeof exports ? this[ validatorjs_ns || 'Validator' ] = {} : exports );
+} )( 'undefined' === typeof exports ? this[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] = {} : exports );
