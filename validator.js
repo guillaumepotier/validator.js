@@ -567,6 +567,24 @@
       return this;
     },
 
+    IPv4: function () {
+      this.__class__ = 'IPv4';
+
+      this.validate = function ( value ) {
+        var regExp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( !regExp.test( value ) )
+          throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 
