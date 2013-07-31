@@ -207,6 +207,16 @@ var Suite = function ( Validator, expect ) {
         expect( validate( '192.168.1.201', assert ) ).to.be( true );
       } )
 
+      it( 'Mac', function () {
+        assert = new Assert().Mac();
+
+        expect( validate( '0G:42:AT:F5:OP:Z2', assert ) ).not.to.be( true );
+        expect( validate( 'AD:32:11:F7:3B', assert ) ).not.to.be( true );
+        expect( validate( 'AD:32:11:F7:3B:ZX', assert ).show() ).to.eql( { assert: 'Mac', value: 'AD:32:11:F7:3B:ZX' } );
+
+        expect( validate( 'AD:32:11:F7:3B:C9', assert ) ).to.be( true );
+      } )
+
       it( 'EqualTo', function () {
         assert = new Assert().EqualTo( 42 );
 
