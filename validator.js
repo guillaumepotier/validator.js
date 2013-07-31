@@ -163,7 +163,7 @@
     },
 
     has: function ( node ) {
-      return 'undefined' !== typeof this.nodes[ node.toLowerCase() ];
+      return 'undefined' !== typeof this.nodes[ node ];
     },
 
     get: function ( node, placeholder ) {
