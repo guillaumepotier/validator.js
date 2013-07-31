@@ -183,11 +183,11 @@
 
     has: function ( node, nodes ) {
       var nodes = 'undefined' !== typeof nodes ? nodes : this.nodes;
-      return 'undefined' !== typeof nodes[ node.toLowerCase() ];
+      return 'undefined' !== typeof nodes[ node ];
     },
 
     get: function ( node, placeholder ) {
-      return 'undefined' !== typeof this.nodes[ node ] ? this.nodes[ node ] : placeholder || null;
+      return this.has( node ) ? this.nodes[ node ] : placeholder || null;
     },
 
     remove: function ( node ) {
