@@ -686,6 +686,24 @@
       return this;
     },
 
+    Mac: function () {
+      this.__class__ = 'Mac';
+
+      this.validate = function ( value ) {
+        var regExp = /^(?:[0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
+
+        if ( 'string' !== typeof value )
+          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+
+        if ( !regExp.test( value ) )
+          throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
     NotNull: function () {
       this.__class__ = 'NotNull';
 
