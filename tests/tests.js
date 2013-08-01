@@ -197,6 +197,15 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 'foo@bar.baz', assert ) ).to.be( true );
       } )
 
+      it( 'InstanceOf', function () {
+        assert = new Assert().InstanceOf( Date );
+
+        expect( validate( 'foo', assert ) ).not.to.be( true );
+        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'InstanceOf', value: 'foo', violation: { classRef: Date } } );
+        expect( validate( 4, assert ) ).not.to.be( true );
+        expect( validate( new Date(), assert ) ).to.be( true );
+      } )
+
       it( 'IPv4', function () {
         assert = new Assert().IPv4();
 

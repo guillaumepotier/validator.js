@@ -567,6 +567,24 @@
       return this;
     },
 
+    InstanceOf: function ( classRef ) {
+      this.__class__ = 'InstanceOf';
+
+      if ( 'undefined' === typeof classRef )
+        throw new Error( 'InstanceOf must be instanciated with a value' );
+
+      this.classRef = classRef;
+
+      this.validate = function ( value ) {
+        if ( true !== (value instanceof this.classRef) )
+          throw new Violation( this, value, { classRef: this.classRef } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     IPv4: function () {
       this.__class__ = 'IPv4';
 
