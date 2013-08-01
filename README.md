@@ -163,11 +163,14 @@ new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
 new Assert().GreaterThan( threshold );
 new Assert().GreaterThanOrEqual( threshold );
+new Assert().InstanceOf
+new Assert().IPv4();
 new Assert().Length( { min: value, max: value } );
 new Assert().LessThan( threshold );
 new Assert().LessThanOrEqual( threshold );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
+new Assert().Mac();
 new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();

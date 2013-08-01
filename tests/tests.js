@@ -197,6 +197,35 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 'foo@bar.baz', assert ) ).to.be( true );
       } )
 
+      it( 'InstanceOf', function () {
+        assert = new Assert().InstanceOf( Date );
+
+        expect( validate( 'foo', assert ) ).not.to.be( true );
+        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'InstanceOf', value: 'foo', violation: { classRef: Date } } );
+        expect( validate( 4, assert ) ).not.to.be( true );
+        expect( validate( new Date(), assert ) ).to.be( true );
+      } )
+
+      it( 'IPv4', function () {
+        assert = new Assert().IPv4();
+
+        expect( validate( 'foo.bar', assert ) ).not.to.be( true );
+        expect( validate( '192.168.1', assert ) ).not.to.be( true );
+        expect( validate( '292.168.1.201', assert ).show() ).to.eql( { assert: 'IPv4', value: '292.168.1.201' } );
+
+        expect( validate( '192.168.1.201', assert ) ).to.be( true );
+      } )
+
+      it( 'Mac', function () {
+        assert = new Assert().Mac();
+
+        expect( validate( '0G:42:AT:F5:OP:Z2', assert ) ).not.to.be( true );
+        expect( validate( 'AD:32:11:F7:3B', assert ) ).not.to.be( true );
+        expect( validate( 'AD:32:11:F7:3B:ZX', assert ).show() ).to.eql( { assert: 'Mac', value: 'AD:32:11:F7:3B:ZX' } );
+
+        expect( validate( 'AD:32:11:F7:3B:C9', assert ) ).to.be( true );
+      } )
+
       it( 'EqualTo', function () {
         assert = new Assert().EqualTo( 42 );
 
