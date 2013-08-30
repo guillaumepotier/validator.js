@@ -171,6 +171,14 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 'foo', assert ) ).not.to.be( true );
       } )
 
+      it( 'HaveProperty', function () {
+        assert = new Assert().HaveProperty( 'foo' );
+
+        expect( validate( null, assert ) ).not.to.be( true );
+        expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
+        expect( validate( { bar: 'baz' }, assert ) ).not.to.be( true );
+      } )
+
       it( 'Length', function () {
         assert = new Assert().Length( { min: 3 } );
 
@@ -229,7 +237,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 42, assert ) ).to.be( true );
       } )
 
-      it ( 'Choice', function () {
+      it( 'Choice', function () {
         assert = new Assert().Choice( [ 'foo', 'bar', 'baz' ] );
 
         expect( validate( 'qux', assert ) ).not.to.be( true );
@@ -571,6 +579,36 @@ var Suite = function ( Validator, expect ) {
             baz:  'baz'
           }, constraint ) ).to.be( true );
         })
+
+        it( 'should use default or strict validation', function () {
+          var constraint = {
+            foo: new Assert().Required(),
+            bar: new Assert().Required(),
+            baz: new Assert().Required()
+          };
+
+          var strictConstraint = new Constraint( {
+            foo: new Assert().Required(),
+            bar: new Assert().Required(),
+            baz: new Assert().Required()
+          }, { strict: true } );
+
+          expect( validator.validate( {
+            foo:  42,
+            bar:  'bar',
+            qux:  'qux'
+          }, constraint ) ).to.be( true );
+
+          var result = validator.validate( {
+            foo:  42,
+            bar:  'bar',
+          }, strictConstraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.baz ).to.be.a( Violation );
+          expect( result.baz.assert ).to.be( 'HaveProperty' );
+          expect( result.baz.violation.value ).to.be( 'baz' );
+        } )
 
         it( 'should validate an object with a complex constraint', function () {
           var constraint = new Constraint()
