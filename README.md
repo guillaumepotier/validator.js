@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.3.2
+0.4.0
 
 ## Status
 
@@ -65,7 +65,7 @@ Validator.Validator().validate( 'foo', new Assert().Length( { min: 4 } ) );
 Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new Assert().Email() ] );
 
 ```
-will return `[]` if validation passes, a `Violation` array otherwise.
+will return `true` if validation passes, a `Violation`'s array otherwise.
 
 
 ## Validate an object
@@ -90,7 +90,7 @@ var object = {
 
 Validator.validate( object, constraint );
 ```
-will return `{}` if validation passes,
+will return `true` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
 
 
@@ -108,7 +108,7 @@ With same objects than above, just by adding validation groups:
 
 Validator.validate( object, constraint, 'edit' );
 ```
-will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
+will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
 
 
 ## Bind a constraint to an object

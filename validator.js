@@ -12,7 +12,7 @@
   */
 
   var Validator = function ( options ) {
-    this.__version__ = '0.3.2';
+    this.__version__ = '0.4.0';
     this.__class__ = 'Validator';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
@@ -30,12 +30,15 @@
     * Validate binded object: validate( object, string ) || validate( object, [ string, string] )
     */
     validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
+      if ( 'string' !== typeof objectOrString && 'object' !== typeof objectOrString )
+        throw new Error( 'You must validate an object or a string' );
+
       // string validation
       if ( 'string' === typeof objectOrString)
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation
-      if ( 'object' === typeof objectOrString && this.isBinded( objectOrString ) )
+      if ( this.isBinded( objectOrString ) )
         return this._validateBindedObject( objectOrString, AssertsOrConstraintOrGroup );
 
       // regular object validation
@@ -88,10 +91,13 @@
           failures.push( result );
       }
 
-      return failures;
+      return failures.length ? failures : true;
     },
 
     _validateObject: function ( object, constraint, group ) {
+      if ( 'object' !== typeof constraint )
+        throw new Error( 'You must give a constraint to validate an object' );
+
       return new Constraint( constraint ).check( object, group );
     },
 
@@ -143,7 +149,7 @@
         }
       }
 
-      return failures;
+      return _isEmptyObject(failures) ? true : failures;
     },
 
     add: function ( node, object ) {
@@ -727,7 +733,7 @@
 
         if ( 'string' === typeof value )
           try {
-            this.NotNull.validate( value ) && this.NotBlank.validate( value );
+            this.NotNull().validate( value ) && this.NotBlank().validate( value );
           } catch ( violation ) {
             throw new Violation( this, value );
           }
