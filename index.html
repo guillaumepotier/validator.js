@@ -39,7 +39,7 @@
 <h2>
 <a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
 
-<p>0.4.0</p>
+<p>0.4.1</p>
 
 <h2>
 <a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h2>
@@ -168,6 +168,10 @@ console.log(Validator);
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">groups</span> <span class="p">);</span>
 </pre></div>
 
+<p>Under the hood, by default, a <code>_validatorjsConstraint</code> key will be created in object
+in order to store here the constraint. You could override this default key name by
+passing an option to Validator constructor.</p>
+
 <h1>
 <a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h1>
 
@@ -197,6 +201,32 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="nx">constraint</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">bar</span><span class="o">:</span> <span class="s1">'bar'</span> <span class="p">}</span> <span class="p">);</span>
 </pre></div>
 
+<h3>
+<a name="strict-constraint-validation" class="anchor" href="#strict-constraint-validation"><span class="octicon octicon-link"></span></a>Strict Constraint validation</h3>
+
+<p>By default, if Validator.js look into object properties if there are related nodes in
+Constraint object to validate them. That means that if Constraint have nodes not
+defined in validated object, there won't be Violations thrown and object would be
+considered as valid. If you want a strict validation (ie ensure that <strong>every</strong>)
+Constraint node is valid, you'll have to pass an optional parameter to your Constraint:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">foo</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span>
+    <span class="nx">bar</span><span class="o">:</span> <span class="s1">'bar'</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">constraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="p">{</span>
+    <span class="nx">foo</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Required</span><span class="p">(),</span>
+    <span class="nx">bar</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Required</span><span class="p">(),</span>
+    <span class="nx">baz</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Required</span><span class="p">()</span>
+<span class="p">},</span> <span class="p">{</span> <span class="nx">strict</span><span class="o">:</span> <span class="kc">true</span> <span class="p">});</span>
+
+<span class="nx">constraint</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="nx">object</span> <span class="p">);</span>
+</pre></div>
+
+<p>will return a <code>HaveProperty</code> Violation, saying that <code>baz</code> property does not exist
+in validated object. Without <code>{ strict: true }</code> this check would return <code>true</code>.</p>
+
 <h2>
 <a name="available-asserts" class="anchor" href="#available-asserts"><span class="octicon octicon-link"></span></a>Available asserts</h2>
 
@@ -215,6 +245,7 @@ Validator.js (see below), but you can implement yours for your needs using the
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">GreaterThan</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">GreaterThanOrEqual</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="nx">value</span> <span class="p">}</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">HaveProperty</span><span class="p">(</span> <span class="nx">propertyName</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">LessThan</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">LessThanOrEqual</span><span class="p">(</span> <span class="nx">threshold</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">EqualTo</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
