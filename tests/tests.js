@@ -171,6 +171,14 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 'foo', assert ) ).not.to.be( true );
       } )
 
+      it( 'HaveProperty', function () {
+        assert = new Assert().HaveProperty( 'foo' );
+
+        expect( validate( null, assert ) ).not.to.be( true );
+        expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
+        expect( validate( { bar: 'baz' }, assert ) ).not.to.be( true );
+      } )
+
       it( 'Length', function () {
         assert = new Assert().Length( { min: 3 } );
 
@@ -229,7 +237,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 42, assert ) ).to.be( true );
       } )
 
-      it ( 'Choice', function () {
+      it( 'Choice', function () {
         assert = new Assert().Choice( [ 'foo', 'bar', 'baz' ] );
 
         expect( validate( 'qux', assert ) ).not.to.be( true );
@@ -272,7 +280,7 @@ var Suite = function ( Validator, expect ) {
         assert = new Assert().Required();
 
         expect( validate( '', assert ) ).not.to.be( true );
-        expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
+        expect( validate( 'bar', assert ) ).to.be( true );
       } )
 
       it( 'Collection', function () {
@@ -526,8 +534,8 @@ var Suite = function ( Validator, expect ) {
         } )
 
         it( 'should validate a string', function () {
-          expect( validator.validate( 'foo', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).not.to.be.empty();
-          expect( validator.validate( 'foobar', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).to.be.empty();
+          expect( validator.validate( 'foo', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).not.to.be( true );
+          expect( validator.validate( 'foobar', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).to.be( true );
         } )
 
         it( 'should return violations for a string', function () {
@@ -544,23 +552,72 @@ var Suite = function ( Validator, expect ) {
 
         it( 'should use groups for validation', function() {
           var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 'bar' ), new Assert().Length( { min: 8 } ).addGroup( 'baz' ), new Assert().Length( { min: 2 } ) ];
-          expect( validator.validate( 'foo', asserts ) ).to.be.empty();
-          expect( validator.validate( 'foo', asserts, 'bar' ) ).not.to.be.empty();
-          expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be.empty();
-          expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be.empty();
-          expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be.empty();
+          expect( validator.validate( 'foo', asserts ) ).to.be( true );
+          expect( validator.validate( 'foo', asserts, 'bar' ) ).not.to.be( true );
+          expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be( true );
+          expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be( true );
+          expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be( true );
         } )
       })
 
       describe( 'Object validation', function () {
-        it( 'should validate an object with a constraint', function () {
+        it( 'should validate an object with a simple constraint', function () {
+          var constraint = {
+            foo: new Assert().Required(),
+            bar: new Assert().Required(),
+            baz: new Assert().Required()
+          };
+
+          expect( validator.validate( {
+            foo:  42,
+            bar:  ''
+          }, constraint ) ).not.to.be( true );
+
+          expect( validator.validate( {
+            foo:  42,
+            bar:  'bar',
+            baz:  'baz'
+          }, constraint ) ).to.be( true );
+        })
+
+        it( 'should use default or strict validation', function () {
+          var constraint = {
+            foo: new Assert().Required(),
+            bar: new Assert().Required(),
+            baz: new Assert().Required()
+          };
+
+          var strictConstraint = new Constraint( {
+            foo: new Assert().Required(),
+            bar: new Assert().Required(),
+            baz: new Assert().Required()
+          }, { strict: true } );
+
+          expect( validator.validate( {
+            foo:  42,
+            bar:  'bar',
+            qux:  'qux'
+          }, constraint ) ).to.be( true );
+
+          var result = validator.validate( {
+            foo:  42,
+            bar:  'bar',
+          }, strictConstraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.baz ).to.be.a( Violation );
+          expect( result.baz.assert ).to.be( 'HaveProperty' );
+          expect( result.baz.violation.value ).to.be( 'baz' );
+        } )
+
+        it( 'should validate an object with a complex constraint', function () {
           var constraint = new Constraint()
               .add( 'name', new Assert().Length( { min: 5, max: 15 } ) )
               .add( 'email', new Assert().NotBlank() );
 
           var result = validator.validate( { name: 'foo', email: '' }, constraint );
 
-          expect( result ).not.to.eql( {} );
+          expect( result ).not.to.be( true );
           expect( result ).to.have.key( 'name' );
           expect( result ).to.have.key( 'email' );
 
@@ -570,12 +627,12 @@ var Suite = function ( Validator, expect ) {
           expect( result.email[ 0 ].assert ).to.be( 'NotBlank' );
 
           result = validator.validate( { name: 'foo bar', email: '' }, constraint );
-          expect( result ).not.to.eql( {} );
+          expect( result ).not.to.be( true );
           expect( result ).not.to.have.key( 'name' );
           expect( result ).to.have.key( 'email' );
 
           result = validator.validate( { name: 'foo bar', email: 'foo@bar.baz' }, constraint );
-          expect( result ).to.eql( {} );
+          expect( result ).to.be( true );
         } )
 
         it( 'should validate an object against a validation object', function () {

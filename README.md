@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.3.2
+0.4.1
 
 ## Status
 
@@ -65,8 +65,7 @@ Validator.Validator().validate( 'foo', new Assert().Length( { min: 4 } ) );
 Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new Assert().Email() ] );
 
 ```
-will return `[]` if validation passes, a `Violation` array otherwise.
-
+will return `true` if validation passes, a `Violation`'s array otherwise.
 
 ## Validate an object
 
@@ -90,9 +89,8 @@ var object = {
 
 Validator.validate( object, constraint );
 ```
-will return `{}` if validation passes,
+will return `true` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
-
 
 ## Validation groups
 
@@ -108,8 +106,7 @@ With same objects than above, just by adding validation groups:
 
 Validator.validate( object, constraint, 'edit' );
 ```
-will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
-
+will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
 
 ## Bind a constraint to an object
 
@@ -117,6 +114,9 @@ will return `{}` in this case `{ firstname: [ Violation ], phone: [ Violation ] 
 Validator.bind( object, constraint );
 Validator.validate( object, groups );
 ```
+Under the hood, by default, a `_validatorjsConstraint` key will be created in object
+in order to store here the constraint. You could override this default key name by
+passing an option to Validator constructor.
 
 # Documentation
 
@@ -146,6 +146,31 @@ var constraint = new Constraint( { foo: length, bar: notBlank } );
 constraint.check( { foo: 'foo', bar: 'bar' } );
 ```
 
+### Strict Constraint validation
+
+By default, if Validator.js look into object properties if there are related nodes in
+Constraint object to validate them. That means that if Constraint have nodes not
+defined in validated object, there won't be Violations thrown and object would be
+considered as valid. If you want a strict validation (ie ensure that **every**)
+Constraint node is valid, you'll have to pass an optional parameter to your Constraint:
+
+```js
+var object = {
+    foo: 'foo',
+    bar: 'bar'
+};
+
+var constraint = new Constraint( {
+    foo: new Assert().Required(),
+    bar: new Assert().Required(),
+    baz: new Assert().Required()
+}, { strict: true });
+
+constraint.check( object );
+```
+will return a `HaveProperty` Violation, saying that `baz` property does not exist
+in validated object. Without `{ strict: true }` this check would return `true`.
+
 ## Available asserts
 
 ```js
@@ -164,6 +189,7 @@ new Assert().EqualTo( fn ( value ) {} );
 new Assert().GreaterThan( threshold );
 new Assert().GreaterThanOrEqual( threshold );
 new Assert().Length( { min: value, max: value } );
+new Assert().HaveProperty( propertyName );
 new Assert().LessThan( threshold );
 new Assert().LessThanOrEqual( threshold );
 new Assert().EqualTo( value );

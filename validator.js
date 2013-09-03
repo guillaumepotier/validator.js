@@ -12,7 +12,7 @@
   */
 
   var Validator = function ( options ) {
-    this.__version__ = '0.3.2';
+    this.__version__ = '0.4.0';
     this.__class__ = 'Validator';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
@@ -30,12 +30,15 @@
     * Validate binded object: validate( object, string ) || validate( object, [ string, string] )
     */
     validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
+      if ( 'string' !== typeof objectOrString && 'object' !== typeof objectOrString )
+        throw new Error( 'You must validate an object or a string' );
+
       // string validation
       if ( 'string' === typeof objectOrString)
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation
-      if ( 'object' === typeof objectOrString && this.isBinded( objectOrString ) )
+      if ( this.isBinded( objectOrString ) )
         return this._validateBindedObject( objectOrString, AssertsOrConstraintOrGroup );
 
       // regular object validation
@@ -88,10 +91,16 @@
           failures.push( result );
       }
 
-      return failures;
+      return failures.length ? failures : true;
     },
 
     _validateObject: function ( object, constraint, group ) {
+      if ( 'object' !== typeof constraint )
+        throw new Error( 'You must give a constraint to validate an object' );
+
+      if ( constraint instanceof Constraint )
+        return constraint.check( object, group );
+
       return new Constraint( constraint ).check( object, group );
     },
 
@@ -110,9 +119,9 @@
   * Constraint
   */
 
-  var Constraint = function ( data ) {
+  var Constraint = function ( data, options ) {
     this.__class__ = 'Constraint';
-
+    this.options = options || {};
     this.nodes = {};
 
     if ( data ) {
@@ -133,17 +142,27 @@
     check: function ( object, group ) {
       var result, failures = {};
 
-      for ( var property in object ) {
-        if ( this.has( property ) ) {
+      // check all constraint nodes if strict validation enabled. Else, only object nodes that have a constraint
+      for ( var property in this.options.strict ? this.nodes : object ) {
+        if ( this.options.strict ? this.has( property, object ) : this.has( property ) ) {
           result = this._check( property, object[ property ], group );
 
           // check returned an array of Violations or an object mapping Violations
           if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) )
             failures[ property ] = result;
+
+        // in strict mode, get a violation for each constraint node not in object
+        } else if ( this.options.strict ) {
+          try {
+            // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
+            new Assert().HaveProperty( property ).validate( object );
+          } catch ( violation ) {
+            failures[ property ] = violation;
+          }
         }
       }
 
-      return failures;
+      return _isEmptyObject(failures) ? true : failures;
     },
 
     add: function ( node, object ) {
@@ -162,8 +181,9 @@
       throw new Error( 'Should give an Assert, an Asserts array, a Constraint', object );
     },
 
-    has: function ( node ) {
-      return 'undefined' !== typeof this.nodes[ node.toLowerCase() ];
+    has: function ( node, nodes ) {
+      var nodes = 'undefined' !== typeof nodes ? nodes : this.nodes;
+      return 'undefined' !== typeof nodes[ node.toLowerCase() ];
     },
 
     get: function ( node, placeholder ) {
@@ -363,6 +383,20 @@
     /**
     * Asserts definitions
     */
+
+    HaveProperty: function ( node ) {
+      this.__class__ = 'HaveProperty';
+      this.node = node;
+
+      this.validate = function ( object ) {
+        if ( 'undefined' === typeof object[ this.node ] )
+          throw new Violation( this, object, { value: this.node } );
+
+        return true;
+      };
+
+      return this;
+    },
 
     Blank: function () {
       this.__class__ = 'Blank';
@@ -727,7 +761,7 @@
 
         if ( 'string' === typeof value )
           try {
-            this.NotNull.validate( value ) && this.NotBlank.validate( value );
+            this.NotNull().validate( value ) && this.NotBlank().validate( value );
           } catch ( violation ) {
             throw new Violation( this, value );
           }
@@ -815,19 +849,19 @@
     };
 
   // Test if object is empty, useful for Constraint violations check
-  _isEmptyObject = function ( obj ) {
+  var _isEmptyObject = function ( obj ) {
     for ( var property in obj )
       return false;
 
     return true;
   };
 
-  function _isArray ( obj ) {
+  var _isArray = function ( obj ) {
     return Object.prototype.toString.call( obj ) === '[object Array]';
   }
 
   // https://github.com/LearnBoost/expect.js/blob/master/expect.js
-  expect = {
+  var expect = {
     eql: function ( actual, expected ) {
       if ( actual === expected ) {
         return true;

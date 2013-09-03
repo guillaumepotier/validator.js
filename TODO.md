@@ -1,5 +1,6 @@
 ## TODOs
 
+- [DONE] add strict validation for objects
 - set up global and specific configs
 - [DONE] implement nested objects validation
 - implement validation for Collection of Models (unicity, range...)
