@@ -1,0 +1,36 @@
+{
+    "name": "guillaumepotier/validator.js",
+    "description": "Powerful object and string validation in Javascript.",
+    "keywords": ["validation", "validator"],
+    "type": "component",
+    "homepage": "http://validatorjs.org",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/guillaumepotier/validator.js/issues",
+        "source": "https://github.com/guillaumepotier/validator.js"
+    },
+    "authors": [
+        {
+            "name": "Guillaume Potier",
+            "email" : "guillaume@wisembly.com",
+            "url" : "http://guillaumepotier.com/"
+        }
+    ],
+    "require": {
+        "robloach/component-installer": "*"
+    },
+    "extra": {
+        "component": {
+            "name": "validator",
+            "scripts": [
+                "validator.js"
+            ],
+            "files": [
+                "validator.min.js"
+            ],
+            "shim": {
+                "exports": "Validator"
+            }
+        }
+    }
+}

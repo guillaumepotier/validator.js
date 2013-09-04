@@ -269,7 +269,7 @@
     show: function () {
       var show =  {
         assert: this.assert,
-        value: this.value,
+        value: this.value
       };
 
       if ( this.violation )
