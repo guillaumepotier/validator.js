@@ -12,7 +12,7 @@
   */
 
   var Validator = function ( options ) {
-    this.__version__ = '0.4.0';
+    this.__version__ = '0.4.3';
     this.__class__ = 'Validator';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
