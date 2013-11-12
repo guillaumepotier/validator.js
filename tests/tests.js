@@ -308,7 +308,9 @@ var Suite = function ( Validator, expect ) {
       it( 'Required', function () {
         assert = new Assert().Required();
 
-        expect( validate( '', assert ) ).not.to.be( true );
+        var result = validate( '', assert );
+        expect( result ).not.to.be( true );
+        expect( result.assert ).to.be("Required");
         expect( validate( 'bar', assert ) ).to.be( true );
       } )
 
