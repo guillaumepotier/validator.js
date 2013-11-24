@@ -14,6 +14,9 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 MIT - See LICENCE.md
 
+## Install
+
+`bower install validator.js`
 
 ## Run Tests
 
