@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**0.4.4**
+
+  - fixed Required validator (#5)
+  - updated package scripts
+
 **0.4.3**
 
   - added Mac() and IPv4() Asserts (#1)
