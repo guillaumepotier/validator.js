@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.4.5**
+
+  - bower stuff
+
 **0.4.4**
 
   - fixed Required validator (#5)
