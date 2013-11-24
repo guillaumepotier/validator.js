@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.4.6**
+
+  - validator.js is now AMD compliant to work with requirejs
+
 **0.4.5**
 
   - bower stuff

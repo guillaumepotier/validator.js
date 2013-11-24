@@ -992,4 +992,9 @@
       return true;
     }
   };
+
+  // AMD Compliance
+  if ( "function" === typeof define && define.amd ) {
+    define( function() { return exports; } );
+  }
 } )( 'undefined' === typeof exports ? this[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] = {} : exports );
