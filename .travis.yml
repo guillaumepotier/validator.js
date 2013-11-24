@@ -4,7 +4,6 @@ node_js:
   - 0.10.x
 
 before_script:
-  - npm install mocha
-  - npm install expect.js
+  - npm install
 
-script: mocha tests/server.js -R dot && mocha tests/server.min.js -R dot
+script: npm test

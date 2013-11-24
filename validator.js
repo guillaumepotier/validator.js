@@ -809,16 +809,13 @@
     Required: function () {
       this.__class__ = 'Required';
 
-      this.notNull = new Assert().NotNull();
-      this.notBlank = new Assert().NotBlank();
-
       this.validate = function ( value ) {
         if ( 'undefined' === typeof value )
           throw new Violation( this, value );
 
         if ( 'string' === typeof value )
           try {
-            this.notNull.validate( value ) && this.notBlank.validate( value );
+            new Assert().NotNull().validate( value ) && new Assert().NotBlank().validate( value );
           } catch ( violation ) {
             throw new Violation( this, value );
           }

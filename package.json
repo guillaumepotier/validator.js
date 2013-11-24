@@ -14,4 +14,7 @@
         "mocha": "*"
       , "expect.js": "*"
     }
+  , "scripts": {
+        "test": "mocha tests/server.js -R dot && mocha tests/server.min.js -R dot"
+  }
 }
