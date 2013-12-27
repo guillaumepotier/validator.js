@@ -1,7 +1,7 @@
 /*!
 * Validator.js
 * <guillaume@wisembly.com>
-* MIT Licenced
+* MIT Licensed
 *
 */
 
@@ -12,7 +12,7 @@
   */
 
   var Validator = function ( options ) {
-    this.__version__ = '0.4.3';
+    this.__version__ = '0.4.7';
     this.__class__ = 'Validator';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
@@ -109,7 +109,7 @@
     }
   };
 
-  Validator.const = {
+  Validator.errorCode = {
     must_be_a_string: 'must_be_a_string',
     must_be_an_array: 'must_be_an_array',
     must_be_a_number: 'must_be_a_number'
@@ -238,7 +238,7 @@
         // Some asserts (Collection for example) could return an object
         // if ( result && ! ( result instanceof Violation ) )
         //   return result;
-        // 
+        //
         // // Vast assert majority return Violation
         // if ( result instanceof Violation )
         //   failures.push( result );
@@ -403,7 +403,7 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( '' !== value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
           throw new Violation( this, value );
@@ -463,7 +463,7 @@
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
         if ( !_isArray( collection ) )
-          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
 
         for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
@@ -488,7 +488,7 @@
 
       this.validate = function ( array ) {
         if ( !_isArray( array ) )
-          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
 
         var count = 'function' === typeof this.count ? this.count( array ) : this.count;
 
@@ -511,7 +511,7 @@
         var regExp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
 
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( !regExp.test( value ) )
           throw new Violation( this, value );
@@ -572,7 +572,7 @@
 
       this.validate = function ( value ) {
         if ( isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold >= value )
           throw new Violation( this, value, { threshold: this.threshold } );
@@ -626,7 +626,7 @@
         var regExp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( !regExp.test( value ) )
           throw new Violation( this, value );
@@ -648,7 +648,7 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
           throw new Violation( this, value, { min: this.min, max: this.max } );
@@ -675,7 +675,7 @@
 
       this.validate = function ( value ) {
         if ( isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold <= value )
           throw new Violation( this, value, { threshold: this.threshold } );
@@ -711,7 +711,7 @@
         var regExp = /^(?:[0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
 
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( !regExp.test( value ) )
           throw new Violation( this, value );
@@ -740,7 +740,7 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
           throw new Violation( this, value );
@@ -795,7 +795,7 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.const.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
         if ( !new RegExp( this.regexp ).test( value, this.flag ) )
           throw new Violation( this, value, { regexp: this.regexp, flag: this.flag } );
@@ -837,7 +837,7 @@
         var value, store = [];
 
         if ( !_isArray( array ) )
-          throw new Violation( this, array, { value: Validator.const.must_be_an_array } );
+          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
 
         for ( var i = 0; i < array.length; i++ ) {
           value = 'object' === typeof array[ i ] ? array[ i ][ this.key ] : array[ i ];

@@ -4,15 +4,15 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.4.6
+0.4.7
 
 ## Status
 
 [![Build Status](https://travis-ci.org/guillaumepotier/validator.js.png?branch=master)](https://travis-ci.org/guillaumepotier/validator.js)
 
-## Licence
+## License
 
-MIT - See LICENCE.md
+MIT - See LICENSE.md
 
 ## Install
 

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.4.7**
+
+    - renamed `Validator.const` to avoid IE7/8 errors
+
 **0.4.6**
 
   - validator.js is now AMD compliant to work with requirejs
