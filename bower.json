@@ -23,9 +23,7 @@
     "bin",
     "src",
     "tests",
-    "*.md",
     "*.json",
-    ".bower.json",
     ".gitignore",
     ".travis.yml",
     "Gruntfile.js"

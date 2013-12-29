@@ -46,10 +46,6 @@
       return this._validateObject( objectOrString, AssertsOrConstraintOrGroup, group );
     },
 
-    version: function () {
-      return this.__version__;
-    },
-
     bind: function ( object, constraint ) {
       if ( 'object' !== typeof object )
         throw new Error( 'Must bind a Constraint to an object' );
