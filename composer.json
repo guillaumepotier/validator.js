@@ -23,10 +23,10 @@
         "component": {
             "name": "validator",
             "scripts": [
-                "validator.js"
+                "./dist/validator.js"
             ],
             "files": [
-                "validator.min.js"
+                "./dist/validator.min.js"
             ],
             "shim": {
                 "exports": "Validator"

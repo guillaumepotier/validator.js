@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.4.8 - built Sun Dec 29 2013 19:25:59
+* Version 0.4.9 - built Sun Dec 29 2013 19:33:47
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.4.8';
+    this.__version__ = '0.4.9';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 

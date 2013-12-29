@@ -1,13 +1,16 @@
 {
   "name": "validator.js",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "license": "MIT",
   "author": {
     "name": "Guillaume Potier",
     "email": "guillaume@wisembly.com",
     "url": "http://guillaumepotier.com/"
   },
-  "main": "./dist/validator",
+  "main": [
+    "./dist/validator",
+    "./dist/validator.min"
+  ],
   "keywords": [
     "validation",
     "validator",
@@ -17,6 +20,7 @@
   ],
   "ignore": [
     "bin",
+    "src",
     "tests",
     "*.md",
     "*.json",
