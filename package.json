@@ -1,20 +1,31 @@
 {
-    "name": "validator.js"
-  , "version": "0.4.7"
-  , "license" : "MIT"
-  , "description": "Powerful object and string validation in Javascript."
-  , "keywords": ["validation", "validator"]
-  , "author": {
-        "name": "Guillaume Potier"
-      , "email" : "guillaume@wisembly.com"
-      , "url" : "http://guillaumepotier.com/"
-  }
-  , "main": "./validator"
-  , "devDependencies": {
-        "mocha": "*"
-      , "expect.js": "*"
-    }
-  , "scripts": {
-        "test": "mocha tests/server.js -R dot && mocha tests/server.min.js -R dot"
+  "name": "validator.js",
+  "version": "0.4.8",
+  "license": "MIT",
+  "description": "Powerful object and string validation in Javascript.",
+  "keywords": [
+    "validation",
+    "validator",
+    "node",
+    "browser",
+    "library"
+  ],
+  "author": {
+    "name": "Guillaume Potier",
+    "email": "guillaume@wisembly.com",
+    "url": "http://guillaumepotier.com/"
+  },
+  "main": "./dist/validator",
+  "devDependencies": {
+    "mocha": "*",
+    "expect.js": "*",
+    "grunt": "~0.4.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-replace": "~0.5.1",
+    "grunt-npm2bower-sync": "~0.3.0"
+  },
+  "scripts": {
+    "test": "mocha tests/server.js -R dot && mocha tests/server.min.js -R dot"
   }
 }

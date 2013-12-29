@@ -1,7 +1,8 @@
 /*!
-* Validator.js
-* <guillaume@wisembly.com>
-* MIT Licensed
+* @@name
+* @@author
+* Version @@version - built @@timestamp
+* @@license Licensed
 *
 */
 
@@ -12,8 +13,8 @@
   */
 
   var Validator = function ( options ) {
-    this.__version__ = '0.4.7';
     this.__class__ = 'Validator';
+    this.__version__ = '@@version';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -995,6 +996,6 @@
 
   // AMD Compliance
   if ( "function" === typeof define && define.amd ) {
-    define( function() { return exports; } );
+    define( 'validator', function() { return exports; } );
   }
 } )( 'undefined' === typeof exports ? this[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] = {} : exports );

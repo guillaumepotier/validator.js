@@ -1,18 +1,27 @@
 {
   "name": "validator.js",
-  "version": "0.4.6",
-  "main": "validator.js",
+  "version": "0.4.8",
+  "license": "MIT",
+  "author": {
+    "name": "Guillaume Potier",
+    "email": "guillaume@wisembly.com",
+    "url": "http://guillaumepotier.com/"
+  },
+  "main": "./dist/validator",
+  "keywords": [
+    "validation",
+    "validator",
+    "node",
+    "browser",
+    "library"
+  ],
   "ignore": [
     "bin",
     "tests",
     "*.md",
-    "*.json"
-  ],
-  "keywords": [
-    "validator",
-    "validation",
-    "node",
-    "browser",
-    "library"
+    "*.json",
+    ".bower.json",
+    ".gitignore",
+    ".travis.yml"
   ]
 }

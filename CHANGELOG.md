@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**0.4.8**
+
+    - named validator AMD define
+    - added grunt tasks to automate builds
+
 **0.4.7**
 
     - renamed `Validator.const` to avoid IE7/8 errors
