@@ -1,6 +1,6 @@
 {
   "name": "validator.js",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "license": "MIT",
   "author": {
     "name": "Guillaume Potier",
@@ -19,6 +19,7 @@
     "library"
   ],
   "ignore": [
+    "**/.*",
     "bin",
     "src",
     "tests",
@@ -26,6 +27,7 @@
     "*.json",
     ".bower.json",
     ".gitignore",
-    ".travis.yml"
+    ".travis.yml",
+    "Gruntfile.js"
   ]
 }

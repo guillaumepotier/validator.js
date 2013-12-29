@@ -1,6 +1,6 @@
 # CHANGELOG
 
-**0.4.8**
+**0.4.10**
 
     - named validator AMD define
     - added grunt tasks to automate builds
