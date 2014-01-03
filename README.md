@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.4.11
+0.4.12
 
 ## Status
 
@@ -178,7 +178,7 @@ in validated object. Without `{ strict: true }` this check would return `true`.
 
 ```js
 new Assert().Blank();
-new Assert().Callback( fn ( value ) {} );
+new Assert().Callback( fn ( value ) {} [, arg1 ...] );
 new Assert().Choice( [] );
 new Assert().Choice( fn () {} );
 new Assert().Collection ( Constraint );
@@ -249,11 +249,11 @@ it( 'Collection', function () {
 
 ### Callback Assert
 
-This assert allows you to all the custom rules / assert you want. Just give a
+This assert allows you to add the custom rules / assert you want. Just give a
 callback function that will be called with the value to be tested against.
 Return true for validation success, everything else if there is an error.
 
-Here is an example of test suite test showing how this assert works:
+Here is an example from test suite test showing how this assert works:
 
 ```js
 it( 'Callback', function () {
@@ -266,5 +266,12 @@ it( 'Callback', function () {
   expect( validate( 3, assert ) ).not.to.be( true );
   expect( validate( 3, assert ).show() ).to.eql( { assert: 'Callback', value: 3, violation: { result: 0 } } );
   expect( validate( 42, assert ) ).to.be( true );
+
+  // improved Callback
+  assert = new Assert().Callback( function ( value, string1, string2 ) {
+    return value + string1 + string2 === 'foobarbaz';
+  }, 'bar', 'baz' );
+  expect( validate( 'foo', assert ) ).to.be( true );
+  expect( validate( 'bar', assert ) ).to.be( false );
 } )
 ```

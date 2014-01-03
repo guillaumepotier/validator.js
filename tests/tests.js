@@ -264,6 +264,12 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 3, assert ) ).not.to.be( true );
         expect( validate( 3, assert ).show() ).to.eql( { assert: 'Callback', value: 3, violation: { result: 0 } } );
         expect( validate( 42, assert ) ).to.be( true );
+
+        // improved Callback
+        assert = new Assert().Callback( function ( value, string1, string2 ) {
+          return value + string1 + string2 === 'foobarbaz';
+        }, 'bar', 'baz' );
+        expect( validate( 'foo', assert ) ).to.be( true );
       } )
 
       it( 'Choice', function () {

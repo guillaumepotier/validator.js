@@ -2,6 +2,10 @@
 
 **0.4.11**
 
+    - allowed Callback Assert to have multiple configuration parameters
+
+**0.4.11**
+
     - allow groups to be numeric
 
 **0.4.10**
