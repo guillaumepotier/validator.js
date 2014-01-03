@@ -517,7 +517,7 @@ var Suite = function ( Validator, expect ) {
               qux: {
                 bux: new Assert().NotNull()
               }
-            }   
+            }
           });
 
           expect( constraint ).to.be.a( Constraint );
@@ -588,6 +588,15 @@ var Suite = function ( Validator, expect ) {
           expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be( true );
           expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be( true );
           expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be( true );
+        } )
+
+        it( 'should use numbers as groups for validation', function () {
+          var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 512 ), new Assert().Length( { min: 8 } ).addGroup( 1024 ), new Assert().Length( { min: 2 } ) ];
+          expect( validator.validate( 'foo', asserts ) ).to.be( true );
+          expect( validator.validate( 'foo', asserts, 512 ) ).not.to.be( true );
+          expect( validator.validate( 'foofoo', asserts, 512 ) ).to.be( true );
+          expect( validator.validate( 'foofoo', asserts, 1024 ) ).not.to.be( true );
+          expect( validator.validate( 'foofoofoo', asserts, 1024 ) ).to.be( true );
         } )
       })
 
@@ -729,7 +738,7 @@ var Suite = function ( Validator, expect ) {
                 qux: {
                   bux: new Assert().NotNull()
                 }
-              }   
+              }
             });
 
             var result = validator.validate( object, constraint );

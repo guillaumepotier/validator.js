@@ -35,7 +35,7 @@
         throw new Error( 'You must validate an object or a string' );
 
       // string validation
-      if ( 'string' === typeof objectOrString)
+      if ( 'string' === typeof objectOrString )
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation
@@ -326,7 +326,7 @@
     },
 
     hasGroup: function ( group ) {
-      if ( 'string' !== typeof group )
+      if ( _isArray( group ) )
         return this.hasOneOf( group );
 
       // Asserts with no group also respond to "Default" group. Else return false

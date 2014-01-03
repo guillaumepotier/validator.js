@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.4.11**
+
+    - allow groups to be numeric
+
 **0.4.10**
 
     - named validator AMD define

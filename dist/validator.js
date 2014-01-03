@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.4.10 - built Sun Dec 29 2013 19:39:48
+* Version 0.4.11 - built Fri Jan 03 2014 11:03:54
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.4.10';
+    this.__version__ = '0.4.11';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -35,7 +35,7 @@
         throw new Error( 'You must validate an object or a string' );
 
       // string validation
-      if ( 'string' === typeof objectOrString)
+      if ( 'string' === typeof objectOrString )
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation
@@ -44,10 +44,6 @@
 
       // regular object validation
       return this._validateObject( objectOrString, AssertsOrConstraintOrGroup, group );
-    },
-
-    version: function () {
-      return this.__version__;
     },
 
     bind: function ( object, constraint ) {
@@ -330,7 +326,7 @@
     },
 
     hasGroup: function ( group ) {
-      if ( 'string' !== typeof group )
+      if ( _isArray( group ) )
         return this.hasOneOf( group );
 
       // Asserts with no group also respond to "Default" group. Else return false
