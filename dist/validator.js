@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.4.12 - built Fri Jan 03 2014 14:58:03
+* Version 0.5.0 - built Sat Jan 04 2014 12:54:35
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.4.12';
+    this.__version__ = '0.5.0';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -328,6 +328,10 @@
     hasGroup: function ( group ) {
       if ( _isArray( group ) )
         return this.hasOneOf( group );
+
+      // All Asserts respond to "Any" group
+      if ( 'Any' === group )
+        return true;
 
       // Asserts with no group also respond to "Default" group. Else return false
       if ( !this.hasGroups() )

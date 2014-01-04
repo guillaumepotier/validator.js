@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.4.12
+0.5.0
 
 ## Status
 
@@ -110,6 +110,9 @@ With same objects than above, just by adding validation groups:
 Validator.validate( object, constraint, 'edit' );
 ```
 will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
+There are two special groups: "Any" and "Default". Validating against `"Any"` group will validate
+against all Asserts, regardless their groups. Validating against `"Default"` group will only
+validate against Asserts that do not have a validation group.
 
 ## Bind a constraint to an object
 

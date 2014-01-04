@@ -834,6 +834,14 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'qux' );
         } )
 
+        it( 'should validate against all Asserts with "Any" group', function () {
+          var result = validator.validate( object, constraint, 'Any' );
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).to.have.key( 'bar' );
+          expect( result ).to.have.key( 'baz' );
+          expect( result ).to.have.key( 'qux' );
+        } )
+
         it( 'should validate only a specific validation group', function () {
           var result = validator.validate( object, constraint, 'foo' );
           expect( result ).to.have.key( 'foo' );

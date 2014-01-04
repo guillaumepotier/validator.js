@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.0**
+
+    - it is now possible to validate string/obj against all Asserts with "Any" group
+
 **0.4.11**
 
     - allowed Callback Assert to have multiple configuration parameters
