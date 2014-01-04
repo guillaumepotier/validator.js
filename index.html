@@ -39,7 +39,7 @@
 <h2>
 <a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
 
-<p>0.4.3</p>
+<p>0.5.0</p>
 
 <h2>
 <a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h2>
@@ -47,9 +47,14 @@
 <p><a href="https://travis-ci.org/guillaumepotier/validator.js"><img src="https://travis-ci.org/guillaumepotier/validator.js.png?branch=master" alt="Build Status"></a></p>
 
 <h2>
-<a name="licence" class="anchor" href="#licence"><span class="octicon octicon-link"></span></a>Licence</h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
-<p>MIT - See LICENCE.md</p>
+<p>MIT - See LICENSE.md</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p><code>bower install validator.js</code></p>
 
 <h2>
 <a name="run-tests" class="anchor" href="#run-tests"><span class="octicon octicon-link"></span></a>Run Tests</h2>
@@ -109,7 +114,7 @@ console.log(Validator);
 </ul><h2>
 <a name="validate-a-string" class="anchor" href="#validate-a-string"><span class="octicon octicon-link"></span></a>Validate a string</h2>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
 
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">4</span> <span class="p">}</span> <span class="p">)</span> <span class="p">);</span>
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">4</span> <span class="p">}</span> <span class="p">),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">()</span> <span class="p">]</span> <span class="p">);</span>
@@ -121,7 +126,7 @@ console.log(Validator);
 <h2>
 <a name="validate-an-object" class="anchor" href="#validate-an-object"><span class="octicon octicon-link"></span></a>Validate an object</h2>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
     <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
     <span class="nx">Constraint</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">;</span>
 
@@ -149,7 +154,7 @@ console.log(Validator);
 
 <p>With same objects than above, just by adding validation groups:</p>
 
-<div class="highlight"><pre>  <span class="nx">constraint</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight highlight-js"><pre>  <span class="nx">constraint</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">name</span><span class="o">:</span>      <span class="p">[</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">(),</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">).</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">25</span> <span class="p">}</span> <span class="p">)</span> <span class="p">],</span>
     <span class="nx">email</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Email</span><span class="p">(),</span>
     <span class="nx">firstname</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'edit'</span><span class="p">,</span> <span class="s1">'register'</span><span class="p">]</span> <span class="p">).</span><span class="nx">NotBlank</span><span class="p">(),</span>
@@ -159,12 +164,15 @@ console.log(Validator);
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
 </pre></div>
 
-<p>will return <code>true</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
+<p>will return <code>true</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.
+There are two special groups: "Any" and "Default". Validating against <code>"Any"</code> group will validate
+against all Asserts, regardless their groups. Validating against <code>"Default"</code> group will only
+validate against Asserts that do not have a validation group.</p>
 
 <h2>
 <a name="bind-a-constraint-to-an-object" class="anchor" href="#bind-a-constraint-to-an-object"><span class="octicon octicon-link"></span></a>Bind a constraint to an object</h2>
 
-<div class="highlight"><pre><span class="nx">Validator</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
+<div class="highlight highlight-js"><pre><span class="nx">Validator</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 <span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">groups</span> <span class="p">);</span>
 </pre></div>
 
@@ -183,7 +191,7 @@ property must pass during validation process. There are several Asserts built in
 Validator.js (see below), but you can implement yours for your needs using the
 <code>Callback()</code> assert (see below).</p>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
 <span class="k">try</span> <span class="p">{</span>
   <span class="nx">length</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="s1">'foo'</span> <span class="p">);</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span> <span class="nx">violation</span> <span class="p">)</span> <span class="p">{}</span>
@@ -194,7 +202,7 @@ Validator.js (see below), but you can implement yours for your needs using the
 
 <p>A Constraint is a set of asserts nodes that would be used to validate an object.</p>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">length</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">Length</span><span class="p">(</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
 <span class="kd">var</span> <span class="nx">notBlank</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">();</span>
 <span class="kd">var</span> <span class="nx">constraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foo</span><span class="o">:</span> <span class="nx">length</span><span class="p">,</span> <span class="nx">bar</span><span class="o">:</span> <span class="nx">notBlank</span> <span class="p">}</span> <span class="p">);</span>
 
@@ -210,7 +218,7 @@ defined in validated object, there won't be Violations thrown and object would b
 considered as valid. If you want a strict validation (ie ensure that <strong>every</strong>)
 Constraint node is valid, you'll have to pass an optional parameter to your Constraint:</p>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">foo</span><span class="o">:</span> <span class="s1">'foo'</span><span class="p">,</span>
     <span class="nx">bar</span><span class="o">:</span> <span class="s1">'bar'</span>
 <span class="p">};</span>
@@ -230,8 +238,8 @@ in validated object. Without <code>{ strict: true }</code> this check would retu
 <h2>
 <a name="available-asserts" class="anchor" href="#available-asserts"><span class="octicon octicon-link"></span></a>Available asserts</h2>
 
-<div class="highlight"><pre><span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Blank</span><span class="p">();</span>
-<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">);</span>
+<div class="highlight highlight-js"><pre><span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Blank</span><span class="p">();</span>
+<span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{}</span> <span class="p">[,</span> <span class="nx">arg1</span> <span class="p">...]</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Choice</span><span class="p">(</span> <span class="p">[]</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Choice</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">()</span> <span class="p">{}</span> <span class="p">);</span>
 <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Collection</span> <span class="p">(</span> <span class="nx">Constraint</span> <span class="p">);</span>
@@ -271,7 +279,7 @@ an object's array by checking each one of them against a constraint.</p>
 
 <p>Here is an example of test suite test showing how this assert works:</p>
 
-<div class="highlight"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Collection'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<div class="highlight highlight-js"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Collection'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">itemConstraint</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Constraint</span><span class="p">(</span> <span class="p">{</span> <span class="nx">foobar</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">(),</span> <span class="nx">foobaz</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotNull</span><span class="p">()</span> <span class="p">}</span> <span class="p">),</span>
     <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
       <span class="nx">foo</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
@@ -303,13 +311,13 @@ an object's array by checking each one of them against a constraint.</p>
 <h3>
 <a name="callback-assert" class="anchor" href="#callback-assert"><span class="octicon octicon-link"></span></a>Callback Assert</h3>
 
-<p>This assert allows you to all the custom rules / assert you want. Just give a
+<p>This assert allows you to add the custom rules / assert you want. Just give a
 callback function that will be called with the value to be tested against.
 Return true for validation success, everything else if there is an error.</p>
 
-<p>Here is an example of test suite test showing how this assert works:</p>
+<p>Here is an example from test suite test showing how this assert works:</p>
 
-<div class="highlight"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Callback'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<div class="highlight highlight-js"><pre><span class="nx">it</span><span class="p">(</span> <span class="s1">'Callback'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="nx">assert</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">calc</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">42</span> <span class="o">/</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">;</span>
 
@@ -319,6 +327,13 @@ Return true for validation success, everything else if there is an error.</p>
   <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
   <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">).</span><span class="nx">show</span><span class="p">()</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">eql</span><span class="p">(</span> <span class="p">{</span> <span class="nx">assert</span><span class="o">:</span> <span class="s1">'Callback'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="nx">violation</span><span class="o">:</span> <span class="p">{</span> <span class="nx">result</span><span class="o">:</span> <span class="mi">0</span> <span class="p">}</span> <span class="p">}</span> <span class="p">);</span>
   <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="mi">42</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+
+  <span class="c1">// improved Callback</span>
+  <span class="nx">assert</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">Callback</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">string1</span><span class="p">,</span> <span class="nx">string2</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">value</span> <span class="o">+</span> <span class="nx">string1</span> <span class="o">+</span> <span class="nx">string2</span> <span class="o">===</span> <span class="s1">'foobarbaz'</span><span class="p">;</span>
+  <span class="p">},</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'baz'</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span> <span class="nx">validate</span><span class="p">(</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="nx">assert</span> <span class="p">)</span> <span class="p">).</span><span class="nx">to</span><span class="p">.</span><span class="nx">be</span><span class="p">(</span> <span class="kc">false</span> <span class="p">);</span>
 <span class="p">}</span> <span class="p">)</span>
 </pre></div>
         </section>
