@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.1**
+
+    - Violation now stors whole Assert not only Assert.__class__
+
 **0.5.0**
 
     - it is now possible to validate string/obj against all Asserts with "Any" group

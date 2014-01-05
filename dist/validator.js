@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.0 - built Sat Jan 04 2014 12:54:35
+* Version 0.5.1 - built Sun Jan 05 2014 17:05:46
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.5.0';
+    this.__version__ = '0.5.1';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -255,17 +255,17 @@
     if ( ! ( assert instanceof Assert ) )
       throw new Error( 'Should give an assertion implementing the Assert interface' );
 
-    this.assert = assert.__class__;
+    this.assert = assert;
     this.value = value;
 
-    if ( 'undefined' !== typeof violation)
+    if ( 'undefined' !== typeof violation )
       this.violation = violation;
   };
 
   Violation.prototype = {
     show: function () {
       var show =  {
-        assert: this.assert,
+        assert: this.assert.__class__,
         value: this.value
       };
 
@@ -279,7 +279,7 @@
       if ( 'undefined' !== typeof this.violation )
         var violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
 
-      return this.assert + ' assert failed for "' + this.value + violation || '';
+      return this.assert.__class__ + ' assert failed for "' + this.value + violation || '';
     },
 
     getViolation: function () {

@@ -316,7 +316,7 @@ var Suite = function ( Validator, expect ) {
 
         var result = validate( '', assert );
         expect( result ).not.to.be( true );
-        expect( result.assert ).to.be("Required");
+        expect( result.assert.__class__ ).to.be("Required");
         expect( validate( 'bar', assert ) ).to.be( true );
       } )
 
@@ -345,7 +345,7 @@ var Suite = function ( Validator, expect ) {
         expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobar' );
         expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobaz' );
         expect( result.items[ 1 ] ).to.be.a( Violation );
-        expect( result.items[ 1 ].assert ).to.be( 'Count' );
+        expect( result.items[ 1 ].assert.__class__ ).to.be( 'Count' );
       } )
 
       it( 'Collection with binded objects', function () {
@@ -376,7 +376,7 @@ var Suite = function ( Validator, expect ) {
             expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobar' );
             expect( result.items[ 0 ][ 2 ] ).to.have.key( 'foobaz' );
             expect( result.items[ 1 ] ).to.be.a( Violation );
-            expect( result.items[ 1 ].assert ).to.be( 'Count' );
+            expect( result.items[ 1 ].assert.__class__ ).to.be( 'Count' );
       } )
 
       it( 'Unique', function () {
@@ -580,11 +580,11 @@ var Suite = function ( Validator, expect ) {
           var violations = validator.validate( '', asserts );
           expect( violations ).to.have.length( 2 );
           expect( violations[ 0 ] ).to.be.a( Validator.Violation );
-          expect( violations[ 0 ].assert ).to.be( 'Length' );
-          expect( violations[ 1 ].assert ).to.be( 'NotBlank' );
+          expect( violations[ 0 ].assert.__class__ ).to.be( 'Length' );
+          expect( violations[ 1 ].assert.__class__ ).to.be( 'NotBlank' );
           violations = validator.validate( 'foo', asserts );
           expect( violations ).to.have.length( 1 );
-          expect( violations[ 0 ].assert ).to.be( 'Length' );
+          expect( violations[ 0 ].assert.__class__).to.be( 'Length' );
         } )
 
         it( 'should use groups for validation', function() {
@@ -652,7 +652,7 @@ var Suite = function ( Validator, expect ) {
 
           expect( result ).not.to.be( true );
           expect( result.baz ).to.be.a( Violation );
-          expect( result.baz.assert ).to.be( 'HaveProperty' );
+          expect( result.baz.assert.__class__ ).to.be( 'HaveProperty' );
           expect( result.baz.violation.value ).to.be( 'baz' );
         } )
 
@@ -669,8 +669,8 @@ var Suite = function ( Validator, expect ) {
 
           expect( result.name[ 0 ] ).to.be.a( Violation );
           expect( result.email[ 0 ] ).to.be.a( Violation );
-          expect( result.name[ 0 ].assert ).to.be( 'Length' );
-          expect( result.email[ 0 ].assert ).to.be( 'NotBlank' );
+          expect( result.name[ 0 ].assert.__class__ ).to.be( 'Length' );
+          expect( result.email[ 0 ].assert.__class__ ).to.be( 'NotBlank' );
 
           result = validator.validate( { name: 'foo bar', email: '' }, constraint );
           expect( result ).not.to.be( true );
@@ -752,7 +752,7 @@ var Suite = function ( Validator, expect ) {
             expect( result.foo ).to.be.an( Array );
             expect( result.foo ).to.have.length( 2 );
             expect( result.foo[ 0 ] ).to.be.a( Violation );
-            expect( result.foo[ 0 ].assert ).to.be( 'NotNull' );
+            expect( result.foo[ 0 ].assert.__class__ ).to.be( 'NotNull' );
             expect( result.bar ).to.have.key( 'baz' );
             expect( result.bar ).to.have.key( 'qux' );
             expect( result.bar.baz ).to.be.an( Array );
