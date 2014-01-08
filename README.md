@@ -9,6 +9,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 ## Status
 
 [![Build Status](https://travis-ci.org/guillaumepotier/validator.js.png?branch=master)](https://travis-ci.org/guillaumepotier/validator.js)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/guillaumepotier/validator.js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 ## License
 
