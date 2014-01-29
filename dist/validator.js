@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.1 - built Sun Jan 05 2014 17:05:46
+* Version 0.5.2 - built Wed Jan 29 2014 22:52:11
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.5.1';
+    this.__version__ = '0.5.2';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -109,7 +109,8 @@
   Validator.errorCode = {
     must_be_a_string: 'must_be_a_string',
     must_be_an_array: 'must_be_an_array',
-    must_be_a_number: 'must_be_a_number'
+    must_be_a_number: 'must_be_a_number',
+    must_be_a_string_or_array: 'must_be_a_string_or_array'
   };
 
   /**
@@ -655,8 +656,8 @@
       this.max = boundaries.max;
 
       this.validate = function ( value ) {
-        if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+        if ( 'string' !== typeof value && !_isArray( value ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array } );
 
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
           throw new Violation( this, value, { min: this.min, max: this.max } );

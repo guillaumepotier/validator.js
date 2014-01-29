@@ -185,8 +185,10 @@ var Suite = function ( Validator, expect ) {
         expect( validate( null, assert ) ).not.to.be( true );
         expect( validate( '', assert ) ).not.to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
-        expect( validate( false, assert ).show() ).to.eql( { assert: 'Length', value: false, violation: { value: 'must_be_a_string' } } );
+        expect( validate( false, assert ).show() ).to.eql( { assert: 'Length', value: false, violation: { value: 'must_be_a_string_or_array' } } );
         expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( ['foo', 'bar', 'baz'], assert ) ).to.be(true);
+        expect( validate( ['foo'], assert ).show() ).to.eql( { assert: 'Length', value: ['foo'], violation: { min: 3 } } );
         expect( validate( 'f', assert ).show() ).to.eql( { assert: 'Length', value: 'f', violation: { min: 3 } } );
         expect( validate( 'f', assert ) ).not.to.be( true );
 

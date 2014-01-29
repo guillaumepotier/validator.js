@@ -109,7 +109,8 @@
   Validator.errorCode = {
     must_be_a_string: 'must_be_a_string',
     must_be_an_array: 'must_be_an_array',
-    must_be_a_number: 'must_be_a_number'
+    must_be_a_number: 'must_be_a_number',
+    must_be_a_string_or_array: 'must_be_a_string_or_array'
   };
 
   /**
@@ -655,8 +656,8 @@
       this.max = boundaries.max;
 
       this.validate = function ( value ) {
-        if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+        if ( 'string' !== typeof value && !_isArray( value ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array } );
 
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
           throw new Violation( this, value, { min: this.min, max: this.max } );

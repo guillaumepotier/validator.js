@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.2**
+
+    - Length validator now accepts arrays too
+
 **0.5.1**
 
     - Violation now stors whole Assert not only Assert.__class__
