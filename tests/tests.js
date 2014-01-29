@@ -187,14 +187,20 @@ var Suite = function ( Validator, expect ) {
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( false, assert ).show() ).to.eql( { assert: 'Length', value: false, violation: { value: 'must_be_a_string_or_array' } } );
         expect( validate( 'foo', assert ) ).to.be( true );
-        expect( validate( ['foo', 'bar', 'baz'], assert ) ).to.be(true);
-        expect( validate( ['foo'], assert ).show() ).to.eql( { assert: 'Length', value: ['foo'], violation: { min: 3 } } );
         expect( validate( 'f', assert ).show() ).to.eql( { assert: 'Length', value: 'f', violation: { min: 3 } } );
         expect( validate( 'f', assert ) ).not.to.be( true );
 
         assert = new Assert().Length( { max: 10 } );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
         expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { max: 10 } } );
+      } )
+
+      it( 'Length for arrays', function () {
+        assert = new Assert().Length( { min: 3, max: 5 } );
+        expect( validator.validate([], assert) ).not.to.be( true );
+        expect( validator.validate(['foo'], assert) ).not.to.be( true );
+        expect( validator.validate(['foo', 'bar', 'baz'], assert) ).to.be( true );
+        expect( validator.validate(['foo', 'bar', 'baz', 'qux', 'bux', 'pux'], assert) ).not.to.be( true );
       } )
 
       it( 'Email', function () {

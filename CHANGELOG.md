@@ -1,33 +1,37 @@
 # CHANGELOG
 
+**0.5.3**
+
+ - Fixed array validation for Length Validator
+
 **0.5.2**
 
-    - Length validator now accepts arrays too
+  - Length validator now accepts arrays too
 
 **0.5.1**
 
-    - Violation now stors whole Assert not only Assert.__class__
+  - Violation now stors whole Assert not only Assert.__class__
 
 **0.5.0**
 
-    - it is now possible to validate string/obj against all Asserts with "Any" group
+  - it is now possible to validate string/obj against all Asserts with "Any" group
 
 **0.4.11**
 
-    - allowed Callback Assert to have multiple configuration parameters
+  - allowed Callback Assert to have multiple configuration parameters
 
 **0.4.11**
 
-    - allow groups to be numeric
+  - allow groups to be numeric
 
 **0.4.10**
 
-    - named validator AMD define
-    - added grunt tasks to automate builds
+  - named validator AMD define
+  - added grunt tasks to automate builds
 
 **0.4.7**
 
-    - renamed `Validator.const` to avoid IE7/8 errors
+  - renamed `Validator.const` to avoid IE7/8 errors
 
 **0.4.6**
 

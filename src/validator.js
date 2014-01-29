@@ -26,16 +26,16 @@
     constructor: Validator,
 
     /*
-    * Validate string: validate( string, string ) || validate( string, [ string, string] )
-    * Validate object: validate( object, constraint, string ) || validate( object, constraint, [ string, string ] )
-    * Validate binded object: validate( object, string ) || validate( object, [ string, string] )
+    * Validate string: validate( string, Assert, string ) || validate( string, [ Assert, Assert ], [ string, string ] )
+    * Validate object: validate( object, Constraint, string ) || validate( object, Constraint, [ string, string ] )
+    * Validate binded object: validate( object, string ) || validate( object, [ string, string ] )
     */
     validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
       if ( 'string' !== typeof objectOrString && 'object' !== typeof objectOrString )
         throw new Error( 'You must validate an object or a string' );
 
-      // string validation
-      if ( 'string' === typeof objectOrString )
+      // string / array validation
+      if ( 'string' === typeof objectOrString || _isArray(objectOrString) )
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation

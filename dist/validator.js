@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.2 - built Wed Jan 29 2014 22:52:11
+* Version 0.5.3 - built Wed Jan 29 2014 23:29:01
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.5.2';
+    this.__version__ = '0.5.3';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -26,16 +26,16 @@
     constructor: Validator,
 
     /*
-    * Validate string: validate( string, string ) || validate( string, [ string, string] )
-    * Validate object: validate( object, constraint, string ) || validate( object, constraint, [ string, string ] )
-    * Validate binded object: validate( object, string ) || validate( object, [ string, string] )
+    * Validate string: validate( string, Assert, string ) || validate( string, [ Assert, Assert ], [ string, string ] )
+    * Validate object: validate( object, Constraint, string ) || validate( object, Constraint, [ string, string ] )
+    * Validate binded object: validate( object, string ) || validate( object, [ string, string ] )
     */
     validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
       if ( 'string' !== typeof objectOrString && 'object' !== typeof objectOrString )
         throw new Error( 'You must validate an object or a string' );
 
-      // string validation
-      if ( 'string' === typeof objectOrString )
+      // string / array validation
+      if ( 'string' === typeof objectOrString || _isArray(objectOrString) )
         return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
 
       // binded object validation
