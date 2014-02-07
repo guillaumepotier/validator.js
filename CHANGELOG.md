@@ -1,5 +1,11 @@
 # CHANGELOG
 
+**0.5.4**
+
+  - Fixed GeaterThanOrEqual and LowerThanOrEqual Asserts if non numeric value
+  is given
+  - Range Assert now works with strings, arrays and numbers
+
 **0.5.3**
 
  - Fixed array validation for Length Validator

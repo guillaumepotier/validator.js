@@ -433,15 +433,27 @@ var Suite = function ( Validator, expect ) {
 
       it( 'Range', function () {
         assert = new Assert().Range( 5, 10 );
+
+        // with strings
         expect( validate( 'foo', assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Range', value: 'foo', violation: { min: 5 } } );
         expect( validate( 'foo bar', assert ) ).to.be( true );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
         expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Range', value: 'foo bar baz', violation: { max: 10 } } );
+
+        // with arrays
+        expect( validate( ['foo'], assert ) ).not.to.be( true );
+        expect( validate( ['foo', 'bar', 'baz', 'qux', 'bux'], assert ) ).to.be( true );
+
+        // with numbers
+        expect( validate( 3, assert ) ).not.to.be( true );
+        expect( validate( 7, assert ) ).to.be( true );
+        expect( validate( 15, assert ) ).not.to.be( true );
       } )
 
       it( 'GreaterThan', function () {
         assert = new Assert().GreaterThan( 5 );
+        expect( validate( 'foo', assert) ).not.to.be( true );
         expect( validate( 3, assert ) ).not.to.be( true );
         expect( validate( 5, assert ).show() ).to.eql( { assert: 'GreaterThan', value: 5, violation: { threshold: 5 } } );
         expect( validate( 7, assert ) ).to.be( true );
@@ -449,6 +461,7 @@ var Suite = function ( Validator, expect ) {
 
       it( 'GreaterThanOrEqual', function () {
         assert = new Assert().GreaterThanOrEqual( 5 );
+        expect( validate( 'foo', assert) ).not.to.be( true );
         expect( validate( 3, assert ) ).not.to.be( true );
         expect( validate( 3, assert ).show() ).to.eql( { assert: 'GreaterThanOrEqual', value: 3, violation: { threshold: 5 } } );
         expect( validate( 5, assert ) ).to.be( true );
@@ -457,6 +470,7 @@ var Suite = function ( Validator, expect ) {
 
       it( 'LessThan', function () {
         assert = new Assert().LessThan( 5 );
+        expect( validate( 'foo', assert) ).not.to.be( true );
         expect( validate( 3, assert ) ).to.be( true );
         expect( validate( 5, assert ).show() ).to.eql( { assert: 'LessThan', value: 5, violation: { threshold: 5 } } );
         expect( validate( 7, assert ) ).not.to.be( true );
@@ -464,6 +478,7 @@ var Suite = function ( Validator, expect ) {
 
       it( 'LessThanOrEqual', function () {
         assert = new Assert().LessThanOrEqual( 5 );
+        expect( validate( 'foo', assert) ).not.to.be( true );
         expect( validate( 3, assert ) ).to.be( true );
         expect( validate( 5, assert ) ).to.be( true );
         expect( validate( 7, assert ) ).not.to.be( true );

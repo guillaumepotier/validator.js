@@ -601,6 +601,9 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
+        if ( isNaN( Number( value ) ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+
         if ( this.threshold > value )
           throw new Violation( this, value, { threshold: this.threshold } );
 
@@ -704,6 +707,9 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
+        if ( isNaN( Number( value ) ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+
         if ( this.threshold < value )
           throw new Violation( this, value, { threshold: this.threshold } );
 
@@ -774,18 +780,25 @@
     },
 
     Range: function ( min, max ) {
+      this.__class__ = 'Range';
+
       if ( !min || !max )
         throw new Error( 'Range assert expects min and max values' );
 
-      this.LengthValidator = new Assert().Length( { min: min, max: max } );
-      this.__class__ = 'Range';
+      this.min = min;
+      this.max = max;
 
       this.validate = function ( value ) {
-        try {
-          this.LengthValidator.validate( value );
-        } catch ( violation ) {
-          throw new Violation( this, value, violation.violation );
-        }
+          try {
+            if ('string' === typeof value || _isArray( value ) )
+              new Assert().Length( { min: this.min, max: this.max } ).validate( value );
+            else if ( !isNaN( Number( value ) ) )
+              new Assert().GreaterThanOrEqual( this.min ).validate( value ) && new Assert().LessThanOrEqual( this.max ).validate( value );
+
+            return true;
+          } catch ( violation ) {
+            throw new Violation( this, value, violation.violation );
+          }
 
         return true;
       };
