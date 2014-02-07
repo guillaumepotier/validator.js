@@ -449,6 +449,9 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 3, assert ) ).not.to.be( true );
         expect( validate( 7, assert ) ).to.be( true );
         expect( validate( 15, assert ) ).not.to.be( true );
+
+        // numbers typed strings are considered as number
+        expect( validate( '7', assert ) ).to.be( true );
       } )
 
       it( 'GreaterThan', function () {

@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.4 - built Fri Feb 07 2014 15:18:58
+* Version 0.5.5 - built Fri Feb 07 2014 16:52:20
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.5.4';
+    this.__version__ = '0.5.5';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
 
@@ -580,7 +580,7 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
-        if ( isNaN( Number( value ) ) )
+        if ( '' === value || isNaN( Number( value ) ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold >= value )
@@ -601,7 +601,7 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
-        if ( isNaN( Number( value ) ) )
+        if ( '' === value || isNaN( Number( value ) ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold > value )
@@ -686,7 +686,7 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
-        if ( isNaN( Number( value ) ) )
+        if ( '' === value || isNaN( Number( value ) ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold <= value )
@@ -707,7 +707,7 @@
       this.threshold = threshold;
 
       this.validate = function ( value ) {
-        if ( isNaN( Number( value ) ) )
+        if ( '' === value || isNaN( Number( value ) ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
 
         if ( this.threshold < value )
@@ -790,9 +790,12 @@
 
       this.validate = function ( value ) {
           try {
-            if ('string' === typeof value || _isArray( value ) )
+            // validate strings and objects with their Length
+            if ( ( 'string' === typeof value && isNaN( Number( value ) ) ) || _isArray( value ) )
               new Assert().Length( { min: this.min, max: this.max } ).validate( value );
-            else if ( !isNaN( Number( value ) ) )
+
+            // validate numbers with their value
+            else
               new Assert().GreaterThanOrEqual( this.min ).validate( value ) && new Assert().LessThanOrEqual( this.max ).validate( value );
 
             return true;

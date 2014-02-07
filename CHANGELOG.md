@@ -1,8 +1,13 @@
 # CHANGELOG
 
+**0.5.5**
+
+  - Fixed GreaterThanOrEqual and LowerThanOrEqual if value is ""
+  - Fixed Range if number as string
+
 **0.5.4**
 
-  - Fixed GeaterThanOrEqual and LowerThanOrEqual Asserts if non numeric value
+  - Fixed GreaterThanOrEqual and LowerThanOrEqual Asserts if non numeric value
   is given
   - Range Assert now works with strings, arrays and numbers
 
