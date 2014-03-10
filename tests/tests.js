@@ -433,6 +433,7 @@ var Suite = function ( Validator, expect ) {
 
       it( 'Range', function () {
         assert = new Assert().Range( 5, 10 );
+        var assertZero = new Assert().Range( 0, 10 );
 
         // with strings
         expect( validate( 'foo', assert ) ).not.to.be( true );
@@ -449,6 +450,11 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 3, assert ) ).not.to.be( true );
         expect( validate( 7, assert ) ).to.be( true );
         expect( validate( 15, assert ) ).not.to.be( true );
+
+        expect( validate( -1, assertZero ) ).not.to.be( true );
+        expect( validate( 3, assertZero ) ).to.be( true );
+        expect( validate( 7, assertZero ) ).to.be( true );
+        expect( validate( 15, assertZero ) ).not.to.be( true );
 
         // numbers typed strings are considered as number
         expect( validate( '7', assert ) ).to.be( true );

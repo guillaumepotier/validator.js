@@ -782,7 +782,7 @@
     Range: function ( min, max ) {
       this.__class__ = 'Range';
 
-      if ( !min || !max )
+      if ( 'undefined' === typeof min || 'undefined' === typeof max )
         throw new Error( 'Range assert expects min and max values' );
 
       this.min = min;
