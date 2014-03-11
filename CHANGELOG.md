@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.6**
+
+  - Fixed Range validator that did not accept `0` value (#6)
+
 **0.5.5**
 
   - Fixed GreaterThanOrEqual and LowerThanOrEqual if value is ""

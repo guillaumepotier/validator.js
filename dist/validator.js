@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.5 - built Mon Mar 10 2014 14:01:32
+* Version 0.5.5 - built Tue Mar 11 2014 12:52:08
 * MIT Licensed
 *
 */
