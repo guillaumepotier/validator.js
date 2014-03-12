@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.7**
+
+  - Fixed Regexp validator flag (#7)
+
 **0.5.6**
 
   - Fixed Range validator that did not accept `0` value (#6)
