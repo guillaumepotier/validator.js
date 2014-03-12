@@ -1,7 +1,11 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
+<<<<<<< .merge_file_F8l9S4
 * Version 0.5.5 - built Tue Mar 11 2014 21:54:16
+=======
+* Version 0.5.5 - built Tue Mar 11 2014 12:52:08
+>>>>>>> .merge_file_4Ym0f5
 * MIT Licensed
 *
 */
