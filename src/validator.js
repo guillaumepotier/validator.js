@@ -822,7 +822,7 @@
         if ( 'string' !== typeof value )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
-        if ( !new RegExp( this.regexp ).test( value, this.flag ) )
+        if ( !new RegExp( this.regexp, this.flag ).test( value ) )
           throw new Violation( this, value, { regexp: this.regexp, flag: this.flag } );
 
         return true;
