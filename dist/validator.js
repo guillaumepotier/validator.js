@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.5 - built Mon Mar 10 2014 14:01:32
+* Version 0.5.5 - built Tue Mar 11 2014 21:54:16
 * MIT Licensed
 *
 */
@@ -822,7 +822,7 @@
         if ( 'string' !== typeof value )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
-        if ( !new RegExp( this.regexp ).test( value, this.flag ) )
+        if ( !new RegExp( this.regexp, this.flag ).test( value ) )
           throw new Violation( this, value, { regexp: this.regexp, flag: this.flag } );
 
         return true;
