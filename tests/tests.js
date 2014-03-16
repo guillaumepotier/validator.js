@@ -326,6 +326,9 @@ var Suite = function ( Validator, expect ) {
         expect( result ).not.to.be( true );
         expect( result.assert.__class__ ).to.be("Required");
         expect( validate( 'bar', assert ) ).to.be( true );
+
+        expect( validate( [], assert ) ).not.to.be( true );
+        expect( validate( [ 'foo' ], assert ) ).to.be( true );
       } )
 
       it( 'Collection', function () {

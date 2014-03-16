@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**0.5.8**
+
+  - Required validator fails if validates empty array
+
 **0.5.7**
 
   - Fixed Regexp validator flag (#7)
