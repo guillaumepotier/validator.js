@@ -17,8 +17,6 @@
     this.__version__ = '@@version';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
-
-    return this;
   };
 
   Validator.prototype = {
@@ -129,8 +127,6 @@
         throw new Error( 'Should give a valid mapping object to Constraint', err, data );
       }
     }
-
-    return this;
   };
 
   Constraint.prototype = {
@@ -305,8 +301,6 @@
 
     if ( 'undefined' !== typeof group )
       this.addGroup( group );
-
-    return this;
   };
 
   Assert.prototype = {
