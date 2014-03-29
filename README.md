@@ -75,7 +75,7 @@ will return `true` if validation passes, a `Violation`'s array otherwise.
 
 ```js
 var Assert = Validator.Assert,
-    Constraint = Validator.Constraint;
+    validator = new Validator.Validator();
 
 var object = {
     name: 'john doe',
@@ -90,7 +90,7 @@ var object = {
     phone:     new Assert().NotBlank()
   };
 
-new Validator.Validator().validate( object, constraint );
+validator.validate( object, constraint );
 ```
 will return `true` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
@@ -107,7 +107,7 @@ With same objects than above, just by adding validation groups:
     phone:     new Assert( 'edit' ).NotBlank()
   };
 
-Validator.validate( object, constraint, 'edit' );
+validator.validate( object, constraint, 'edit' );
 ```
 will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
 There are two special groups: "Any" and "Default". Validating against `"Any"` group will validate
