@@ -74,8 +74,7 @@ will return `true` if validation passes, a `Violation`'s array otherwise.
 ## Validate an object
 
 ```js
-var Validator = Validator.Validator,
-    Assert = Validator.Assert,
+var Assert = Validator.Assert,
     Constraint = Validator.Constraint;
 
 var object = {
@@ -91,7 +90,7 @@ var object = {
     phone:     new Assert().NotBlank()
   };
 
-Validator.validate( object, constraint );
+new Validator.Validator().validate( object, constraint );
 ```
 will return `true` if validation passes,
 `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
