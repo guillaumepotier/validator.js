@@ -39,12 +39,13 @@
 <h2>
 <a name="version" class="anchor" href="#version"><span class="octicon octicon-link"></span></a>Version</h2>
 
-<p>0.5.0</p>
+<p>0.5.8</p>
 
 <h2>
 <a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h2>
 
-<p><a href="https://travis-ci.org/guillaumepotier/validator.js"><img src="https://travis-ci.org/guillaumepotier/validator.js.png?branch=master" alt="Build Status"></a></p>
+<p><a href="https://travis-ci.org/guillaumepotier/validator.js"><img src="https://travis-ci.org/guillaumepotier/validator.js.png?branch=master" alt="Build Status"></a>
+<a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/guillaumepotier/validator.js/trend.png" alt="Bitdeli Badge"></a></p>
 
 <h2>
 <a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
@@ -94,24 +95,24 @@
 <a name="general-usage" class="anchor" href="#general-usage"><span class="octicon octicon-link"></span></a>General usage</h2>
 
 <ul>
-<li>On node:
-<code>
-$ npm install -g validator.js
-</code>
-Then
-<code>js
-Validator = require( 'validator.js' );
-</code>
-</li>
-<li>On browser:
-<code>js
-&lt;script src="../validator.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-console.log(Validator);
-&lt;/script&gt;
-</code>
-</li>
-</ul><h2>
+<li>On node:</li>
+</ul><pre><code>$ npm install -g validator.js
+</code></pre>
+
+<p>Then</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">Validator</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s1">'validator.js'</span> <span class="p">);</span>
+</pre></div>
+
+<ul>
+<li>On browser:</li>
+</ul><div class="highlight highlight-js"><pre><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"../validator.js"</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Validator</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</pre></div>
+
+<h2>
 <a name="validate-a-string" class="anchor" href="#validate-a-string"><span class="octicon octicon-link"></span></a>Validate a string</h2>
 
 <div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">;</span>
@@ -126,8 +127,7 @@ console.log(Validator);
 <h2>
 <a name="validate-an-object" class="anchor" href="#validate-an-object"><span class="octicon octicon-link"></span></a>Validate an object</h2>
 
-<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Validator</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">,</span>
-    <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
     <span class="nx">Constraint</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">;</span>
 
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
@@ -143,7 +143,7 @@ console.log(Validator);
     <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">};</span>
 
-<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
+<span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 </pre></div>
 
 <p>will return <code>true</code> if validation passes,
