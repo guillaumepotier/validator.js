@@ -128,7 +128,7 @@
 <a name="validate-an-object" class="anchor" href="#validate-an-object"><span class="octicon octicon-link"></span></a>Validate an object</h2>
 
 <div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">Assert</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Assert</span><span class="p">,</span>
-    <span class="nx">Constraint</span> <span class="o">=</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Constraint</span><span class="p">;</span>
+    <span class="nx">validator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">();</span>
 
 <span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nx">name</span><span class="o">:</span> <span class="s1">'john doe'</span><span class="p">,</span>
@@ -143,7 +143,7 @@
     <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">().</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">};</span>
 
-<span class="k">new</span> <span class="nx">Validator</span><span class="p">.</span><span class="nx">Validator</span><span class="p">().</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
+<span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span> <span class="p">);</span>
 </pre></div>
 
 <p>will return <code>true</code> if validation passes,
@@ -161,7 +161,7 @@
     <span class="nx">phone</span><span class="o">:</span>     <span class="k">new</span> <span class="nx">Assert</span><span class="p">(</span> <span class="s1">'edit'</span> <span class="p">).</span><span class="nx">NotBlank</span><span class="p">()</span>
   <span class="p">};</span>
 
-<span class="nx">Validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
+<span class="nx">validator</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">constraint</span><span class="p">,</span> <span class="s1">'edit'</span> <span class="p">);</span>
 </pre></div>
 
 <p>will return <code>true</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.
