@@ -15,7 +15,7 @@
     "email": "guillaume@wisembly.com",
     "url": "http://guillaumepotier.com/"
   },
-  "main": ["./dist/validator", "./dist/validator.min"],
+  "main": "./dist/validator",
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*",
