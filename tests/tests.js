@@ -142,6 +142,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( '', assert ) ).to.be( true );
         expect( validate( false, assert ) ).to.be( true );
         expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( null, assert ).message ).to.be( 'This value should not be null.' );
       } )
 
       it( 'Null', function () {
@@ -151,6 +152,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( '', assert ) ).not.to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ) ).not.to.be( true );
+        expect( validate( 'foo', assert ).message ).to.be( 'This value should be null.' );
       } )
 
       it( 'NotBlank', function () {
@@ -160,6 +162,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( '', assert ) ).not.to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( null, assert ).message ).to.be( 'This value should not be blank.' );
       } )
 
       it( 'Blank', function () {
@@ -169,6 +172,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( '', assert ) ).to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ) ).not.to.be( true );
+        expect( validate( 'foo', assert ).message ).to.be( 'This value should be blank.' );
       } )
 
       it( 'HaveProperty', function () {
@@ -177,6 +181,7 @@ var Suite = function ( Validator, expect ) {
         expect( validate( null, assert ) ).not.to.be( true );
         expect( validate( { foo: 'bar' }, assert ) ).to.be( true );
         expect( validate( { bar: 'baz' }, assert ) ).not.to.be( true );
+        expect( validate( { bar: 'baz' }, assert ).message ).to.be( 'This value must be be set.' );
       } )
 
       it( 'Length', function () {
