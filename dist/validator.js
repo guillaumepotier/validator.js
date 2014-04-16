@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.8 - built Sun Mar 16 2014 17:18:21
+* Version 0.5.8 - built Thu Apr 17 2014 00:38:05
 * MIT Licensed
 *
 */
@@ -17,8 +17,6 @@
     this.__version__ = '0.5.8';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
-
-    return this;
   };
 
   Validator.prototype = {
@@ -129,8 +127,6 @@
         throw new Error( 'Should give a valid mapping object to Constraint', err, data );
       }
     }
-
-    return this;
   };
 
   Constraint.prototype = {
@@ -260,6 +256,9 @@
     this.assert = assert;
     this.value = value;
 
+    if ( assert.message )
+      this.message = assert.message;
+
     if ( 'undefined' !== typeof violation )
       this.violation = violation;
   };
@@ -305,8 +304,6 @@
 
     if ( 'undefined' !== typeof group )
       this.addGroup( group );
-
-    return this;
   };
 
   Assert.prototype = {
@@ -389,6 +386,7 @@
 
     HaveProperty: function ( node ) {
       this.__class__ = 'HaveProperty';
+      this.message = 'This value must be be set.';
       this.node = node;
 
       this.validate = function ( object ) {
@@ -403,6 +401,7 @@
 
     Blank: function () {
       this.__class__ = 'Blank';
+      this.message = 'This value should be blank.';
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
@@ -739,6 +738,7 @@
 
     NotNull: function () {
       this.__class__ = 'NotNull';
+      this.message = 'This value should not be null.';
 
       this.validate = function ( value ) {
         if ( null === value || 'undefined' === typeof value )
@@ -752,6 +752,7 @@
 
     NotBlank: function () {
       this.__class__ = 'NotBlank';
+      this.message = 'This value should not be blank.';
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
@@ -768,6 +769,7 @@
 
     Null: function () {
       this.__class__ = 'Null';
+      this.message = 'This value should be null.';
 
       this.validate = function ( value ) {
         if ( null !== value )
