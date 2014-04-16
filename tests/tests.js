@@ -656,7 +656,7 @@ var Suite = function ( Validator, expect ) {
 
           expect( validator.validate( {
             foo:  42,
-            bar:  ''
+            bar:  'bar'
           }, constraint ) ).not.to.be( true );
 
           expect( validator.validate( {
@@ -664,13 +664,41 @@ var Suite = function ( Validator, expect ) {
             bar:  'bar',
             baz:  'baz'
           }, constraint ) ).to.be( true );
-        })
+        } )
+
+        it( 'should validate required properties', function () {
+          var constraint = {
+            foo: new Assert().Required(),
+            bar: new Assert().Email()
+          };
+
+          var result = validator.validate( {
+            foo: 'foo',
+          }, constraint );
+
+          expect( result ).to.be( true );
+        } )
+
+        it( 'should validate required properties in strict mode', function () {
+          var constraint = new Constraint( {
+            foo: new Assert().Required(),
+            bar: new Assert().Email()
+          }, { strict: true } );
+
+          var result = validator.validate( {
+            foo: 'foo',
+          }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.bar ).to.be.a( Violation );
+          expect( result.bar.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.bar.violation.value ).to.be( 'bar' );
+        } )
 
         it( 'should use default or strict validation', function () {
           var constraint = {
             foo: new Assert().Required(),
-            bar: new Assert().Required(),
-            baz: new Assert().Required()
+            bar: new Assert().Required()
           };
 
           var strictConstraint = new Constraint( {
