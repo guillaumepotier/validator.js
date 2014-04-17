@@ -138,7 +138,17 @@
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = 'Required' === this.get(property).__class__;
+        var isRequired = false;
+        var constraint = this.get(property);
+        var constraints = _isArray( constraint ) ? constraint : [constraint];
+
+        for (var i = constraints.length - 1; i >= 0; i--) {
+          if ( 'Required' === constraints[i].__class__ ) {
+            isRequired = constraints[i].requiresValidation( group );
+
+            continue;
+          }
+        }
 
         if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
           continue;
@@ -312,11 +322,18 @@
 
     construct: Assert,
 
-    check: function ( value, group ) {
+    requiresValidation: function ( group ) {
       if ( group && !this.hasGroup( group ) )
-        return;
+        return false;
 
       if ( !group && this.hasGroups() )
+        return false;
+
+      return true;
+    },
+
+    check: function ( value, group ) {
+      if ( !this.requiresValidation( group ) )
         return;
 
       try {
