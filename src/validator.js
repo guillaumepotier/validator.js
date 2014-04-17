@@ -136,23 +136,30 @@
     check: function ( object, group ) {
       var result, failures = {};
 
-      // check all constraint nodes if strict validation enabled. Else, only object nodes that have a constraint
-      for ( var property in this.options.strict ? this.nodes : object ) {
-        if ( this.options.strict ? this.has( property, object ) : this.has( property ) ) {
+      // check all constraint nodes.
+      for ( var property in this.nodes ) {
+        var isRequired = 'Required' === this.get(property).__class__;
+
+        if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
+          continue;
+        }
+
+        try {
+          var target = this.options.strict || isRequired ? object : undefined;
+
+          if (! this.has( property, target ) ) {
+            // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
+            new Assert().HaveProperty( property ).validate( object );
+          }
+
           result = this._check( property, object[ property ], group );
 
           // check returned an array of Violations or an object mapping Violations
-          if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) )
+          if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) ) {
             failures[ property ] = result;
-
-        // in strict mode, get a violation for each constraint node not in object
-        } else if ( this.options.strict ) {
-          try {
-            // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
-            new Assert().HaveProperty( property ).validate( object );
-          } catch ( violation ) {
-            failures[ property ] = violation;
           }
+        } catch ( violation ) {
+          failures[ property ] = violation;
         }
       }
 
