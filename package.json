@@ -16,6 +16,10 @@
     "url": "http://guillaumepotier.com/"
   },
   "main": "./dist/validator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guillaumepotier/validator.js"
+  },
   "devDependencies": {
     "mocha": "*",
     "expect.js": "*",
