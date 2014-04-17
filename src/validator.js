@@ -145,9 +145,7 @@
         }
 
         try {
-          var target = this.options.strict || isRequired ? object : undefined;
-
-          if (! this.has( property, target ) ) {
+          if (! this.has( property, this.options.strict || isRequired ? object : undefined ) ) {
             // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
             new Assert().HaveProperty( property ).validate( object );
           }

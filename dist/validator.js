@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.5.8 - built Wed Apr 16 2014 23:31:47
+* Version 0.6.0 - built Thu Apr 17 2014 09:27:35
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.5.8';
+    this.__version__ = '0.6.0';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -145,9 +145,7 @@
         }
 
         try {
-          var target = this.options.strict || isRequired ? object : undefined;
-
-          if (! this.has( property, target ) ) {
+          if (! this.has( property, this.options.strict || isRequired ? object : undefined ) ) {
             // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
             new Assert().HaveProperty( property ).validate( object );
           }

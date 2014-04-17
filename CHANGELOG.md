@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**0.6.0**
+
+  - Validator.js now throw errors with all unmatched `Required` Asserts, in
+    strict mode or not (#11)
+
 **0.5.8**
 
   - Required validator fails if validates empty array
