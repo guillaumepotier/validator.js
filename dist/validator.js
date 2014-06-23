@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.6.0 - built Mon Apr 21 2014 14:27:11
+* Version 0.6.1 - built Mon Jun 23 2014 16:25:57
 * MIT Licensed
 *
 */
@@ -14,7 +14,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.6.0';
+    this.__version__ = '0.6.1';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -480,9 +480,9 @@
       return this;
     },
 
-    Collection: function ( constraint ) {
+    Collection: function ( assertOrConstraint ) {
       this.__class__ = 'Collection';
-      this.constraint = 'undefined' !== typeof constraint ? new Constraint( constraint ) : false;
+      this.constraint = 'undefined' !== typeof assertOrConstraint ? (assertOrConstraint instanceof Assert ? assertOrConstraint : new Constraint( assertOrConstraint )) : false;
 
       this.validate = function ( collection, group ) {
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
