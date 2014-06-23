@@ -19,16 +19,6 @@ MIT - See LICENSE.md
 
 `bower install validator.js`
 
-## Run Tests
-
-- On node:
-  - `npm install mocha`
-  - `npm install expect.js`
-  - `mocha tests/server.js`
-
-- On browser:
-  - open tests/browser.html in your browser
-
 # Summary
 
   - [General usage](#general-usage)
@@ -154,11 +144,10 @@ constraint.check( { foo: 'foo', bar: 'bar' } );
 
 ### Strict Constraint validation
 
-By default, if Validator.js look into object properties if there are related nodes in
-Constraint object to validate them. That means that if Constraint have nodes not
-defined in validated object, there won't be Violations thrown and object would be
-considered as valid. If you want a strict validation (ie ensure that **every**)
-Constraint node is valid, you'll have to pass an optional parameter to your Constraint:
+By default, Validator.js checks properties that are defined in the Constraint object
+and exists on the validated object unless the constraint is `Required`. If you want a
+strict validation (ie ensure that **every**) Constraint node is valid, you'll have to pass
+an optional parameter to your Constraint:
 
 ```js
 var object = {
@@ -167,9 +156,9 @@ var object = {
 };
 
 var constraint = new Constraint( {
-    foo: new Assert().Required(),
-    bar: new Assert().Required(),
-    baz: new Assert().Required()
+    foo: new Assert().NotBlank(),
+    bar: new Assert().NotBlank(),
+    baz: new Assert().NotBlank()
 }, { strict: true });
 
 constraint.check( object );
@@ -278,3 +267,13 @@ it( 'Callback', function () {
   expect( validate( 'bar', assert ) ).to.be( false );
 } )
 ```
+
+## Run Tests
+
+- On node:
+  - `npm install mocha`
+  - `npm install expect.js`
+  - `mocha tests/server.js`
+
+- On browser:
+  - open tests/browser.html in your browser
