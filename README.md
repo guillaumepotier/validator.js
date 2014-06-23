@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.6.0
+0.6.1
 
 ## Status
 
@@ -173,6 +173,7 @@ new Assert().Blank();
 new Assert().Callback( fn ( value ) {} [, arg1 ...] );
 new Assert().Choice( [] );
 new Assert().Choice( fn () {} );
+new Assert().Collection ( Assert );
 new Assert().Collection ( Constraint );
 new Assert().Count( value );
 new Assert().Count( fn ( [] ) {} );
