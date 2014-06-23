@@ -669,11 +669,31 @@ var Suite = function ( Validator, expect ) {
         it( 'should validate required properties', function () {
           var constraint = {
             foo: new Assert().Required(),
-            bar: new Assert().Email()
+            bar: [ new Assert().Required(), new Assert().Length( { min: 4 } ) ],
           };
 
           var result = validator.validate( {
             foo: 'foo',
+          }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.bar ).to.be.a( Violation );
+          expect( result.bar.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.bar.violation.value ).to.be( 'bar' );
+
+          var result = validator.validate( {
+            foo: 'foo',
+            bar: '123'
+          }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.bar[0] ).to.be.a( Violation );
+          expect( result.bar[0].assert.__class__ ).to.be( 'Length' );
+          expect( result.bar[0].violation ).to.eql( { min: 4 } );
+
+          var result = validator.validate( {
+            foo: 'foo',
+            bar: '1234'
           }, constraint );
 
           expect( result ).to.be( true );
@@ -882,7 +902,8 @@ var Suite = function ( Validator, expect ) {
             foo: [ new Assert( [ 'foo', 'bar' ] ).NotNull(), new Assert().NotBlank() ],
             bar: new Assert( 'baz' ).NotNull(),
             baz: new Assert().NotNull(),
-            qux: new Assert( [ 'foo', 'qux' ] ).NotNull()
+            qux: new Assert( [ 'foo', 'qux' ] ).NotNull(),
+            biz: new Assert( [ 'biz' ] ).Required(),
           });
         })
 
@@ -892,6 +913,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).not.to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should be the same with "Default" group', function () {
@@ -900,6 +922,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).not.to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate against all Asserts with "Any" group', function () {
@@ -908,6 +931,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).to.have.key( 'biz' );
         } )
 
         it( 'should validate only a specific validation group', function () {
@@ -916,6 +940,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate only two specific validation groups', function () {
@@ -924,6 +949,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate more validation groups', function () {
@@ -932,6 +958,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate groups with "Default"', function () {
@@ -940,6 +967,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate groups with binded object', function () {
@@ -950,6 +978,7 @@ var Suite = function ( Validator, expect ) {
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
           expect( result ).to.have.key( 'qux' );
+          expect( result ).not.to.have.key( 'biz' );
         } )
 
         it( 'should validate groups in Collection constraint', function () {
@@ -964,6 +993,7 @@ var Suite = function ( Validator, expect ) {
           expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'bar' );
           expect( result.items[ 0 ][ 0 ] ).to.have.key( 'baz' );
           expect( result.items[ 0 ][ 0 ] ).to.have.key( 'qux' );
+          expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'biz' );
         } )
       } )
     } )
