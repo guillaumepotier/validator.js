@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**0.6.1**
+
+  - Fixed `Required()` assert behavior in constraint list (#15)
+  - Allow creating Collection directly with Assert (#16)
+
 **0.6.0**
 
   - Validator.js now throw errors with all unmatched `Required` Asserts, in
