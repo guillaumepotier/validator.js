@@ -488,7 +488,7 @@
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
         if ( !_isArray( collection ) )
-          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
+          throw new Violation( this, collection, { value: Validator.errorCode.must_be_an_array } );
 
         for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
