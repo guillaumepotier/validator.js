@@ -1,6 +1,6 @@
 ( function ( exports ) {
 
-var Suite = function ( Validator, expect ) {
+var Suite = function ( Validator, expect, extras ) {
   describe( 'Validator', function () {
     var validator = new Validator.Validator(),
       Violation = Validator.Violation,
@@ -222,26 +222,6 @@ var Suite = function ( Validator, expect ) {
         expect( validate( new Date(), assert ) ).to.be( true );
       } )
 
-      it( 'IPv4', function () {
-        assert = new Assert().IPv4();
-
-        expect( validate( 'foo.bar', assert ) ).not.to.be( true );
-        expect( validate( '192.168.1', assert ) ).not.to.be( true );
-        expect( validate( '292.168.1.201', assert ).show() ).to.eql( { assert: 'IPv4', value: '292.168.1.201' } );
-
-        expect( validate( '192.168.1.201', assert ) ).to.be( true );
-      } )
-
-      it( 'Mac', function () {
-        assert = new Assert().Mac();
-
-        expect( validate( '0G:42:AT:F5:OP:Z2', assert ) ).not.to.be( true );
-        expect( validate( 'AD:32:11:F7:3B', assert ) ).not.to.be( true );
-        expect( validate( 'AD:32:11:F7:3B:ZX', assert ).show() ).to.eql( { assert: 'Mac', value: 'AD:32:11:F7:3B:ZX' } );
-
-        expect( validate( 'AD:32:11:F7:3B:C9', assert ) ).to.be( true );
-      } )
-
       it( 'EqualTo', function () {
         assert = new Assert().EqualTo( 42 );
 
@@ -438,23 +418,6 @@ var Suite = function ( Validator, expect ) {
         expect( validate( [ { bar: 'bar' }, { baz: 'baz' } ], assert ) ).to.be( true );
       } )
 
-      it( 'Eql', function () {
-        assert = new Assert().Eql( { foo: 'foo', bar: 'bar' } );
-
-        expect( validate( 'foo', assert) ).not.to.be( true );
-        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Eql', value: 'foo', violation: { eql: { foo: 'foo', bar: 'bar' } } } );
-        expect( validate( { foo: 'foo' }, assert ) ).not.to.be( true );
-        expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
-        expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
-      } )
-
-      it( 'Eql w/ function', function () {
-        assert = new Assert().Eql( function ( value ) { return { foo: 'foo', bar: 'bar' } } );
-
-        expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
-        expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
-      } )
-
       it( 'Regexp', function () {
         assert = new Assert().Regexp( '^[A-Z]' );
 
@@ -529,6 +492,48 @@ var Suite = function ( Validator, expect ) {
         expect( validate( 5, assert ) ).to.be( true );
         expect( validate( 7, assert ) ).not.to.be( true );
         expect( validate( 7, assert ).show() ).to.eql( { assert: 'LessThanOrEqual', value: 7, violation: { threshold: 5 } } );
+      } )
+
+      if ( !extras )
+        return;
+
+      describe ('Extras Asserts', function () {
+        it( 'Mac', function () {
+          assert = new Assert().Mac();
+
+          expect( validate( '0G:42:AT:F5:OP:Z2', assert ) ).not.to.be( true );
+          expect( validate( 'AD:32:11:F7:3B', assert ) ).not.to.be( true );
+          expect( validate( 'AD:32:11:F7:3B:ZX', assert ).show() ).to.eql( { assert: 'Mac', value: 'AD:32:11:F7:3B:ZX' } );
+
+          expect( validate( 'AD:32:11:F7:3B:C9', assert ) ).to.be( true );
+        } )
+
+        it( 'IPv4', function () {
+          assert = new Assert().IPv4();
+
+          expect( validate( 'foo.bar', assert ) ).not.to.be( true );
+          expect( validate( '192.168.1', assert ) ).not.to.be( true );
+          expect( validate( '292.168.1.201', assert ).show() ).to.eql( { assert: 'IPv4', value: '292.168.1.201' } );
+
+          expect( validate( '192.168.1.201', assert ) ).to.be( true );
+        } )
+
+        it( 'Eql', function () {
+          assert = new Assert().Eql( { foo: 'foo', bar: 'bar' } );
+
+          expect( validate( 'foo', assert) ).not.to.be( true );
+          expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Eql', value: 'foo', violation: { eql: { foo: 'foo', bar: 'bar' } } } );
+          expect( validate( { foo: 'foo' }, assert ) ).not.to.be( true );
+          expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
+          expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
+        } )
+
+        it( 'Eql w/ function', function () {
+          assert = new Assert().Eql( function ( value ) { return { foo: 'foo', bar: 'bar' } } );
+
+          expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
+          expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
+        } )
       } )
     } )
 

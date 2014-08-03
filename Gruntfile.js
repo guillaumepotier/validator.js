@@ -38,7 +38,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     flatten: true,
-                    src: ['src/validator.js'],
+                    src: ['src/validator.js', 'src/extras.js'],
                     dest: 'dist/'
                 }]
             }
@@ -51,7 +51,8 @@ module.exports = function(grunt) {
             },
             min: {
                 files: {
-                    'dist/validator.min.js': 'dist/validator.js'
+                    'dist/validator.min.js': 'dist/validator.js',
+                    'dist/extras.js': 'dist/extras.js'
                 }
             }
         },

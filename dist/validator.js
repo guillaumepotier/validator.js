@@ -1,12 +1,13 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 0.6.1 - built Mon Jun 23 2014 16:25:57
+* Version 1.0.0 - built Sun Aug 03 2014 17:42:31
 * MIT Licensed
 *
 */
 
-( function ( exports ) {
+( function ( ) {
+  var exports = {};
 
   /**
   * Validator
@@ -14,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '0.6.1';
+    this.__version__ = '1.0.0';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -547,26 +548,6 @@
       return this;
     },
 
-    Eql: function ( eql ) {
-      this.__class__ = 'Eql';
-
-      if ( 'undefined' === typeof eql )
-        throw new Error( 'Equal must be instanciated with an Array or an Object' );
-
-      this.eql = eql;
-
-      this.validate = function ( value ) {
-        var eql = 'function' === typeof this.eql ? this.eql( value ) : this.eql;
-
-        if ( !expect.eql( eql, value ) )
-          throw new Violation( this, value, { eql: eql } );
-
-        return true;
-      };
-
-      return this;
-    },
-
     EqualTo: function ( reference ) {
       this.__class__ = 'EqualTo';
 
@@ -647,24 +628,6 @@
       return this;
     },
 
-    IPv4: function () {
-      this.__class__ = 'IPv4';
-
-      this.validate = function ( value ) {
-        var regExp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-        if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
-
-        if ( !regExp.test( value ) )
-          throw new Violation( this, value );
-
-        return true;
-      };
-
-      return this;
-    },
-
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 
@@ -728,24 +691,6 @@
 
         if ( this.threshold < value )
           throw new Violation( this, value, { threshold: this.threshold } );
-
-        return true;
-      };
-
-      return this;
-    },
-
-    Mac: function () {
-      this.__class__ = 'Mac';
-
-      this.validate = function ( value ) {
-        var regExp = /^(?:[0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
-
-        if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
-
-        if ( !regExp.test( value ) )
-          throw new Violation( this, value );
 
         return true;
       };
@@ -957,86 +902,18 @@
     return Object.prototype.toString.call( obj ) === '[object Array]';
   };
 
-  // https://github.com/LearnBoost/expect.js/blob/master/expect.js
-  var expect = {
-    eql: function ( actual, expected ) {
-      if ( actual === expected ) {
-        return true;
-      } else if ( 'undefined' !== typeof Buffer && Buffer.isBuffer( actual ) && Buffer.isBuffer( expected ) ) {
-        if ( actual.length !== expected.length ) return false;
+  // AMD export
+  if ( typeof define === 'function' && define.amd ) {
+    define( function() {
+      return exports;
+    } );
 
-        for ( var i = 0; i < actual.length; i++ )
-          if ( actual[i] !== expected[i] ) return false;
+  // commonjs export
+  } else if ( typeof module !== 'undefined' && module.exports ) {
+    module.exports = exports;
 
-        return true;
-      } else if ( actual instanceof Date && expected instanceof Date ) {
-        return actual.getTime() === expected.getTime();
-      } else if ( typeof actual !== 'object' && typeof expected !== 'object' ) {
-        // loosy ==
-        return actual == expected;
-      } else {
-        return this.objEquiv(actual, expected);
-      }
-    },
-    isUndefinedOrNull: function ( value ) {
-      return value === null || typeof value === 'undefined';
-    },
-    isArguments: function ( object ) {
-      return Object.prototype.toString.call(object) == '[object Arguments]';
-    },
-    keys: function ( obj ) {
-      if ( Object.keys )
-        return Object.keys( obj );
-
-      var keys = [];
-
-      for ( var i in obj )
-        if ( Object.prototype.hasOwnProperty.call( obj, i ) )
-          keys.push(i);
-
-      return keys;
-    },
-    objEquiv: function ( a, b ) {
-      if ( this.isUndefinedOrNull( a ) || this.isUndefinedOrNull( b ) )
-        return false;
-
-      if ( a.prototype !== b.prototype ) return false;
-
-      if ( this.isArguments( a ) ) {
-        if ( !this.isArguments( b ) )
-          return false;
-
-        return eql( pSlice.call( a ) , pSlice.call( b ) );
-      }
-
-      try {
-        var ka = this.keys( a ), kb = this.keys( b ), key, i;
-
-        if ( ka.length !== kb.length )
-          return false;
-
-        ka.sort();
-        kb.sort();
-
-        for ( i = ka.length - 1; i >= 0; i-- )
-          if ( ka[ i ] != kb[ i ] )
-            return false;
-
-        for ( i = ka.length - 1; i >= 0; i-- ) {
-          key = ka[i];
-          if ( !this.eql( a[ key ], b[ key ] ) )
-             return false;
-        }
-
-        return true;
-      } catch ( e ) {
-        return false;
-      }
-    }
-  };
-
-  // AMD Compliance
-  if ( "function" === typeof define && define.amd ) {
-    define( 'validator', function() { return exports; } );
+  // browser
+  } else {
+    window[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] = exports;
   }
-} )( 'undefined' === typeof exports ? this[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] = {} : exports );
+} )( );

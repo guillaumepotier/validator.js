@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**1.0.0**
+
+  - Fixed AMD / CommonJS loading
+  - [BC BREAK] Moved heavy or rarely used Asserts to extras.js
+
 **0.6.1**
 
   - Fixed `Required()` assert behavior in constraint list (#15)

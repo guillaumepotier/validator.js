@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="./resources/mocha.css" />
 
 <script src="../src/validator.js"></script>
+<script src="../src/extras.js"></script>
 <script src="./resources/expect.js"></script>
 <script src="./resources/mocha.js"></script>
 <script src="./tests.js"></script>
@@ -13,7 +14,7 @@
 
     mocha.setup( 'bdd' );
     mocha.reporter( 'html' );
-    Tests.Suite( Validator, expect );
+    Tests.Suite( Validator, expect, true );
 
     if ( window.mochaPhantomJS ) {
       mochaPhantomJS.run();

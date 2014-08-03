@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and the browser
 
 ## Version
 
-0.6.1
+1.0.0
 
 ## Status
 
@@ -178,21 +178,17 @@ new Assert().Collection ( Constraint );
 new Assert().Count( value );
 new Assert().Count( fn ( [] ) {} );
 new Assert().Email();
-new Assert().Eql( object );
-new Assert().Eql( fn ( value ) {} );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
 new Assert().GreaterThan( threshold );
 new Assert().GreaterThanOrEqual( threshold );
 new Assert().InstanceOf
-new Assert().IPv4();
 new Assert().Length( { min: value, max: value } );
 new Assert().HaveProperty( propertyName );
 new Assert().LessThan( threshold );
 new Assert().LessThanOrEqual( threshold );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
-new Assert().Mac();
 new Assert().NotBlank();
 new Assert().NotNull();
 new Assert().Null();
@@ -201,6 +197,12 @@ new Assert().Regexp( value );
 new Assert().Required();
 new Assert().Unique();
 new Assert().Unique( { key: value } );
+
+// in extras.js
+new Assert().Eql( object );
+new Assert().Eql( fn ( value ) {} );
+new Assert().IPv4();
+new Assert().Mac();
 ```
 
 ### Collection Assert
