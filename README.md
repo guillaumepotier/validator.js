@@ -197,6 +197,7 @@ new Assert().Regexp( value );
 new Assert().Required();
 new Assert().Unique();
 new Assert().Unique( { key: value } );
+new Assert().Key( { key1: val1, ... } );
 
 // in extras.js
 new Assert().Eql( object );

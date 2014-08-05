@@ -494,6 +494,14 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( 7, assert ).show() ).to.eql( { assert: 'LessThanOrEqual', value: 7, violation: { threshold: 5 } } );
       } )
 
+      it( 'Key', function () {
+        assert = new Assert().Key( { info: null, test: null } );
+
+        expect( validate( 'info', assert ) ).to.be( true );
+        expect( validate( 'test', assert ) ).to.be( true );
+        expect( validate( 'key', assert ).show() ).to.eql( { assert: 'Key', value: 'key', violation: { obj: { info: null, test: null } } } );
+      } )
+
       if ( !extras )
         return;
 
