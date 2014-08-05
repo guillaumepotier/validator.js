@@ -628,6 +628,24 @@
       return this;
     },
 
+    Key: function ( obj ) {
+      this.__class__ = 'Key';
+
+      if ( 'object' !== typeof obj )
+        throw new Error( 'Must pass object to Key Assertion' );
+
+      this.obj = obj;
+      
+      this.validate = function ( value ) {
+        if ( true !== ( obj.hasOwnProperty( value ) ) )
+          throw new Violation( this, value, { obj: this.obj } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 

@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.0.0 - built Sun Aug 03 2014 17:42:31
+* Version 1.0.0 - built Tue Aug 05 2014 17:14:57
 * MIT Licensed
 *
 */
@@ -489,7 +489,7 @@
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
         if ( !_isArray( collection ) )
-          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
+          throw new Violation( this, collection, { value: Validator.errorCode.must_be_an_array } );
 
         for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
@@ -621,6 +621,24 @@
       this.validate = function ( value ) {
         if ( true !== (value instanceof this.classRef) )
           throw new Violation( this, value, { classRef: this.classRef } );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    Key: function ( obj ) {
+      this.__class__ = 'Key';
+
+      if ( 'object' !== typeof obj )
+        throw new Error( 'Must pass object to Key Assertion' );
+
+      this.obj = obj;
+      
+      this.validate = function ( value ) {
+        if ( true !== ( obj.hasOwnProperty( value ) ) )
+          throw new Violation( this, value, { obj: this.obj } );
 
         return true;
       };
