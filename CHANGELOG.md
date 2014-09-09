@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.0.1**
+
+  - Fixed distribution build
+
 **1.0.0**
 
   - Fixed AMD / CommonJS loading
