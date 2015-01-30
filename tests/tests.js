@@ -422,10 +422,15 @@ var Suite = function ( Validator, expect, extras ) {
         assert = new Assert().Regexp( '^[A-Z]' );
 
         expect( validate( 'foo', assert ) ).not.to.be( true );
-        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Regexp', value: 'foo', violation: { regexp: '^[A-Z]', flag: '' } } );
+        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Regexp', value: 'foo', violation: { regexp: '^[A-Z]', flag: undefined } } );
         expect( validate( 'FOO', assert ) ).to.be( true );
 
         assert = new Assert().Regexp( '^[A-Z]', 'i' );
+
+        expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( 'FOO', assert ) ).to.be( true );
+
+        assert = new Assert().Regexp( /^[A-Z]/i );
 
         expect( validate( 'foo', assert ) ).to.be( true );
         expect( validate( 'FOO', assert ) ).to.be( true );

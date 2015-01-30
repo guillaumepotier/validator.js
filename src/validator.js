@@ -777,7 +777,7 @@
         throw new Error( 'You must give a regexp' );
 
       this.regexp = regexp;
-      this.flag = flag || '';
+      this.flag = flag;
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
