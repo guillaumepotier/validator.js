@@ -7,4 +7,6 @@ node_js:
 before_script:
   - npm install
 
-script: npm test
+script:
+  - npm test
+  - npm run-script test-dist
