@@ -685,6 +685,16 @@ var Suite = function ( Validator, expect, extras ) {
         } )
       })
 
+      describe( 'Array validation', function () {
+        it( 'should validate an array of strings', function () {
+          var assert = new Assert().Collection( new Assert().Email() );
+
+          expect( validator.validate( ['foo@bar.baz', 'bar@baz.qux'], assert ) ).to.be( true );
+          expect( validator.validate( ['foo@bar.baz', 'not an email'], assert ) ).not.to.be( true );
+          expect( validator.validate( ['foo@bar.baz', 'not an email'], assert )[ 0 ][ '1' ][ 0 ].__class__ ).to.be( 'Violation' );
+        } )
+      } )
+
       describe( 'Object validation', function () {
         it( 'should validate an object with a simple constraint', function () {
           var constraint = {

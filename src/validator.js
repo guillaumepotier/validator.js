@@ -83,7 +83,7 @@
 
         result = assert[ i ].check( string, group );
 
-        if ( result instanceof Violation )
+        if ( true !== result )
           failures.push( result );
       }
 
@@ -335,7 +335,7 @@
 
     check: function ( value, group ) {
       if ( !this.requiresValidation( group ) )
-        return;
+        return true;
 
       try {
         return this.validate( value, group );
