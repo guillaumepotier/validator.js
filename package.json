@@ -30,7 +30,8 @@
     "grunt-npm2bower-sync": "~0.3.0"
   },
   "scripts": {
+    "build": "grunt build",
     "test": "mocha tests/server.js -R dot",
-    "test-dist": "grunt build && mocha tests/server.min.js -R dot"
+    "test-dist": "mocha tests/server.min.js -R dot"
   }
 }

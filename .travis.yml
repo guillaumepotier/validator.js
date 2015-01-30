@@ -5,8 +5,9 @@ node_js:
   - "0.10"
 
 before_script:
-  - npm install
+  - npm install grunt-cli -g
 
 script:
   - npm test
+  - npm run-script build --force
   - npm run-script test-dist
