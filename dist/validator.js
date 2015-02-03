@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.0.1 - built Mon Aug 25 2014 16:10:10
+* Version 1.1.0 - built Tue Feb 03 2015 09:32:17
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.0.1';
+    this.__version__ = '1.1.0';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -83,7 +83,7 @@
 
         result = assert[ i ].check( string, group );
 
-        if ( result instanceof Violation )
+        if ( true !== result )
           failures.push( result );
       }
 
@@ -335,7 +335,7 @@
 
     check: function ( value, group ) {
       if ( !this.requiresValidation( group ) )
-        return;
+        return true;
 
       try {
         return this.validate( value, group );
@@ -777,7 +777,7 @@
         throw new Error( 'You must give a regexp' );
 
       this.regexp = regexp;
-      this.flag = flag || '';
+      this.flag = flag;
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )

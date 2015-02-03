@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**1.1.0**
+
+  - Allowed to run `Constraint` against array (#24)
+  - Allowed straight RegExp arguments (#22)
+
 **1.0.1**
 
   - Fixed distribution build
