@@ -190,6 +190,7 @@ new Assert().LessThanOrEqual( threshold );
 new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
 new Assert().NotBlank();
+new Assert().NotEqualTo( value );
 new Assert().NotNull();
 new Assert().Null();
 new Assert().Range( min, max );

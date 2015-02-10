@@ -242,6 +242,26 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( 42, assert ) ).to.be( true );
       } )
 
+      it( 'NotEqualTo', function () {
+        assert = new Assert().NotEqualTo( 42 );
+
+        expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( 42, assert ).show() ).to.eql( { assert: 'NotEqualTo', value: 42, violation: { value: 42 } } );
+        expect( validate( 4, assert ) ).to.be( true );
+        expect( validate( 42, assert ) ).not.to.be( true );
+      } )
+
+      it( 'NotEqualTo w/ function', function () {
+        assert = new Assert().NotEqualTo( function ( value ) {
+          return 42;
+        } );
+
+        expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( 42, assert ).show() ).to.eql( { assert: 'NotEqualTo', value: 42, violation: { value: 42 } } );
+        expect( validate( 4, assert ) ).to.be( true );
+        expect( validate( 42, assert ) ).not.to.be( true );
+      } )
+
       it( 'Callback', function () {
         assert = new Assert().Callback( function ( value ) {
           var calc = ( 42 / value ) % 2;
