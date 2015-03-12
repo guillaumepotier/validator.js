@@ -260,6 +260,18 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( 'foo', assert ) ).to.be( true );
       } )
 
+      it( 'Callback with error in function', function () {
+        assert = new Assert().Callback( function ( value ) {
+          this_function_does_not_exist();
+        } );
+
+        var r = validate( 3, assert ).show();
+        expect(r.violation).not.to.be(undefined);
+        expect(r.violation.error).to.be.an(ReferenceError);
+        expect('' + r.violation.error).to.be( "ReferenceError: this_function_does_not_exist is not defined" );
+        expect(r).to.eql( { assert: 'Callback', value: 3, violation: { error: r.violation.error } } );
+      } )
+
       it( 'Choice', function () {
         assert = new Assert().Choice( [ 'foo', 'bar', 'baz' ] );
 
