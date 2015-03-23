@@ -319,6 +319,35 @@
       this.addGroup( group );
   };
 
+  /**
+   * Extend Assert
+   */
+  Assert.extend = function(asserts) {
+    if ( 'object' !== typeof asserts )
+      throw new Error( 'Invalid parameter: `asserts` should be an object' );
+
+    if ( 0 === Object.keys(asserts).length )
+      throw new Error( 'Invalid parameter: `asserts` should have at least one property' );
+
+    // Inherit from Assert.
+    function Extended() {
+      Assert.apply(this, arguments);
+    }
+
+    Extended.prototype = Object.create(Assert.prototype);
+    Extended.prototype.constructor = Extended;
+
+    // Extend with custom asserts.
+    for (var key in asserts) {
+      if ( 'function' !== typeof asserts[key] )
+        throw new Error( 'The extension assert must be a function' );
+
+      Extended.prototype[key] = asserts[key];
+    }
+
+    return Extended;
+  };
+
   Assert.prototype = {
 
     construct: Assert,
