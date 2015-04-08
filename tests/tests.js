@@ -222,6 +222,23 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( new Date(), assert ) ).to.be( true );
       } )
 
+      it( 'IsString', function () {
+        assert = new Assert().IsString();
+
+        expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( new String( 'foo' ), assert ) ).to.be( true );
+
+        expect( validate( 7, assert ) ).not.to.be( true );
+        expect( validate( 7, assert ).show() ).to.eql( { assert: 'IsString', value: 7, violation: { value: 'must_be_a_string' } } );
+
+        var now = new Date();
+        expect( validate( now, assert ) ).not.to.be( true );
+        expect( validate( now, assert ).show() ).to.eql( { assert: 'IsString', value: now, violation: { value: 'must_be_a_string' } } );
+
+        expect( validate( [1, 2, 3], assert ) ).not.to.be( true );
+        expect( validate( [1, 2, 3], assert ).show() ).to.eql( { assert: 'IsString', value: [1, 2, 3], violation: { value: 'must_be_a_string' } } );
+      } )
+
       it( 'EqualTo', function () {
         assert = new Assert().EqualTo( 42 );
 

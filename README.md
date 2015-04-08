@@ -182,7 +182,8 @@ new Assert().EqualTo( value );
 new Assert().EqualTo( fn ( value ) {} );
 new Assert().GreaterThan( threshold );
 new Assert().GreaterThanOrEqual( threshold );
-new Assert().InstanceOf
+new Assert().InstanceOf( classRef );
+new Assert().IsString();
 new Assert().Length( { min: value, max: value } );
 new Assert().HaveProperty( propertyName );
 new Assert().LessThan( threshold );
@@ -269,6 +270,17 @@ it( 'Callback', function () {
   expect( validate( 'foo', assert ) ).to.be( true );
   expect( validate( 'bar', assert ) ).to.be( false );
 } )
+```
+
+### A note on type checking
+Note that `Length` assertion works for both String and Array type, so if you want to validate only strings, you should write an additional assertion:
+```js
+var Assert = Validator.Assert;
+
+Validator.Validator().validate( 'foo', [
+  new Assert().Length( { min: 4, max: 100 } ),
+  new Assert().IsString()
+] );
 ```
 
 ## Run Tests
