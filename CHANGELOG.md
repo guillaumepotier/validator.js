@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.1.1**
+
+  - Added `IsString` validator (#33)
+
 **1.1.0**
 
   - Allowed to run `Constraint` against array (#24)

@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.1.0 - built Tue Feb 03 2015 09:32:17
+* Version 1.1.1 - built Thu Apr 09 2015 09:28:13
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.1.0';
+    this.__version__ = '1.1.1';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -628,6 +628,19 @@
       return this;
     },
 
+    IsString: function () {
+      this.__class__ = 'IsString';
+
+      this.validate = function ( value ) {
+        if ( !_isString( value ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 
@@ -900,6 +913,10 @@
 
   var _isArray = function ( obj ) {
     return Object.prototype.toString.call( obj ) === '[object Array]';
+  };
+
+  var _isString = function (str ) {
+    return Object.prototype.toString.call( str ) === '[object String]';
   };
 
   // AMD export
