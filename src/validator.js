@@ -628,6 +628,19 @@
       return this;
     },
 
+    IsString: function () {
+      this.__class__ = 'IsString';
+
+      this.validate = function ( value ) {
+        if ( !_isString( value ) )
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Length: function ( boundaries ) {
       this.__class__ = 'Length';
 
@@ -900,6 +913,10 @@
 
   var _isArray = function ( obj ) {
     return Object.prototype.toString.call( obj ) === '[object Array]';
+  };
+
+  var _isString = function (str ) {
+    return Object.prototype.toString.call( str ) === '[object String]';
   };
 
   // AMD export
