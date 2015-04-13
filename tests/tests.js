@@ -23,19 +23,19 @@ var Suite = function ( Validator, expect, extras ) {
       } )
 
       it( 'should instanciate an assertion', function () {
-        var Length = new Assert().Length( { min: 10 } );
+        var Length = new Assert().Length( 10 );
         expect( Length ).to.be.an( 'object' );
         expect( Length.__class__ ).to.be( 'Length' );
         expect( assert.__parentClass__ ).to.be( 'Assert' );
       } )
 
       it( 'should return true if validate success', function () {
-        var Length = new Assert().Length( { min: 10 } );
+        var Length = new Assert().Length( 11 );
         expect( Length.validate( 'foo bar baz' ) ).to.be( true );
       } )
 
       it( 'should throw a Violation exception if fails', function () {
-        var Length = new Assert().Length( { min: 10 } );
+        var Length = new Assert().Length( 10 );
         try {
           Length.validate( 'foo' );
           expect().fails();
@@ -45,54 +45,54 @@ var Suite = function ( Validator, expect, extras ) {
       } )
 
       it( 'should register a group through assertion construct ', function () {
-        var Length = new Assert( 'foo' ).Length( { min: 10, min: 15 } );
-        expect( Length.hasGroups() ).to.be( true );
-        expect( Length.hasGroup( 'foo' ) ).to.be( true );
+        var Range = new Assert( 'foo' ).Range( 10, 15 );
+        expect( Range.hasGroups() ).to.be( true );
+        expect( Range.hasGroup( 'foo' ) ).to.be( true );
       } )
 
       it( 'should register mulitple groups through assertion construct', function () {
-        var Length = new Assert( [ 'foo', 'bar'] ).Length( { min: 10, min: 15 } );
-        expect( Length.hasGroups() ).to.be( true );
-        expect( Length.hasGroup( 'foo' ) ).to.be( true );
-        expect( Length.hasGroup( 'bar' ) ).to.be( true );
+        var Range = new Assert( [ 'foo', 'bar'] ).Range( 10, 15 );
+        expect( Range.hasGroups() ).to.be( true );
+        expect( Range.hasGroup( 'foo' ) ).to.be( true );
+        expect( Range.hasGroup( 'bar' ) ).to.be( true );
       } )
 
       it( 'should register a group through addGroup ', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroup( 'foo' );
+        var Length = new Assert().Length( 10 ).addGroup( 'foo' );
         expect( Length.hasGroups() ).to.be( true );
         expect( Length.hasGroup( 'foo' ) ).to.be( true );
       } )
 
       it( 'should register multiple groups through addGroup', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroup( [ 'foo', 'bar' ] );
+        var Length = new Assert().Length( 10 ).addGroup( [ 'foo', 'bar' ] );
         expect( Length.hasGroups() ).to.be( true );
         expect( Length.hasGroup( 'foo' ) ).to.be( true );
         expect( Length.hasGroup( 'bar' ) ).to.be( true );
       } )
 
       it( 'should register mulitple groups through addGroups', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroups( [ 'foo', 'bar'] );
+        var Length = new Assert().Length( 10 ).addGroups( [ 'foo', 'bar'] );
         expect( Length.hasGroups() ).to.be( true );
         expect( Length.hasGroup( 'foo' ) ).to.be( true );
         expect( Length.hasGroup( 'bar' ) ).to.be( true );
       } )
 
       it( 'should register mulitple groups through chained addGroup', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroup( 'foo' ).addGroup( 'bar' );
+        var Length = new Assert().Length( 10 ).addGroup( 'foo' ).addGroup( 'bar' );
         expect( Length.hasGroups() ).to.be( true );
         expect( Length.hasGroup( 'foo' ) ).to.be( true );
         expect( Length.hasGroup( 'bar' ) ).to.be( true );
       } )
 
       it( 'should remove group', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroup( 'foo' ).addGroup( 'bar' ).removeGroup( 'bar' );
+        var Length = new Assert().Length( 10 ).addGroup( 'foo' ).addGroup( 'bar' ).removeGroup( 'bar' );
         expect( Length.hasGroups() ).to.be( true );
         expect( Length.hasGroup( 'foo' ) ).to.be( true );
         expect( Length.hasGroup( 'bar' ) ).to.be( false );
       } )
 
       it( 'should test hasOneOf for groups', function () {
-        var Length = new Assert().Length( { min: 10 } ).addGroup( [ 'foo', 'bar' ] );
+        var Length = new Assert().Length( 10 ).addGroup( [ 'foo', 'bar' ] );
         expect( Length.hasOneOf( [ 'foo', 'baz' ] ) ).to.be( true );
         expect( Length.hasOneOf( [ 'bar', 'baz' ] ) ).to.be( true );
         expect( Length.hasOneOf( [ 'foobar', 'baz', 'foobaz' ] ) ).to.be( false );
@@ -180,27 +180,49 @@ var Suite = function ( Validator, expect, extras ) {
       } )
 
       it( 'Length', function () {
-        assert = new Assert().Length( { min: 3 } );
+        assert = new Assert().Length( 3 );
 
         expect( validate( null, assert ) ).not.to.be( true );
         expect( validate( '', assert ) ).not.to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( false, assert ).show() ).to.eql( { assert: 'Length', value: false, violation: { value: 'must_be_a_string_or_array' } } );
         expect( validate( 'foo', assert ) ).to.be( true );
-        expect( validate( 'f', assert ).show() ).to.eql( { assert: 'Length', value: 'f', violation: { min: 3 } } );
+        expect( validate( 'f', assert ).show() ).to.eql( { assert: 'Length', value: 'f', violation: { length: 3 } } );
         expect( validate( 'f', assert ) ).not.to.be( true );
 
-        assert = new Assert().Length( { max: 10 } );
+        assert = new Assert().Length( 10 );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
-        expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { max: 10 } } );
-      } )
+        expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { length: 10 } } );
+      })
 
       it( 'Length for arrays', function () {
-        assert = new Assert().Length( { min: 3, max: 5 } );
-        expect( validator.validate([], assert) ).not.to.be( true );
-        expect( validator.validate(['foo'], assert) ).not.to.be( true );
-        expect( validator.validate(['foo', 'bar', 'baz'], assert) ).to.be( true );
-        expect( validator.validate(['foo', 'bar', 'baz', 'qux', 'bux', 'pux'], assert) ).not.to.be( true );
+        assert = new Assert().Length( 3 );
+        expect( validator.validate( [], assert ) ).not.to.be( true );
+        expect( validator.validate( ['foo'], assert ) ).not.to.be( true );
+        expect( validator.validate( ['foo', 'bar', 'baz'], assert ) ).to.be( true );
+        expect( validator.validate( ['foo', 'bar', 'baz', 'qux', 'bux', 'pux'], assert ) ).not.to.be( true );
+      } )
+
+      it( 'Length Range for strings', function () {
+        assert = new Assert().Range( 3, Number.MAX_VALUE );
+
+        expect( validate( null, assert ) ).not.to.be( true );
+        expect( validate( '', assert ) ).not.to.be( true );
+        expect( validate( false, assert ) ).not.to.be( true );
+
+        expect( validate( 'foo', assert ) ).to.be( true );
+        expect( validate( 'f', assert ) ).not.to.be( true );
+
+        assert = new Assert().Range( 0, 10 );
+        expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
+      } )
+
+      it( 'Length Range for arrays', function () {
+        assert = new Assert().Range( 3, 5 );
+        expect( validator.validate( [], assert) ).not.to.be( true );
+        expect( validator.validate( ['foo'], assert) ).not.to.be( true );
+        expect( validator.validate( ['foo', 'bar', 'baz'], assert ) ).to.be( true );
+        expect( validator.validate( ['foo', 'bar', 'baz', 'qux', 'bux', 'pux'], assert ) ).not.to.be( true );
       } )
 
       it( 'Email', function () {
@@ -459,10 +481,8 @@ var Suite = function ( Validator, expect, extras ) {
 
         // with strings
         expect( validate( 'foo', assert ) ).not.to.be( true );
-        expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Range', value: 'foo', violation: { min: 5 } } );
         expect( validate( 'foo bar', assert ) ).to.be( true );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
-        expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Range', value: 'foo bar baz', violation: { max: 10 } } );
 
         // with arrays
         expect( validate( ['foo'], assert ) ).not.to.be( true );
@@ -577,7 +597,7 @@ var Suite = function ( Validator, expect, extras ) {
 
       it( 'should throw an error if not instanciated with an object', function () {
         try {
-          new Constraint( new Assert().Length( { min: 10 } ) );
+          new Constraint( new Assert().Length( 10 ) );
           expect().fails();
         } catch ( err ) {
           expect( err.message ).to.be( 'Should give a valid mapping object to Constraint' );
@@ -585,19 +605,19 @@ var Suite = function ( Validator, expect, extras ) {
       } )
 
       it( 'should be instanciated with a simple object', function () {
-        var myConstraint = new Constraint( { foo: new Assert().Length( { min: 10 } ) } );
+        var myConstraint = new Constraint( { foo: new Assert().Length( 10 ) } );
         expect( myConstraint.has( 'foo' ) ).to.be( true );
       } )
 
       it( 'should add a node: Assert', function () {
         var myConstraint = new Constraint();
-        myConstraint.add( 'foo', new Assert().Length( { min: 10 } ) );
+        myConstraint.add( 'foo', new Assert().Length( 10 ) );
         expect( myConstraint.has( 'foo' ) ).to.be( true );
       } )
 
       it( 'should add a node: Constraint', function () {
         var myConstraint = new Constraint();
-        myConstraint.add( 'foo', new Constraint( { bar: new Assert().Length( { min: 10 } ) } ) );
+        myConstraint.add( 'foo', new Constraint( { bar: new Assert().Length( 10 ) } ) );
         expect( myConstraint.has( 'foo' ) ).to.be( true );
         expect( myConstraint.get( 'foo' ).has( 'bar' ) ).to.be( true );
       } )
@@ -657,7 +677,7 @@ var Suite = function ( Validator, expect, extras ) {
       } )
 
       describe( 'String validation', function () {
-        it( 'sould throw Error if not trying to validate a string against Assert or Asserts array', function () {
+        it( 'should throw Error if not trying to validate a string against Assert or Asserts array', function () {
           try {
             validator.validate( 'foo', 'bar' );
             expect().fail();
@@ -667,24 +687,24 @@ var Suite = function ( Validator, expect, extras ) {
         } )
 
         it( 'should validate a string', function () {
-          expect( validator.validate( 'foo', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).not.to.be( true );
-          expect( validator.validate( 'foobar', [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ] ) ).to.be( true );
+          expect( validator.validate( 'foo', [ new Assert().Range( 5, 10 ), new Assert().NotBlank() ] ) ).not.to.be( true );
+          expect( validator.validate( 'foobar', [ new Assert().Range( 5, 10 ), new Assert().NotBlank() ] ) ).to.be( true );
         } )
 
         it( 'should return violations for a string', function () {
-          var asserts = [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ];
+          var asserts = [ new Assert().Range( 5, 10 ), new Assert().NotBlank() ];
           var violations = validator.validate( '', asserts );
           expect( violations ).to.have.length( 2 );
           expect( violations[ 0 ] ).to.be.a( Validator.Violation );
-          expect( violations[ 0 ].assert.__class__ ).to.be( 'Length' );
+          expect( violations[ 0 ].assert.__class__ ).to.be( 'Range' );
           expect( violations[ 1 ].assert.__class__ ).to.be( 'NotBlank' );
           violations = validator.validate( 'foo', asserts );
           expect( violations ).to.have.length( 1 );
-          expect( violations[ 0 ].assert.__class__).to.be( 'Length' );
+          expect( violations[ 0 ].assert.__class__).to.be( 'Range' );
         } )
 
         it( 'should use groups for validation', function() {
-          var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 'bar' ), new Assert().Length( { min: 8 } ).addGroup( 'baz' ), new Assert().Length( { min: 2 } ) ];
+          var asserts = [ new Assert().Range( 4, Number.MAX_VALUE ).addGroup( 'bar' ), new Assert().Range( 8, Number.MAX_VALUE ).addGroup( 'baz' ), new Assert().Range( 2, Number.MAX_VALUE ) ];
           expect( validator.validate( 'foo', asserts ) ).to.be( true );
           expect( validator.validate( 'foo', asserts, 'bar' ) ).not.to.be( true );
           expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be( true );
@@ -693,7 +713,7 @@ var Suite = function ( Validator, expect, extras ) {
         } )
 
         it( 'should use numbers as groups for validation', function () {
-          var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 512 ), new Assert().Length( { min: 8 } ).addGroup( 1024 ), new Assert().Length( { min: 2 } ) ];
+          var asserts = [ new Assert().Range( 4, Number.MAX_VALUE ).addGroup( 512 ), new Assert().Range( 8, Number.MAX_VALUE ).addGroup( 1024 ), new Assert().Range( 2, Number.MAX_VALUE ) ];
           expect( validator.validate( 'foo', asserts ) ).to.be( true );
           expect( validator.validate( 'foo', asserts, 512 ) ).not.to.be( true );
           expect( validator.validate( 'foofoo', asserts, 512 ) ).to.be( true );
@@ -735,7 +755,7 @@ var Suite = function ( Validator, expect, extras ) {
         it( 'should validate required properties', function () {
           var constraint = {
             foo: new Assert().Required(),
-            bar: [ new Assert().Required(), new Assert().Length( { min: 4 } ) ],
+            bar: [ new Assert().Required(), new Assert().Length( 4 ) ],
           };
 
           var result = validator.validate( {
@@ -755,7 +775,7 @@ var Suite = function ( Validator, expect, extras ) {
           expect( result ).not.to.be( true );
           expect( result.bar[0] ).to.be.a( Violation );
           expect( result.bar[0].assert.__class__ ).to.be( 'Length' );
-          expect( result.bar[0].violation ).to.eql( { min: 4 } );
+          expect( result.bar[0].violation ).to.eql( { length: 4 } );
 
           var result = validator.validate( {
             foo: 'foo',
@@ -812,7 +832,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         it( 'should validate an object with a complex constraint', function () {
           var constraint = new Constraint()
-              .add( 'name', new Assert().Length( { min: 5, max: 15 } ) )
+              .add( 'name', new Assert().Range( 5, 15 ) )
               .add( 'email', new Assert().NotBlank() );
 
           var result = validator.validate( { name: 'foo', email: '' }, constraint );
@@ -823,7 +843,7 @@ var Suite = function ( Validator, expect, extras ) {
 
           expect( result.name[ 0 ] ).to.be.a( Violation );
           expect( result.email[ 0 ] ).to.be.a( Violation );
-          expect( result.name[ 0 ].assert.__class__ ).to.be( 'Length' );
+          expect( result.name[ 0 ].assert.__class__ ).to.be( 'Range' );
           expect( result.email[ 0 ].assert.__class__ ).to.be( 'NotBlank' );
 
           result = validator.validate( { name: 'foo bar', email: '' }, constraint );
@@ -837,7 +857,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         it( 'should validate an object against a validation object', function () {
           var result = validator.validate( { name: 'foo', email: '' }, {
-            name: new Assert().Length( { min: 5 } ),
+            name: new Assert().Length( 5 ),
             email: new Assert().NotBlank()
           } );
 
@@ -853,7 +873,7 @@ var Suite = function ( Validator, expect, extras ) {
               phone: null
             },
             constraint = new Constraint({
-              name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
+              name:      [ new Assert().NotBlank(), new Assert().Range( 4, 25 ) ],
               email:     new Assert().Email(),
               firstname: new Assert().NotBlank().addGroup( ['foo', 'register'] ),
               phone:     new Assert().NotBlank().addGroup( 'edit' )

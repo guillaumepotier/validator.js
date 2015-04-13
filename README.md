@@ -55,8 +55,8 @@ Validator = require( 'validator.js' );
 ```js
 var Assert = Validator.Assert;
 
-Validator.Validator().validate( 'foo', new Assert().Length( { min: 4 } ) );
-Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new Assert().Email() ] );
+Validator.Validator().validate( 'foo', new Assert().Range( 4, Number.MAX_VALUE ) );
+Validator.Validator().validate( 'foo', [ new Assert().Range( 4, Number.MAX_VALUE ), new Assert().Email() ] );
 
 ```
 will return `true` if validation passes, a `Violation`'s array otherwise.
@@ -74,7 +74,7 @@ var object = {
     phone: null
   },
   constraint = {
-    name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
+    name:      [ new Assert().NotBlank(), new Assert().Range( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert().NotBlank(),
     phone:     new Assert().NotBlank()
@@ -91,7 +91,7 @@ With same objects than above, just by adding validation groups:
 
 ```js
   constraint = {
-    name:      [ new Assert().NotBlank(), new Assert( 'edit' ).Length( { min: 4, max: 25 } ) ],
+    name:      [ new Assert().NotBlank(), new Assert( 'edit' ).Range( 4, 25 ) ],
     email:     new Assert().Email(),
     firstname: new Assert( [ 'edit', 'register'] ).NotBlank(),
     phone:     new Assert( 'edit' ).NotBlank()
@@ -124,7 +124,7 @@ Validator.js (see below), but you can implement yours for your needs using the
 `Callback()` assert (see below).
 
 ```js
-var length = new Validator.Assert().Length( { min: 10 } );
+var length = new Validator.Assert().Range( 10, Number.MAX_VALUE );
 try {
   length.check( 'foo' );
 } catch ( violation ) {}
@@ -135,7 +135,7 @@ try {
 A Constraint is a set of asserts nodes that would be used to validate an object.
 
 ```js
-var length = new Validator.Assert().Length( { min: 10 } );
+var length = new Validator.Assert().Range( 10, Number.MAX_VALUE );
 var notBlank = new Validator.Assert().NotBlank();
 var constraint = new Constraint( { foo: length, bar: notBlank } );
 
@@ -184,7 +184,7 @@ new Assert().GreaterThan( threshold );
 new Assert().GreaterThanOrEqual( threshold );
 new Assert().InstanceOf( classRef );
 new Assert().IsString();
-new Assert().Length( { min: value, max: value } );
+new Assert().Length( value );
 new Assert().HaveProperty( propertyName );
 new Assert().LessThan( threshold );
 new Assert().LessThanOrEqual( threshold );
@@ -273,12 +273,12 @@ it( 'Callback', function () {
 ```
 
 ### A note on type checking
-Note that `Length` assertion works for both String and Array type, so if you want to validate only strings, you should write an additional assertion:
+Note that `Range` assertion works for both String and Array type, so if you want to validate only strings, you should write an additional assertion:
 ```js
 var Assert = Validator.Assert;
 
 Validator.Validator().validate( 'foo', [
-  new Assert().Length( { min: 4, max: 100 } ),
+  new Assert().Range( 4, 100 ),
   new Assert().IsString()
 ] );
 ```
