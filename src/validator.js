@@ -671,27 +671,20 @@
       return this;
     },
 
-    Length: function ( boundaries ) {
+    Length: function ( length ) {
       this.__class__ = 'Length';
 
-      if ( !boundaries.min && !boundaries.max )
-        throw new Error( 'Lenth assert must be instanciated with a { min: x, max: y } object' );
+      if ( 'undefined' === typeof length )
+        throw new Error( 'Should give a length value' );
 
-      this.min = boundaries.min;
-      this.max = boundaries.max;
+      this.length = length;
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value && !_isArray( value ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array } );
 
-        if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
-          throw new Violation( this, value, { min: this.min, max: this.max } );
-
-        if ( 'undefined' !== typeof this.max && value.length > this.max )
-          throw new Violation( this, value, { max: this.max } );
-
-        if ( 'undefined' !== typeof this.min && value.length < this.min )
-          throw new Violation( this, value, { min: this.min } );
+        if ( value.length != this.length )
+          throw new Violation( this, value, { length: this.length } );
 
         return true;
       };
@@ -796,7 +789,7 @@
           try {
             // validate strings and objects with their Length
             if ( ( 'string' === typeof value && isNaN( Number( value ) ) ) || _isArray( value ) )
-              new Assert().Length( { min: this.min, max: this.max } ).validate( value );
+              new Assert().GreaterThanOrEqual( this.min ).validate( value.length ) && new Assert().LessThanOrEqual( this.max ).validate( value.length );
 
             // validate numbers with their value
             else
@@ -846,7 +839,7 @@
           if ( 'string' === typeof value )
             new Assert().NotNull().validate( value ) && new Assert().NotBlank().validate( value );
           else if ( true === _isArray( value ) )
-            new Assert().Length( { min: 1 } ).validate( value );
+            new Assert().Range( 1, Number.MAX_VALUE ).validate( value );
         } catch ( violation ) {
           throw new Violation( this, value );
         }
