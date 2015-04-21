@@ -283,6 +283,22 @@ Validator.Validator().validate( 'foo', [
 ] );
 ```
 
+## Extending
+
+If you want to extend the library with your own asserts, you can use `Assert.extend()` which will return a copy of `validator.Assert` plus your custom asserts. This means that the original `validator.Assert` is always pristine.
+
+Example:
+
+```js
+var Assert = Validator.Assert;
+var ExtendedAssert = Assert.extend({
+  Integer: Number.isInteger,
+  NaN: Number.isNaN
+});
+
+expect( validate( 10, new ExtendedAssert().Integer() ).to.be( true );
+```
+
 ## Run Tests
 
 - On node:

@@ -1,3 +1,6 @@
+
+var sinon = require('sinon');
+
 ( function ( exports ) {
 
 var Suite = function ( Validator, expect, extras ) {
@@ -9,6 +12,78 @@ var Suite = function ( Validator, expect, extras ) {
 
     describe( 'Assert', function () {
       var assert = new Assert();
+
+      describe( 'extend', function() {
+        it( 'should throw an error if the extend parameter is missing', function () {
+          try {
+            Assert.extend();
+            expect().fails();
+          } catch (err) {
+            expect( err.message ).to.be( 'Invalid parameter: `asserts` should be an object' );
+          }
+        } )
+
+        it( 'should throw an error if the extend parameter is not a object', function () {
+          try {
+            Assert.extend('foobar');
+            expect().fails();
+          } catch (err) {
+            expect( err.message ).to.be( 'Invalid parameter: `asserts` should be an object' );
+          }
+        } )
+
+        it( 'should throw an error if the extend parameter is an empty object', function () {
+          try {
+            Assert.extend({});
+            expect().fails();
+          } catch (err) {
+            expect( err.message ).to.be( 'Invalid parameter: `asserts` should have at least one property' );
+          }
+        } )
+
+        it( 'should throw an error if the given assert is not a function', function () {
+          try {
+            Assert.extend({ Foobar: '' });
+            expect().fails();
+          } catch (err) {
+            expect( err.message ).to.be( 'The extension assert must be a function' );
+          }
+        } )
+
+        it('should call the `Assert` constructor', function () {
+          sinon.spy(Assert, 'apply');
+
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          new Extended();
+
+          expect(Assert.apply.callCount).to.equal(1);
+          expect(Assert.apply.firstCall.args[0].__class__).to.equal('Assert');
+          expect(Assert.apply.firstCall.args[0].__parentClass__).to.equal('Assert');
+          expect(Assert.apply.firstCall.args[0].groups).to.eql([]);
+
+          // Restore spy.
+          Assert.apply.restore();
+        } )
+
+        it( 'should inherit the `Assert` prototype', function () {
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          for (var assert in Assert.prototype) {
+            expect(Extended.prototype[assert]).to.equal(Assert.prototype[assert]);
+          }
+        } )
+
+        it( 'should return an Assert extended copy and keep the original `Assert.prototype` unchanged', function () {
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          expect(Assert.prototype.Foobar).to.be(undefined);
+          expect(Extended.prototype.Foobar).to.eql(fn);
+        } )
+      } )
 
       it( 'should be an object', function () {
         expect( assert ).to.be.an( 'object' );
