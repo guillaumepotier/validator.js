@@ -268,6 +268,13 @@ var Suite = function ( Validator, expect, extras ) {
         assert = new Assert().Length( { max: 10 } );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
         expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { max: 10 } } );
+
+        /**
+         * The following assertion tests a case that occurs upstream in Parsley.js where parameters come in as strings
+         * when the HTML5 standard attributes 'minlength' and 'maxlength' are parsed.
+         */
+        assert = new Assert().Length( { min: '3', max: '3' } );
+        expect( validate( 'foo', assert ) ).to.be( true );
       } )
 
       it( 'Length for arrays', function () {
