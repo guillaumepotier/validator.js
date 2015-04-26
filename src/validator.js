@@ -634,8 +634,8 @@
       if ( !boundaries.min && !boundaries.max )
         throw new Error( 'Length assert must be instanciated with a { min: x, max: y } object' );
 
-      this.min = boundaries.min;
-      this.max = boundaries.max;
+      this.min = parseInt(boundaries.min);
+      this.max = parseInt(boundaries.max);
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value && !_isArray( value ) )
