@@ -15,7 +15,7 @@
     "email": "guillaume@wisembly.com",
     "url": "http://guillaumepotier.com/"
   },
-  "main": "./dist/validator",
+  "main": "./src/validator",
   "repository": {
     "type": "git",
     "url": "https://github.com/guillaumepotier/validator.js"
