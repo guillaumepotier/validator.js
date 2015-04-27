@@ -479,7 +479,13 @@
       this.fn = fn;
 
       this.validate = function ( value ) {
-        var result = this.fn.apply( this, [ value ].concat( this.arguments ) );
+        var result;
+        try {
+          result = this.fn.apply( this, [ value ].concat( this.arguments ) );
+        }
+        catch(err) {
+          throw new Violation( this, value, { error: err } );
+        }
 
         if ( true !== result )
           throw new Violation( this, value, { result: result } );
