@@ -8,8 +8,7 @@
     "url": "http://guillaumepotier.com/"
   },
   "main": [
-    "./dist/validator",
-    "./dist/validator.min"
+    "./dist/validator.min.js"
   ],
   "keywords": [
     "validation",
