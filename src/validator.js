@@ -776,6 +776,26 @@
       return this;
     },
 
+    NotEqualTo: function ( reference ) {
+      this.__class__ = 'NotEqualTo';
+
+      if ( 'undefined' === typeof reference )
+        throw new Error( 'NotEqualTo must be instanciated with a value or a function' );
+
+      this.reference = reference;
+
+      this.validate = function ( value ) {
+        var reference = 'function' === typeof this.reference ? this.reference( value ) : this.reference;
+
+        if ( reference === value )
+          throw new Violation( this, value, { value: reference } );
+
+        return true;
+      };
+
+      return this;
+    },
+
     Null: function () {
       this.__class__ = 'Null';
 
