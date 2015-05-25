@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.1.1 - built Thu Apr 09 2015 09:28:13
+* Version 1.1.2 - built Mon May 25 2015 12:38:56
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.1.1';
+    this.__version__ = '1.1.2';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -319,6 +319,36 @@
       this.addGroup( group );
   };
 
+  /**
+   * Extend Assert
+   */
+
+  Assert.extend = function ( asserts ) {
+    if ( 'object' !== typeof asserts )
+      throw new Error( 'Invalid parameter: `asserts` should be an object' );
+
+    if ( 0 === Object.keys( asserts ).length )
+      throw new Error( 'Invalid parameter: `asserts` should have at least one property' );
+
+    // Inherit from Assert.
+    function Extended() {
+      Assert.apply( this, arguments );
+    }
+
+    Extended.prototype = Object.create( Assert.prototype );
+    Extended.prototype.constructor = Extended;
+
+    // Extend with custom asserts.
+    for ( var key in asserts ) {
+      if ( 'function' !== typeof asserts[ key ] )
+        throw new Error( 'The extension assert must be a function' );
+
+      Extended.prototype[ key ] = asserts[ key ];
+    }
+
+    return Extended;
+  };
+
   Assert.prototype = {
 
     construct: Assert,
@@ -449,7 +479,13 @@
       this.fn = fn;
 
       this.validate = function ( value ) {
-        var result = this.fn.apply( this, [ value ].concat( this.arguments ) );
+        var result;
+        try {
+          result = this.fn.apply( this, [ value ].concat( this.arguments ) );
+        }
+        catch(err) {
+          throw new Violation( this, value, { error: err } );
+        }
 
         if ( true !== result )
           throw new Violation( this, value, { result: result } );
@@ -645,10 +681,10 @@
       this.__class__ = 'Length';
 
       if ( !boundaries.min && !boundaries.max )
-        throw new Error( 'Lenth assert must be instanciated with a { min: x, max: y } object' );
+        throw new Error( 'Length assert must be instanciated with a { min: x, max: y } object' );
 
-      this.min = boundaries.min;
-      this.max = boundaries.max;
+      this.min = parseInt(boundaries.min);
+      this.max = parseInt(boundaries.max);
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value && !_isArray( value ) )
@@ -733,6 +769,26 @@
 
         if ( '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
           throw new Violation( this, value );
+
+        return true;
+      };
+
+      return this;
+    },
+
+    NotEqualTo: function ( reference ) {
+      this.__class__ = 'NotEqualTo';
+
+      if ( 'undefined' === typeof reference )
+        throw new Error( 'NotEqualTo must be instanciated with a value or a function' );
+
+      this.reference = reference;
+
+      this.validate = function ( value ) {
+        var reference = 'function' === typeof this.reference ? this.reference( value ) : this.reference;
+
+        if ( reference === value )
+          throw new Violation( this, value, { value: reference } );
 
         return true;
       };

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.1.2**
+
+  - Added 'NotEqualTo' validator (#26)
+
 **1.1.1**
 
   - Added `IsString` validator (#33)
