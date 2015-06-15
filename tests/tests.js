@@ -895,6 +895,25 @@ var Suite = function ( Validator, expect, extras ) {
           expect( result.bar.violation.value ).to.be( 'bar' );
         } )
 
+        it( 'should validate nested required properties in strict mode', function () {
+          var constraint = new Constraint( {
+            foo: {
+              bar: {
+                biz: new Assert().Required()
+              }
+            }
+          }, { strict: true } );
+
+          var result = validator.validate( {
+            foo: {}
+          }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.foo.bar ).to.be.a( Violation );
+          expect( result.foo.bar.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.foo.bar.violation.value ).to.be( 'bar' );
+        } )
+
         it( 'should use default or strict validation', function () {
           var constraint = {
             foo: new Assert().Required(),
