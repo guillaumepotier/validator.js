@@ -134,22 +134,37 @@
 
     constructor: Constraint,
 
+    isRequired: function ( property, group ) {
+      var constraint = this.get( property );
+      var constraints = _isArray( constraint ) ? constraint : [constraint];
+
+      for ( var i = constraints.length - 1; i >= 0; i-- ) {
+        constraint = constraints[i];
+
+        if ( 'Required' === constraint.__class__ ) {
+          if ( constraints[i].requiresValidation( group ) ) {
+            return true;
+          }
+        }
+
+        if ( constraint instanceof Constraint && this.options.deepRequired ) {
+          for ( var node in constraint.nodes ) {
+            if ( constraint.isRequired( node, group ) ) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    },
+
     check: function ( object, group ) {
       var result, failures = {};
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = false;
-        var constraint = this.get(property);
-        var constraints = _isArray( constraint ) ? constraint : [constraint];
-
-        for (var i = constraints.length - 1; i >= 0; i--) {
-          if ( 'Required' === constraints[i].__class__ ) {
-            isRequired = constraints[i].requiresValidation( group );
-
-            continue;
-          }
-        }
+        var isRequired = this.isRequired( property, group );
 
         if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
           continue;

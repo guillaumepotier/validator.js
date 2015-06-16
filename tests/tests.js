@@ -879,6 +879,21 @@ var Suite = function ( Validator, expect, extras ) {
           expect( result ).to.be( true );
         } )
 
+        it( 'should validate required properties in deepRequired mode', function () {
+          var constraint = new Constraint({
+            foo: {
+              bar: new Assert().Required()
+            }
+          }, { deepRequired: true });
+
+          var result = validator.validate( { }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.foo ).to.be.a( Violation );
+          expect( result.foo.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.foo.violation.value ).to.be( 'foo' );
+        } )
+
         it( 'should validate required properties in strict mode', function () {
           var constraint = new Constraint( {
             foo: new Assert().Required(),
