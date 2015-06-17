@@ -183,7 +183,7 @@
       }
 
       if ( 'object' === typeof object && !_isArray( object ) ) {
-        this.nodes[ node ] = object instanceof Constraint ? object : new Constraint( object );
+        this.nodes[ node ] = object instanceof Constraint ? object : new Constraint( object, this.options );
 
         return this;
       }
