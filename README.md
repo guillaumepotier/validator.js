@@ -185,6 +185,9 @@ constraint.check(object);
 ```
 will return a `HaveProperty` Violation, saying that `foo` property does not exist.
 
+This option also works when `Collection` is used, but doesn't enforce a non empty array
+on the validated object.
+
 ## Available asserts
 
 ```js

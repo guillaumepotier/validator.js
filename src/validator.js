@@ -134,7 +134,7 @@
 
     constructor: Constraint,
 
-    isRequired: function ( property, group ) {
+    isRequired: function( property, group, deepRequired ) {
       var constraint = this.get( property );
       var constraints = _isArray( constraint ) ? constraint : [constraint];
 
@@ -147,10 +147,19 @@
           }
         }
 
-        if ( constraint instanceof Constraint && this.options.deepRequired ) {
-          for ( var node in constraint.nodes ) {
-            if ( constraint.isRequired( node, group ) ) {
-              return true;
+        if ( deepRequired ) {
+          if ( 'Collection' === constraint.__class__ ) {
+            constraint = constraint.constraint;
+
+            // ensure constraint of collection gets the same deepRequired option
+            constraint.options.deepRequired = deepRequired;
+          }
+
+          if ( constraint instanceof Constraint ) {
+            for ( var node in constraint.nodes ) {
+              if ( constraint.isRequired( node, group, deepRequired ) ) {
+                return true;
+              }
             }
           }
         }
@@ -164,7 +173,7 @@
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = this.isRequired( property, group );
+        var isRequired = this.isRequired( property, group, this.options.deepRequired );
 
         if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
           continue;
@@ -191,7 +200,7 @@
     },
 
     add: function ( node, object ) {
-      if ( object instanceof Assert  || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
+      if ( object instanceof Assert || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
         this.nodes[ node ] = object;
 
         return this;
