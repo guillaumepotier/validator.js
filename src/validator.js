@@ -134,22 +134,46 @@
 
     constructor: Constraint,
 
+    isRequired: function( property, group, deepRequired ) {
+      var constraint = this.get( property );
+      var constraints = _isArray( constraint ) ? constraint : [constraint];
+
+      for ( var i = constraints.length - 1; i >= 0; i-- ) {
+        constraint = constraints[i];
+
+        if ( 'Required' === constraint.__class__ ) {
+          if ( constraints[i].requiresValidation( group ) ) {
+            return true;
+          }
+        }
+
+        if ( deepRequired ) {
+          if ( 'Collection' === constraint.__class__ ) {
+            constraint = constraint.constraint;
+
+            // ensure constraint of collection gets the same deepRequired option
+            constraint.options.deepRequired = deepRequired;
+          }
+
+          if ( constraint instanceof Constraint ) {
+            for ( var node in constraint.nodes ) {
+              if ( constraint.isRequired( node, group, deepRequired ) ) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+
+      return false;
+    },
+
     check: function ( object, group ) {
       var result, failures = {};
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = false;
-        var constraint = this.get(property);
-        var constraints = _isArray( constraint ) ? constraint : [constraint];
-
-        for (var i = constraints.length - 1; i >= 0; i--) {
-          if ( 'Required' === constraints[i].__class__ ) {
-            isRequired = constraints[i].requiresValidation( group );
-
-            continue;
-          }
-        }
+        var isRequired = this.isRequired( property, group, this.options.deepRequired );
 
         if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
           continue;
@@ -176,7 +200,7 @@
     },
 
     add: function ( node, object ) {
-      if ( object instanceof Assert  || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
+      if ( object instanceof Assert || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
         this.nodes[ node ] = object;
 
         return this;

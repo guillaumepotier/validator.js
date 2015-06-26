@@ -824,6 +824,8 @@ var Suite = function ( Validator, expect, extras ) {
           expect( validator.validate( ['foo@bar.baz', 'not an email'], assert ) ).not.to.be( true );
           expect( validator.validate( ['foo@bar.baz', 'not an email'], assert )[ 0 ][ '1' ][ 0 ].__class__ ).to.be( 'Violation' );
         } )
+
+
       } )
 
       describe( 'Object validation', function () {
@@ -877,6 +879,49 @@ var Suite = function ( Validator, expect, extras ) {
           }, constraint );
 
           expect( result ).to.be( true );
+        } )
+
+        it( 'should validate required properties in deepRequired mode', function () {
+          var constraint = new Constraint({
+            foo: {
+              bar: new Assert().Required()
+            }
+          }, { deepRequired: true });
+
+          var result = validator.validate( { }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.foo ).to.be.a( Violation );
+          expect( result.foo.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.foo.violation.value ).to.be( 'foo' );
+        } )
+
+        it( 'should validate empty array in deepRequired mode', function () {
+          var constraint = new Constraint({
+            foo: new Assert().Collection({
+              bar: new Assert().Required()
+            })
+          }, { deepRequired: true });
+
+          var result = validator.validate( { foo: [ ] }, constraint );
+
+          expect( result ).to.be( true );
+        } )
+
+        it( 'should validate array of objects in deepRequired mode', function () {
+          var constraint = new Constraint({
+            foo: new Assert().Collection({
+              bar: new Assert().Required()
+            })
+          }, { deepRequired: true });
+
+          var result = validator.validate( { foo: [ { } ] }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.foo ).to.be.an( Array );
+          expect( result.foo[0]['0'].bar ).to.be.a( Violation );
+          expect( result.foo[0]['0'].bar.assert.__class__ ).to.be( 'HaveProperty' );
+          expect( result.foo[0]['0'].bar.value ).to.eql( { } );
         } )
 
         it( 'should validate required properties in strict mode', function () {

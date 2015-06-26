@@ -166,6 +166,28 @@ constraint.check( object );
 will return a `HaveProperty` Violation, saying that `baz` property does not exist
 in validated object. Without `{ strict: true }` this check would return `true`.
 
+### Deep required validation
+
+By default, a `Required` constraint fails if the parent property exists in the validated
+object and the property doesn't. To force Validator.js to take into account all `Required`
+constraints, no matter the validated object, you have to enable the `deepRequired` option:
+
+```js
+var object = { };
+
+var constraint = new Constraint({
+  foo: {
+    bar: new Assert().Required()
+  }
+}, { deepRequired: true });
+
+constraint.check(object);
+```
+will return a `HaveProperty` Violation, saying that `foo` property does not exist.
+
+This option also works when `Collection` is used, but doesn't enforce a non empty array
+on the validated object.
+
 ## Available asserts
 
 ```js
