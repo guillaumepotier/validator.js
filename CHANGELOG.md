@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**1.2.0**
+
+  - Added deep required option (#40)
+  - Added strict validation (#39)
+
 **1.1.2**
 
   - Added 'NotEqualTo' validator (#26)
