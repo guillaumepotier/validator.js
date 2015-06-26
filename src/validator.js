@@ -150,12 +150,12 @@
         if ( deepRequired ) {
           if ( 'Collection' === constraint.__class__ ) {
             constraint = constraint.constraint;
-
-            // ensure constraint of collection gets the same deepRequired option
-            constraint.options.deepRequired = deepRequired;
           }
 
           if ( constraint instanceof Constraint ) {
+            // ensure constraint of collection gets the same deepRequired option
+            constraint.options.deepRequired = deepRequired;
+
             for ( var node in constraint.nodes ) {
               if ( constraint.isRequired( node, group, deepRequired ) ) {
                 return true;

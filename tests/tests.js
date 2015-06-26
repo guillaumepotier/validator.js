@@ -908,6 +908,19 @@ var Suite = function ( Validator, expect, extras ) {
           expect( result ).to.be( true );
         } )
 
+        it( 'should validate array of strings in deepRequired mode', function () {
+          var constraint = new Constraint({
+            foo: new Assert().Collection(new Assert().NotBlank())
+          }, { deepRequired: true });
+
+          var result = validator.validate( { foo: [ '' ] }, constraint );
+
+          expect( result ).not.to.be( true );
+          expect( result.foo ).to.be.an( Array );
+          expect( result.foo[0]['0'][0] ).to.be.a( Violation );
+          expect( result.foo[0]['0'][0].assert.__class__ ).to.be( 'NotBlank' );
+        } )
+
         it( 'should validate array of objects in deepRequired mode', function () {
           var constraint = new Constraint({
             foo: new Assert().Collection({
