@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.2.0 - built Fri Jun 26 2015 11:47:23
+* Version 1.2.1 - built Tue Jun 30 2015 09:21:59
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.2.0';
+    this.__version__ = '1.2.1';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -150,12 +150,12 @@
         if ( deepRequired ) {
           if ( 'Collection' === constraint.__class__ ) {
             constraint = constraint.constraint;
-
-            // ensure constraint of collection gets the same deepRequired option
-            constraint.options.deepRequired = deepRequired;
           }
 
           if ( constraint instanceof Constraint ) {
+            // ensure constraint of collection gets the same deepRequired option
+            constraint.options.deepRequired = deepRequired;
+
             for ( var node in constraint.nodes ) {
               if ( constraint.isRequired( node, group, deepRequired ) ) {
                 return true;

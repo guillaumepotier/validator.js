@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.2.1**
+
+  - Fix `deepRequired` when a `Collection` has one `Assert` (#42)
+
 **1.2.0**
 
   - Added deep required option (#40)
