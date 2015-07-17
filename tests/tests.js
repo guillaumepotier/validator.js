@@ -477,11 +477,13 @@ var Suite = function ( Validator, expect, extras ) {
               'foo',
               'bar@qux.com',
               'baz'
-            ]
+            ],
+            strings: [ {} ]
           },
           constraint = {
             foo: new Assert().NotNull(),
-            items: [ new Assert().Collection( new Assert().Email() ), new Assert().Count( 2 ) ]
+            items: [ new Assert().Collection( new Assert().Email() ), new Assert().Count( 2 ) ],
+            strings: [ new Assert().Collection( new Assert().IsString() ) ]
           };
 
         var result = validator.validate( object, constraint );
@@ -497,6 +499,9 @@ var Suite = function ( Validator, expect, extras ) {
         expect( result.items[ 0 ][ 2 ][ 0 ].assert.__class__ ).to.be( 'Email' );
         expect( result.items[ 1 ] ).to.be.a( Violation );
         expect( result.items[ 1 ].assert.__class__ ).to.be( 'Count' );
+        expect( result.strings[ 0 ] ).to.have.key( '0' );
+        expect( result.strings[ 0 ][ 0 ] ).to.be.a( Violation );
+        expect( result.strings[ 0 ][ 0 ].assert.__class__ ).to.be( 'IsString' );
       } )
 
       it( 'Collection with binded objects', function () {

@@ -94,6 +94,9 @@
       if ( 'object' !== typeof constraint )
         throw new Error( 'You must give a constraint to validate an object' );
 
+      if ( constraint instanceof Assert )
+        return constraint.check( object, group );
+
       if ( constraint instanceof Constraint )
         return constraint.check( object, group );
 
