@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.2.1 - built Tue Jun 30 2015 09:21:59
+* Version 1.2.2 - built Tue Jul 21 2015 09:47:45
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.2.1';
+    this.__version__ = '1.2.2';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -93,6 +93,9 @@
     _validateObject: function ( object, constraint, group ) {
       if ( 'object' !== typeof constraint )
         throw new Error( 'You must give a constraint to validate an object' );
+
+      if ( constraint instanceof Assert )
+        return constraint.check( object, group );
 
       if ( constraint instanceof Constraint )
         return constraint.check( object, group );

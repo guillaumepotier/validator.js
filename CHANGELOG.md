@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.2.2**
+
+  - Fix exception when validating an object Collection (#43)
+
 **1.2.1**
 
   - Fix `deepRequired` when a `Collection` has one `Assert` (#42)
