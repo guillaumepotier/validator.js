@@ -146,7 +146,7 @@
 
         if ( 'Required' === constraint.__class__ ) {
           if ( constraints[i].requiresValidation( group ) ) {
-            return true;
+            return constraint;
           }
         }
 
@@ -161,14 +161,13 @@
 
             for ( var node in constraint.nodes ) {
               if ( constraint.isRequired( node, group, deepRequired ) ) {
-                return true;
+                return constraint;
               }
             }
           }
         }
       }
 
-      return false;
     },
 
     check: function ( object, group ) {
@@ -176,16 +175,16 @@
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = this.isRequired( property, group, this.options.deepRequired );
+        var contraint = this.isRequired( property, group, this.options.deepRequired );
 
-        if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
+        if ( ! this.has( property, object ) && ! this.options.strict && (contraint === undefined) ) {
           continue;
         }
 
         try {
-          if (! this.has( property, this.options.strict || isRequired ? object : undefined ) ) {
+          if (! this.has( property, this.options.strict || (contraint !== undefined) ? object : undefined ) ) {
             // we trigger here a HaveProperty Assert violation to have uniform Violation object in the end
-            new Assert().HaveProperty( property ).validate( object );
+            contraint.validate( object );
           }
 
           result = this._check( property, object[ property ], group );
@@ -200,6 +199,19 @@
       }
 
       return _isEmptyObject(failures) ? true : failures;
+    },
+
+    getErrorMessages: function( violations ){
+
+      var messages = {};
+      for(violation in violations){
+        messages[violation] = violations[violation].map(function(violation){
+          return violation.message;
+        });
+      }
+
+      return messages;
+
     },
 
     add: function ( node, object ) {
@@ -290,7 +302,7 @@
   * Violation
   */
 
-  var Violation = function ( assert, value, violation ) {
+  var Violation = function ( assert, value, violation, message ) {
     this.__class__ = 'Violation';
 
     if ( ! ( assert instanceof Assert ) )
@@ -298,6 +310,7 @@
 
     this.assert = assert;
     this.value = value;
+    this.message = message;
 
     if ( 'undefined' !== typeof violation )
       this.violation = violation;
@@ -461,13 +474,14 @@
     * Asserts definitions
     */
 
-    HaveProperty: function ( node ) {
+    HaveProperty: function ( node, message ) {
       this.__class__ = 'HaveProperty';
       this.node = node;
+      message = message || 'Field ' + node + ' must be present' ;
 
       this.validate = function ( object ) {
         if ( 'undefined' === typeof object[ this.node ] )
-          throw new Violation( this, object, { value: this.node } );
+          throw new Violation( this, object, { value: this.node }, message );
 
         return true;
       };
@@ -477,13 +491,14 @@
 
     Blank: function () {
       this.__class__ = 'Blank';
+      message = message || 'This field should be blank';
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string }, message );
 
         if ( '' !== value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
-          throw new Violation( this, value );
+          throw new Violation( this, value , undefined, message );
 
         return true;
       };
@@ -494,6 +509,7 @@
     Callback: function ( fn ) {
       this.__class__ = 'Callback';
       this.arguments = Array.prototype.slice.call( arguments );
+      message = message || 'This field didn \'t pass callback';
 
       if ( 1 === this.arguments.length )
         this.arguments = [];
@@ -511,11 +527,11 @@
           result = this.fn.apply( this, [ value ].concat( this.arguments ) );
         }
         catch(err) {
-          throw new Violation( this, value, { error: err } );
+          throw new Violation( this, value, { error: err }, message );
         }
 
         if ( true !== result )
-          throw new Violation( this, value, { result: result } );
+          throw new Violation( this, value, { result: result }, message );
 
         return true;
       };
@@ -523,8 +539,9 @@
       return this;
     },
 
-    Choice: function ( list ) {
+    Choice: function ( list, message ) {
       this.__class__ = 'Choice';
+      message = message || 'This field must be any of: ' + list.join(', ');
 
       if ( !_isArray( list ) && 'function' !== typeof list )
         throw new Error( 'Choice must be instanciated with an array or a function' );
@@ -538,21 +555,22 @@
           if ( value === list[ i ] )
             return true;
 
-        throw new Violation( this, value, { choices: list } );
+        throw new Violation( this, value, { choices: list }, message );
       };
 
       return this;
     },
 
-    Collection: function ( assertOrConstraint ) {
+    Collection: function ( assertOrConstraint, message ) {
       this.__class__ = 'Collection';
       this.constraint = 'undefined' !== typeof assertOrConstraint ? (assertOrConstraint instanceof Assert ? assertOrConstraint : new Constraint( assertOrConstraint )) : false;
+      message = message || 'This field should be a collection';
 
       this.validate = function ( collection, group ) {
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
 
         if ( !_isArray( collection ) )
-          throw new Violation( this, collection, { value: Validator.errorCode.must_be_an_array } );
+          throw new Violation( this, collection, { value: Validator.errorCode.must_be_an_array }, message );
 
         for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
@@ -571,13 +589,14 @@
       return this;
     },
 
-    Count: function ( count ) {
+    Count: function ( count, message ) {
       this.__class__ = 'Count';
       this.count = count;
+      message = message || 'This field must be countable';
 
       this.validate = function ( array ) {
         if ( !_isArray( array ) )
-          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
+          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array }, message );
 
         var count = 'function' === typeof this.count ? this.count( array ) : this.count;
 
@@ -585,7 +604,7 @@
           throw new Error( 'Count must be a valid interger', count );
 
         if ( count !== array.length )
-          throw new Violation( this, array, { count: count } );
+          throw new Violation( this, array, { count: count }, message );
 
         return true;
       };
@@ -593,17 +612,18 @@
       return this;
     },
 
-    Email: function () {
+    Email: function ( message ) {
       this.__class__ = 'Email';
+      message = message || 'This field must be a valid email';
 
       this.validate = function ( value ) {
         var regExp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
 
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string }, message );
 
         if ( !regExp.test( value ) )
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
 
         return true;
       };
@@ -611,8 +631,9 @@
       return this;
     },
 
-    EqualTo: function ( reference ) {
+    EqualTo: function ( reference, message ) {
       this.__class__ = 'EqualTo';
+      message = message || 'This field must be equal to ' + reference.toString();
 
       if ( 'undefined' === typeof reference )
         throw new Error( 'EqualTo must be instanciated with a value or a function' );
@@ -623,7 +644,7 @@
         var reference = 'function' === typeof this.reference ? this.reference( value ) : this.reference;
 
         if ( reference !== value )
-          throw new Violation( this, value, { value: reference } );
+          throw new Violation( this, value, { value: reference }, message );
 
         return true;
       };
@@ -631,8 +652,9 @@
       return this;
     },
 
-    GreaterThan: function ( threshold ) {
+    GreaterThan: function ( threshold, message ) {
       this.__class__ = 'GreaterThan';
+      message = message || 'This field must be greater than' + threshold;
 
       if ( 'undefined' === typeof threshold )
         throw new Error( 'Should give a threshold value' );
@@ -641,10 +663,10 @@
 
       this.validate = function ( value ) {
         if ( '' === value || isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number }, message );
 
         if ( this.threshold >= value )
-          throw new Violation( this, value, { threshold: this.threshold } );
+          throw new Violation( this, value, { threshold: this.threshold }, message );
 
         return true;
       };
@@ -652,8 +674,9 @@
       return this;
     },
 
-    GreaterThanOrEqual: function ( threshold ) {
+    GreaterThanOrEqual: function ( threshold, message ) {
       this.__class__ = 'GreaterThanOrEqual';
+      message = message || 'This field must be greater or equals than ' + threshold;
 
       if ( 'undefined' === typeof threshold )
         throw new Error( 'Should give a threshold value' );
@@ -662,10 +685,10 @@
 
       this.validate = function ( value ) {
         if ( '' === value || isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number }, message );
 
         if ( this.threshold > value )
-          throw new Violation( this, value, { threshold: this.threshold } );
+          throw new Violation( this, value, { threshold: this.threshold }, message );
 
         return true;
       };
@@ -673,8 +696,9 @@
       return this;
     },
 
-    InstanceOf: function ( classRef ) {
+    InstanceOf: function ( classRef, message ) {
       this.__class__ = 'InstanceOf';
+      message = message || 'This field must be instance of ' + classRef.name;
 
       if ( 'undefined' === typeof classRef )
         throw new Error( 'InstanceOf must be instanciated with a value' );
@@ -683,7 +707,7 @@
 
       this.validate = function ( value ) {
         if ( true !== (value instanceof this.classRef) )
-          throw new Violation( this, value, { classRef: this.classRef } );
+          throw new Violation( this, value, { classRef: this.classRef }, message );
 
         return true;
       };
@@ -691,12 +715,13 @@
       return this;
     },
 
-    IsString: function () {
+    IsString: function ( message ) {
       this.__class__ = 'IsString';
+      message = message || 'This field must be String';
 
       this.validate = function ( value ) {
         if ( !_isString( value ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string }, message );
 
         return true;
       };
@@ -704,8 +729,9 @@
       return this;
     },
 
-    Length: function ( boundaries ) {
+    Length: function ( boundaries, message ) {
       this.__class__ = 'Length';
+      message = message || 'This field must have a length equal ' + boundaries;
 
       if ( !boundaries.min && !boundaries.max )
         throw new Error( 'Length assert must be instanciated with a { min: x, max: y } object' );
@@ -715,16 +741,16 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value && !_isArray( value ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array }, message );
 
         if ( 'undefined' !== typeof this.min && this.min === this.max && value.length !== this.min )
-          throw new Violation( this, value, { min: this.min, max: this.max } );
+          throw new Violation( this, value, { min: this.min, max: this.max }, message );
 
         if ( 'undefined' !== typeof this.max && value.length > this.max )
-          throw new Violation( this, value, { max: this.max } );
+          throw new Violation( this, value, { max: this.max }, message );
 
         if ( 'undefined' !== typeof this.min && value.length < this.min )
-          throw new Violation( this, value, { min: this.min } );
+          throw new Violation( this, value, { min: this.min }, message );
 
         return true;
       };
@@ -732,8 +758,9 @@
       return this;
     },
 
-    LessThan: function ( threshold ) {
+    LessThan: function ( threshold, message ) {
       this.__class__ = 'LessThan';
+      message = message || 'This field must be less than ' + threshold;
 
       if ( 'undefined' === typeof threshold )
         throw new Error( 'Should give a threshold value' );
@@ -742,10 +769,10 @@
 
       this.validate = function ( value ) {
         if ( '' === value || isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number }, message );
 
         if ( this.threshold <= value )
-          throw new Violation( this, value, { threshold: this.threshold } );
+          throw new Violation( this, value, { threshold: this.threshold }, message );
 
         return true;
       };
@@ -753,8 +780,9 @@
       return this;
     },
 
-    LessThanOrEqual: function ( threshold ) {
+    LessThanOrEqual: function ( threshold, message ) {
       this.__class__ = 'LessThanOrEqual';
+      message = message || 'This field must be less or equal than ' + threshold;
 
       if ( 'undefined' === typeof threshold )
         throw new Error( 'Should give a threshold value' );
@@ -763,10 +791,10 @@
 
       this.validate = function ( value ) {
         if ( '' === value || isNaN( Number( value ) ) )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_number }, message );
 
         if ( this.threshold < value )
-          throw new Violation( this, value, { threshold: this.threshold } );
+          throw new Violation( this, value, { threshold: this.threshold }, message );
 
         return true;
       };
@@ -774,12 +802,13 @@
       return this;
     },
 
-    NotNull: function () {
+    NotNull: function ( message ) {
       this.__class__ = 'NotNull';
+      message = message || 'This field cannot be null';
 
       this.validate = function ( value ) {
         if ( null === value || 'undefined' === typeof value )
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
 
         return true;
       };
@@ -787,15 +816,16 @@
       return this;
     },
 
-    NotBlank: function () {
+    NotBlank: function ( message ) {
       this.__class__ = 'NotBlank';
+      message = message || 'This field must not be blank';
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string }, message );
 
         if ( '' === value.replace( /^\s+/g, '' ).replace( /\s+$/g, '' ) )
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
 
         return true;
       };
@@ -803,8 +833,9 @@
       return this;
     },
 
-    NotEqualTo: function ( reference ) {
+    NotEqualTo: function ( reference, message ) {
       this.__class__ = 'NotEqualTo';
+      message = message || 'This field must not be equal to ' + reference;
 
       if ( 'undefined' === typeof reference )
         throw new Error( 'NotEqualTo must be instanciated with a value or a function' );
@@ -815,7 +846,7 @@
         var reference = 'function' === typeof this.reference ? this.reference( value ) : this.reference;
 
         if ( reference === value )
-          throw new Violation( this, value, { value: reference } );
+          throw new Violation( this, value, { value: reference }, message );
 
         return true;
       };
@@ -823,12 +854,13 @@
       return this;
     },
 
-    Null: function () {
+    Null: function ( message ) {
       this.__class__ = 'Null';
+      message = message || 'This field must not be null';
 
       this.validate = function ( value ) {
         if ( null !== value )
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
 
         return true;
       };
@@ -838,6 +870,7 @@
 
     Range: function ( min, max ) {
       this.__class__ = 'Range';
+      message = message || 'This field must be in range between ' + min + ' and ' + max;
 
       if ( 'undefined' === typeof min || 'undefined' === typeof max )
         throw new Error( 'Range assert expects min and max values' );
@@ -849,15 +882,15 @@
           try {
             // validate strings and objects with their Length
             if ( ( 'string' === typeof value && isNaN( Number( value ) ) ) || _isArray( value ) )
-              new Assert().Length( { min: this.min, max: this.max } ).validate( value );
+              new Assert().Length( { min: this.min, max: this.max }, message ).validate( value );
 
             // validate numbers with their value
             else
-              new Assert().GreaterThanOrEqual( this.min ).validate( value ) && new Assert().LessThanOrEqual( this.max ).validate( value );
+              new Assert().GreaterThanOrEqual( this.min, message ).validate( value ) && new Assert().LessThanOrEqual( this.max, message ).validate( value );
 
             return true;
           } catch ( violation ) {
-            throw new Violation( this, value, violation.violation );
+            throw new Violation( this, value, violation.violation, message );
           }
 
         return true;
@@ -866,8 +899,9 @@
       return this;
     },
 
-    Regexp: function ( regexp, flag ) {
+    Regexp: function ( regexp, flag, message ) {
       this.__class__ = 'Regexp';
+      message = message || 'This field must match regexp ' + regexp;
 
       if ( 'undefined' === typeof regexp )
         throw new Error( 'You must give a regexp' );
@@ -877,10 +911,10 @@
 
       this.validate = function ( value ) {
         if ( 'string' !== typeof value )
-          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+          throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string }, message );
 
         if ( !new RegExp( this.regexp, this.flag ).test( value ) )
-          throw new Violation( this, value, { regexp: this.regexp, flag: this.flag } );
+          throw new Violation( this, value, { regexp: this.regexp, flag: this.flag }, message );
 
         return true;
       };
@@ -888,20 +922,22 @@
       return this;
     },
 
-    Required: function () {
+    Required: function ( message ) {
       this.__class__ = 'Required';
+      message = message || 'This field is required';
 
       this.validate = function ( value ) {
+
         if ( 'undefined' === typeof value )
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
 
         try {
           if ( 'string' === typeof value )
-            new Assert().NotNull().validate( value ) && new Assert().NotBlank().validate( value );
+            new Assert().NotNull( message ).validate( value ) && new Assert().NotBlank( message ).validate( value );
           else if ( true === _isArray( value ) )
-            new Assert().Length( { min: 1 } ).validate( value );
+            new Assert().Length( { min: 1 }, message ).validate( value );
         } catch ( violation ) {
-          throw new Violation( this, value );
+          throw new Violation( this, value, undefined, message );
         }
 
         return true;
@@ -911,8 +947,9 @@
     },
 
     // Unique() or Unique ( { key: foo } )
-    Unique: function ( object ) {
+    Unique: function ( object, message ) {
       this.__class__ = 'Unique';
+      message = message || 'This field must be unique';
 
       if ( 'object' === typeof object )
         this.key = object.key;
@@ -921,7 +958,7 @@
         var value, store = [];
 
         if ( !_isArray( array ) )
-          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array } );
+          throw new Violation( this, array, { value: Validator.errorCode.must_be_an_array }, message );
 
         for ( var i = 0; i < array.length; i++ ) {
           value = 'object' === typeof array[ i ] ? array[ i ][ this.key ] : array[ i ];
@@ -930,7 +967,7 @@
             continue;
 
           if ( -1 !== store.indexOf( value ) )
-            throw new Violation( this, array, { value: value } );
+            throw new Violation( this, array, { value: value }, message );
 
           store.push( value );
         }
