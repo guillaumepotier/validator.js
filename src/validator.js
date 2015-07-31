@@ -137,7 +137,11 @@
 
     constructor: Constraint,
 
-    isRequired: function( property, group, deepRequired ) {
+    isRequired: function( property, group, deepRequired ){
+      return this.getContraintIfRequired( property, group, deepRequired ) !== undefined;
+    },
+
+    getContraintIfRequired: function( property, group, deepRequired ) {
       var constraint = this.get( property );
       var constraints = _isArray( constraint ) ? constraint : [constraint];
 
@@ -160,7 +164,7 @@
             constraint.options.deepRequired = deepRequired;
 
             for ( var node in constraint.nodes ) {
-              if ( constraint.isRequired( node, group, deepRequired ) ) {
+              if ( constraint.getContraintIfRequired( node, group, deepRequired ) ) {
                 return constraint;
               }
             }
@@ -175,7 +179,7 @@
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var contraint = this.isRequired( property, group, this.options.deepRequired );
+        var contraint = this.getContraintIfRequired( property, group, this.options.deepRequired );
 
         if ( ! this.has( property, object ) && ! this.options.strict && (contraint === undefined) ) {
           continue;
@@ -489,7 +493,7 @@
       return this;
     },
 
-    Blank: function () {
+    Blank: function ( message ) {
       this.__class__ = 'Blank';
       message = message || 'This field should be blank';
 
@@ -506,7 +510,7 @@
       return this;
     },
 
-    Callback: function ( fn ) {
+    Callback: function ( fn, message ) {
       this.__class__ = 'Callback';
       this.arguments = Array.prototype.slice.call( arguments );
       message = message || 'This field didn \'t pass callback';
@@ -541,10 +545,11 @@
 
     Choice: function ( list, message ) {
       this.__class__ = 'Choice';
-      message = message || 'This field must be any of: ' + list.join(', ');
 
       if ( !_isArray( list ) && 'function' !== typeof list )
         throw new Error( 'Choice must be instanciated with an array or a function' );
+      
+      message = message || 'This field is not in the allowed choices.';
 
       this.list = list;
 
@@ -868,7 +873,7 @@
       return this;
     },
 
-    Range: function ( min, max ) {
+    Range: function ( min, max, message ) {
       this.__class__ = 'Range';
       message = message || 'This field must be in range between ' + min + ' and ' + max;
 
