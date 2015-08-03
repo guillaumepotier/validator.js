@@ -208,10 +208,35 @@
     getErrorMessages: function( violations ){
 
       var messages = {};
-      for(violation in violations){
-        messages[violation] = violations[violation].map(function(violation){
-          return violation.message;
-        });
+      for(var field in violations){
+      
+        if(_isArray(violations[field])){
+          
+          var fieldMessages = [];
+          
+          violations[field].map(function(violation, index, array){
+
+            if(violation instanceof Violation){
+              //Simple violation 
+              fieldMessages[index] = violation.message;
+            }else{
+              //Collection
+              for(var i in violation){
+                var subViolation = violation[i];
+                fieldMessages[i] = this.getErrorMessages(subViolation);
+              }
+              
+            }
+
+          }.bind(this));
+
+          messages[field] = fieldMessages;
+
+        }else{
+          //Nested Object
+
+        }
+
       }
 
       return messages;
@@ -548,7 +573,7 @@
 
       if ( !_isArray( list ) && 'function' !== typeof list )
         throw new Error( 'Choice must be instanciated with an array or a function' );
-      
+
       message = message || 'This field is not in the allowed choices.';
 
       this.list = list;

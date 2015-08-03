@@ -1,4 +1,3 @@
-
 var sinon = require('sinon');
 
 ( function ( exports ) {
@@ -937,7 +936,7 @@ var Suite = function ( Validator, expect, extras ) {
 
           expect( result ).not.to.be( true );
           expect( result.foo ).to.be.an( Array );
-          expect( result.foo[0]['0'].bar ).to.be.a( Violation );
+          expect( result.foo[0]['0'].bar ).to.be.a( Assert.Required );
           expect( result.foo[0]['0'].bar.assert.__class__ ).to.be( 'HaveProperty' );
           expect( result.foo[0]['0'].bar.value ).to.eql( { } );
         } )
@@ -1258,6 +1257,56 @@ var Suite = function ( Validator, expect, extras ) {
           expect( result.items[ 0 ][ 0 ] ).not.to.have.key( 'biz' );
         } )
       } )
+    
+      describe( 'Error Messages', function() {
+
+        it( 'should give simple error message', function() {
+          
+          var object = { foo: null, bar: null, baz: null, qux: null };
+          var constraint = new Constraint({
+            foo: [ new Assert().NotBlank('This field is required') ],
+          });
+
+          var result = constraint.getErrorMessages( constraint.check( object ) );
+
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).to.eql( {
+            foo: [ 'This field is required' ]
+          } );
+
+        } )
+
+        it( 'should give error for missing property', function() {
+
+          var object = { baz: 'a' };
+          var constraint = new Constraint({
+            foo: [ new Assert().Required('This field is required') ],
+            bar: [ new Assert().Required('This field is required') ],
+            baz: [ new Assert().Required('This field is required') ]
+          });
+
+          var result = constraint.getErrorMessages( constraint.check( object ) );
+
+          expect( result ).to.have.key( 'foo' );
+          expect( result ).to.have.key( 'bar' );
+          expect( result ).not.to.have.key( 'baz' );
+          expect( result ).to.eql( {
+            foo: [ 'This field is required' ],
+            bar: [ 'This field is required' ],
+          } );
+
+        } )
+
+        it( 'should give a message for a collection', function() {
+
+        } )
+
+        it( 'should give error for nested objects', function() {
+
+        } )
+
+      } )
+
     } )
   } )
 }
