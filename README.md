@@ -229,6 +229,13 @@ new Assert().IPv4();
 new Assert().Mac();
 ```
 
+### Community-driven asserts
+
+You can extend validator.js with more asserts should you need them. There are several extra asserts built by the community that seamlessly integrate with this package.
+See the [Extending](#extending) section for more information.
+
+* [validator.js-asserts](https://github.com/seegno/validator.js-asserts): a set of extra asserts for `validator.js`.
+
 ### Collection Assert
 
 Collection Assert is quite special yet powerful. It allows you to validate
