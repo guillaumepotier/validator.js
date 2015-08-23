@@ -320,7 +320,7 @@
       if ( 'undefined' !== typeof this.violation )
         this.violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
 
-      return this.assert.__class__ + ' assert failed for "' + this.value + this.violation || '';
+      return this.assert.__class__ + ' assert failed for "' + this.value + (this.violation || '');
     },
 
     getViolation: function () {
