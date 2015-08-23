@@ -76,6 +76,13 @@ var Suite = function ( Validator, expect, AssertExtra ) {
           }
         } )
 
+        it( 'should inherit `Assert` static methods', function () {
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          expect( Extended ).to.have.keys( Object.keys( Assert ) );
+        } )
+
         it( 'should return an Assert extended copy and keep the original `Assert.prototype` unchanged', function () {
           var fn = function() {};
           var Extended = Assert.extend({ Foobar: fn });

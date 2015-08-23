@@ -368,6 +368,11 @@
     Extended.prototype = Object.create( Assert.prototype );
     Extended.prototype.constructor = Extended;
 
+    // Copy all the static methods.
+    Object.keys( Assert ).forEach( function( key ) {
+      Extended[ key ] = Assert[ key ];
+    } );
+
     // Extend with custom asserts.
     for ( var key in asserts ) {
       if ( 'function' !== typeof asserts[ key ] )
