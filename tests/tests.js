@@ -3,7 +3,7 @@ var sinon = require('sinon');
 
 ( function ( exports ) {
 
-var Suite = function ( Validator, expect, extras ) {
+var Suite = function ( Validator, expect, AssertExtra ) {
   describe( 'Validator', function () {
     var validator = new Validator.Validator(),
       Violation = Validator.Violation,
@@ -675,12 +675,12 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( 7, assert ).show() ).to.eql( { assert: 'LessThanOrEqual', value: 7, violation: { threshold: 5 } } );
       } )
 
-      if ( !extras )
+      if ( !AssertExtra )
         return;
 
       describe ('Extras Asserts', function () {
         it( 'Mac', function () {
-          assert = new Assert().Mac();
+          assert = new AssertExtra().Mac();
 
           expect( validate( '0G:42:AT:F5:OP:Z2', assert ) ).not.to.be( true );
           expect( validate( 'AD:32:11:F7:3B', assert ) ).not.to.be( true );
@@ -690,7 +690,7 @@ var Suite = function ( Validator, expect, extras ) {
         } )
 
         it( 'IPv4', function () {
-          assert = new Assert().IPv4();
+          assert = new AssertExtra().IPv4();
 
           expect( validate( 'foo.bar', assert ) ).not.to.be( true );
           expect( validate( '192.168.1', assert ) ).not.to.be( true );
@@ -700,7 +700,7 @@ var Suite = function ( Validator, expect, extras ) {
         } )
 
         it( 'Eql', function () {
-          assert = new Assert().Eql( { foo: 'foo', bar: 'bar' } );
+          assert = new AssertExtra().Eql( { foo: 'foo', bar: 'bar' } );
 
           expect( validate( 'foo', assert) ).not.to.be( true );
           expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'Eql', value: 'foo', violation: { eql: { foo: 'foo', bar: 'bar' } } } );
@@ -710,7 +710,7 @@ var Suite = function ( Validator, expect, extras ) {
         } )
 
         it( 'Eql w/ function', function () {
-          assert = new Assert().Eql( function ( value ) { return { foo: 'foo', bar: 'bar' } } );
+          assert = new AssertExtra().Eql( function ( value ) { return { foo: 'foo', bar: 'bar' } } );
 
           expect( validate( { foo: null, bar: null }, assert ) ).not.to.be( true );
           expect( validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.be( true );
