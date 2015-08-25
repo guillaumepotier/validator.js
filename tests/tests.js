@@ -261,13 +261,16 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( '', assert ) ).not.to.be( true );
         expect( validate( false, assert ) ).not.to.be( true );
         expect( validate( false, assert ).show() ).to.eql( { assert: 'Length', value: false, violation: { value: 'must_be_a_string_or_array' } } );
+        expect( validate( false, assert ).__toString() ).to.eql( 'Length assert failed for "false", value expected was must_be_a_string_or_array' );
         expect( validate( 'foo', assert ) ).to.be( true );
         expect( validate( 'f', assert ).show() ).to.eql( { assert: 'Length', value: 'f', violation: { min: 3 } } );
+        expect( validate( 'f', assert ).__toString() ).to.eql( 'Length assert failed for "f", min expected was 3' );
         expect( validate( 'f', assert ) ).not.to.be( true );
 
         assert = new Assert().Length( { max: 10 } );
         expect( validate( 'foo bar baz', assert ) ).not.to.be( true );
         expect( validate( 'foo bar baz', assert ).show() ).to.eql( { assert: 'Length', value: 'foo bar baz', violation: { max: 10 } } );
+        expect( validate( 'foo bar baz', assert ).__toString() ).to.eql( 'Length assert failed for "foo bar baz", max expected was 10' );
 
         /**
          * The following assertion tests a case that occurs upstream in Parsley.js where parameters come in as strings
@@ -291,6 +294,7 @@ var Suite = function ( Validator, expect, extras ) {
         expect( validate( 'foo', assert ) ).not.to.be( true );
         expect( validate( 'foo@bar', assert ) ).not.to.be( true );
         expect( validate( 'foo@bar', assert ).show() ).to.eql( { assert: 'Email', value: 'foo@bar' } );
+        expect( validate( 'foo@bar', assert ).__toString() ).to.eql( 'Email assert failed for "foo@bar"' );
 
         expect( validate( 'foo@bar.baz', assert ) ).to.be( true );
       } )
@@ -300,6 +304,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         expect( validate( 'foo', assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'InstanceOf', value: 'foo', violation: { classRef: Date } } );
+        expect( validate( 'foo', assert ).__toString() ).to.eql( 'InstanceOf assert failed for "foo", classRef expected was function Date() { [native code] }' );
         expect( validate( 4, assert ) ).not.to.be( true );
         expect( validate( new Date(), assert ) ).to.be( true );
       } )
@@ -312,13 +317,16 @@ var Suite = function ( Validator, expect, extras ) {
 
         expect( validate( 7, assert ) ).not.to.be( true );
         expect( validate( 7, assert ).show() ).to.eql( { assert: 'IsString', value: 7, violation: { value: 'must_be_a_string' } } );
+        expect( validate( 7, assert ).__toString() ).to.eql( 'IsString assert failed for "7", value expected was must_be_a_string' );
 
         var now = new Date();
         expect( validate( now, assert ) ).not.to.be( true );
         expect( validate( now, assert ).show() ).to.eql( { assert: 'IsString', value: now, violation: { value: 'must_be_a_string' } } );
+        expect( validate( now, assert ).__toString() ).to.eql( 'IsString assert failed for "'+now+'", value expected was must_be_a_string' );
 
         expect( validate( [1, 2, 3], assert ) ).not.to.be( true );
         expect( validate( [1, 2, 3], assert ).show() ).to.eql( { assert: 'IsString', value: [1, 2, 3], violation: { value: 'must_be_a_string' } } );
+        expect( validate( [1, 2, 3], assert ).__toString() ).to.eql( 'IsString assert failed for "1,2,3", value expected was must_be_a_string' );
       } )
 
       it( 'EqualTo', function () {
@@ -326,6 +334,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         expect( validate( 'foo', assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'EqualTo', value: 'foo', violation: { value: 42 } } );
+        expect( validate( 'foo', assert ).__toString() ).to.eql( 'EqualTo assert failed for "foo", value expected was 42' );
         expect( validate( 4, assert ) ).not.to.be( true );
         expect( validate( 42, assert ) ).to.be( true );
       } )
@@ -337,6 +346,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         expect( validate( 'foo', assert ) ).not.to.be( true );
         expect( validate( 'foo', assert ).show() ).to.eql( { assert: 'EqualTo', value: 'foo', violation: { value: 42 } } );
+        expect( validate( 'foo', assert ).__toString() ).to.eql( 'EqualTo assert failed for "foo", value expected was 42' );
         expect( validate( 4, assert ) ).not.to.be( true );
         expect( validate( 42, assert ) ).to.be( true );
       } )
@@ -346,6 +356,7 @@ var Suite = function ( Validator, expect, extras ) {
 
         expect( validate( 'foo', assert ) ).to.be( true );
         expect( validate( 42, assert ).show() ).to.eql( { assert: 'NotEqualTo', value: 42, violation: { value: 42 } } );
+        expect( validate( 42, assert ).__toString() ).to.eql( 'NotEqualTo assert failed for "42", value expected was 42' );
         expect( validate( 4, assert ) ).to.be( true );
         expect( validate( 42, assert ) ).not.to.be( true );
       } )

@@ -317,10 +317,13 @@
     },
 
     __toString: function () {
-      if ( 'undefined' !== typeof this.violation )
-        this.violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
+      var v = '';
+      if ( 'undefined' !== typeof this.violation ) {
+        this.violation = this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
+        v = ", " + this.violation;
+      }
 
-      return this.assert.__class__ + ' assert failed for "' + this.value + (this.violation || '');
+      return this.assert.__class__ + ' assert failed for "' + this.value + '"' + v;
     },
 
     getViolation: function () {
