@@ -546,7 +546,7 @@
 
     Collection: function ( assertOrConstraint ) {
       this.__class__ = 'Collection';
-      this.constraint = 'undefined' !== typeof assertOrConstraint ? (assertOrConstraint instanceof Assert ? assertOrConstraint : new Constraint( assertOrConstraint )) : false;
+      this.constraint = _isPlainObject( assertOrConstraint ) ? new Constraint( assertOrConstraint ) : assertOrConstraint;
 
       this.validate = function ( collection, group ) {
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
@@ -996,6 +996,10 @@
 
   var _isArray = function ( obj ) {
     return Object.prototype.toString.call( obj ) === '[object Array]';
+  };
+
+  var _isPlainObject = function ( obj ) {
+    return typeof obj === 'object' && Object.getPrototypeOf( obj ) === Object.prototype;
   };
 
   var _isString = function (str ) {
