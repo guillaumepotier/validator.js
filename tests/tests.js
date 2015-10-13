@@ -504,6 +504,35 @@ var Suite = function ( Validator, expect, extras ) {
         expect( result.strings[ 0 ][ 0 ].assert.__class__ ).to.be( 'IsString' );
       } )
 
+      it( 'Collection with assert array', function () {
+        var object = {
+            foo: null,
+            items: [
+              'foo',
+              'bar@qux.com',
+              'baz'
+            ]
+          },
+          constraint = {
+            foo: new Assert().NotNull(),
+            items: new Assert().Collection( [ new Assert().NotEqualTo('foo'), new Assert().Email() ] )
+          };
+
+        var result = validator.validate( object, constraint );
+
+        expect( result ).to.have.key( 'foo' );
+        expect( result ).to.have.key( 'items' );
+        expect( result.items[ 0 ] ).to.have.key( '0' );
+        expect( result.items[ 0 ] ).not.to.have.key( '1' );
+        expect( result.items[ 0 ] ).to.have.key( '2' );
+        expect( result.items[ 0 ][ 0 ][ 0 ] ).to.be.a( Violation );
+        expect( result.items[ 0 ][ 0 ][ 0 ].assert.__class__ ).to.be( 'NotEqualTo' );
+        expect( result.items[ 0 ][ 0 ][ 1 ] ).to.be.a( Violation );
+        expect( result.items[ 0 ][ 0 ][ 1 ].assert.__class__ ).to.be( 'Email' );
+        expect( result.items[ 0 ][ 2 ][ 0 ] ).to.be.a( Violation );
+        expect( result.items[ 0 ][ 2 ][ 0 ].assert.__class__ ).to.be( 'Email' );
+      } )
+
       it( 'Collection with binded objects', function () {
         var itemConstraint = { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() },
           object = {
