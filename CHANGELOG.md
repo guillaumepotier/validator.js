@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**1.2.3**
+
+  - Fix Collection handling of array of assertions (#49)
+
 **1.2.2**
 
   - Fix exception when validating an object Collection (#43)

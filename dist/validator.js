@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 1.2.2 - built Tue Jul 21 2015 09:47:45
+* Version 1.2.3 - built Wed Oct 14 2015 10:01:02
 * MIT Licensed
 *
 */
@@ -15,7 +15,7 @@
 
   var Validator = function ( options ) {
     this.__class__ = 'Validator';
-    this.__version__ = '1.2.2';
+    this.__version__ = '1.2.3';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -317,10 +317,13 @@
     },
 
     __toString: function () {
-      if ( 'undefined' !== typeof this.violation )
-        this.violation = '", ' + this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
+      var v = '';
+      if ( 'undefined' !== typeof this.violation ) {
+        this.violation = this.getViolation().constraint + ' expected was ' + this.getViolation().expected;
+        v = ", " + this.violation;
+      }
 
-      return this.assert.__class__ + ' assert failed for "' + this.value + this.violation || '';
+      return this.assert.__class__ + ' assert failed for "' + this.value + '"' + v;
     },
 
     getViolation: function () {
@@ -546,7 +549,7 @@
 
     Collection: function ( assertOrConstraint ) {
       this.__class__ = 'Collection';
-      this.constraint = 'undefined' !== typeof assertOrConstraint ? (assertOrConstraint instanceof Assert ? assertOrConstraint : new Constraint( assertOrConstraint )) : false;
+      this.constraint = _isPlainObject( assertOrConstraint ) ? new Constraint( assertOrConstraint ) : assertOrConstraint;
 
       this.validate = function ( collection, group ) {
         var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
@@ -996,6 +999,10 @@
 
   var _isArray = function ( obj ) {
     return Object.prototype.toString.call( obj ) === '[object Array]';
+  };
+
+  var _isPlainObject = function ( obj ) {
+    return typeof obj === 'object' && Object.getPrototypeOf( obj ) === Object.prototype;
   };
 
   var _isString = function (str ) {
