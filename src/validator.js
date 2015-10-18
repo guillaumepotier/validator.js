@@ -105,7 +105,65 @@
 
     _validateBindedObject: function ( object, group ) {
       return object[ this.bindingKey ].check( object, group );
+    },
+
+    i18n: function( violations, defaultMessages ) {
+
+      var messages = {};
+
+      for( var field in violations ) {
+      
+        if( _isArray( violations[field] ) ) {
+          
+          var fieldMessages = [];
+          
+          violations[ field ].map(function( violation, index, array ) {
+
+            if( violation instanceof Violation ) {
+              
+              //Simple violation 
+              var message = violation.assert.message;
+
+              if( message !== undefined ) {
+
+                fieldMessages[ index ] = message;  
+
+              } else { 
+
+                var defaultMessage = defaultMessages[ violation.assert.__class__ ];
+
+                fieldMessages[ index ] = typeof defaultMessage === 'function' ? defaultMessage( violation ) : defaultMessage;
+
+              }
+
+            } else {
+              
+              //Collection
+              for( var i in violation ) {
+                
+                var subViolation = violation[ i ];
+
+                fieldMessages[ i ] = this.getErrorMessages( subViolation );
+
+              }
+              
+            }
+
+          }.bind( this ) );
+
+          messages[ field ] = fieldMessages;
+
+        } else {
+          //Nested Object
+
+        }
+
+      }
+
+      return messages;
+
     }
+
   };
 
   Validator.errorCode = {
@@ -456,6 +514,12 @@
     addGroups: function ( groups ) {
       for ( var i = 0; i < groups.length; i++ )
         this.addGroup( groups[ i ] );
+
+      return this;
+    },
+
+    Message: function( message ) {
+      this.message = message;
 
       return this;
     },
