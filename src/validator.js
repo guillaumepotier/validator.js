@@ -13,7 +13,11 @@
   * Validator
   */
 
-  var Validator = function ( options ) {
+  function Validator ( options ) {
+    if ( ! ( this instanceof Validator ) ) {
+      return new Validator( options );
+    }
+
     this.__class__ = 'Validator';
     this.__version__ = '@@version';
     this.options = options || {};
@@ -119,7 +123,11 @@
   * Constraint
   */
 
-  var Constraint = function ( data, options ) {
+  function Constraint ( data, options ) {
+    if ( ! ( this instanceof Constraint ) ) {
+      return new Constraint( data, options );
+    }
+
     this.__class__ = 'Constraint';
     this.options = options || {};
     this.nodes = {};
@@ -290,7 +298,11 @@
   * Violation
   */
 
-  var Violation = function ( assert, value, violation ) {
+  function Violation ( assert, value, violation ) {
+    if ( ! ( this instanceof Violation ) ) {
+      return new Violation( assert, value, violation );
+    }
+
     this.__class__ = 'Violation';
 
     if ( ! ( assert instanceof Assert ) )
@@ -340,7 +352,10 @@
   * Assert
   */
 
-  var Assert = function ( group ) {
+  function Assert ( group ) {
+    if ( ! ( this instanceof Assert ) )
+      return new Assert( group );
+
     this.__class__ = 'Assert';
     this.__parentClass__ = this.__class__;
     this.groups = [];

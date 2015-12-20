@@ -3,15 +3,23 @@ var sinon = require('sinon');
 
 ( function ( exports ) {
 
-var Suite = function ( Validator, expect, AssertExtra ) {
-  describe( 'Validator', function () {
-    var validator = new Validator.Validator(),
-      Violation = Validator.Violation,
-      Assert = Validator.Assert,
-      Constraint = Validator.Constraint;
+var Suite = function ( validatorjs, expect, AssertExtra ) {
+  describe( 'validator.js', function () {
+    var Assert = validatorjs.Assert,
+      Constraint = validatorjs.Constraint,
+      Validator = validatorjs.Validator,
+      Violation = validatorjs.Violation;
+
+    var validator = new validatorjs.Validator();
 
     describe( 'Assert', function () {
       var assert = new Assert();
+
+      describe( 'constructor', function () {
+        it( 'should not require the new keyword', function () {
+          expect( Assert() ).to.be.an( Assert );
+        } )
+      } )
 
       describe( 'extend', function() {
         it( 'should throw an error if the extend parameter is missing', function () {
@@ -50,7 +58,7 @@ var Suite = function ( Validator, expect, AssertExtra ) {
           }
         } )
 
-        it('should call the `Assert` constructor', function () {
+        it( 'should call the `Assert` constructor', function () {
           sinon.spy(Assert, 'apply');
 
           var fn = function() {};
@@ -182,7 +190,13 @@ var Suite = function ( Validator, expect, AssertExtra ) {
     } )
 
     describe( 'Violation', function () {
-      var violation = new Validator.Violation( new Assert().NotBlank(), '' );
+      var violation = new Violation( new Assert().NotBlank(), '' );
+
+      describe( 'constructor', function () {
+        it( 'should not require the new keyword', function () {
+          expect( Violation( new Assert().NotBlank(), '' ) ).to.be.an( Violation );
+        } )
+      } )
 
       it( 'should be an object', function () {
         expect( violation ).to.be.an( 'object' );
@@ -194,7 +208,7 @@ var Suite = function ( Validator, expect, AssertExtra ) {
 
       it( 'should fail if not instanciated with an Assert object having __class__', function () {
         try {
-          var violation = new Validator.Violation( 'foo' );
+          var violation = new Violation( 'foo' );
           expect().fail();
         } catch ( err ) {
           expect( err.message ).to.be( 'Should give an assertion implementing the Assert interface' );
@@ -685,7 +699,7 @@ var Suite = function ( Validator, expect, AssertExtra ) {
       if ( !AssertExtra )
         return;
 
-      describe ('Extras Asserts', function () {
+      describe( 'Extras Asserts', function () {
         it( 'Mac', function () {
           assert = new AssertExtra().Mac();
 
@@ -726,7 +740,13 @@ var Suite = function ( Validator, expect, AssertExtra ) {
     } )
 
     describe( 'Constraint', function () {
-      var constraint = new Validator.Constraint();
+      var constraint = new Constraint();
+
+      describe( 'constructor', function () {
+        it( 'should not require the new keyword', function () {
+          expect( Constraint() ).to.be.an( Constraint );
+        } )
+      } )
 
       it( 'should be an object', function () {
         expect( constraint ).to.be.an( 'object' );
@@ -737,7 +757,7 @@ var Suite = function ( Validator, expect, AssertExtra ) {
       } )
 
       it( 'should be instanciated without an assertion', function () {
-        var myConstraint = new Validator.Constraint();
+        var myConstraint = new Constraint();
         expect( myConstraint.nodes ).to.eql( {} );
       } )
 
@@ -813,6 +833,11 @@ var Suite = function ( Validator, expect, AssertExtra ) {
     } )
 
     describe( 'Validator', function () {
+      describe( 'constructor', function () {
+        it( 'should not require the new keyword', function () {
+          expect( Validator() ).to.be.an( Validator );
+        } )
+      } )
 
       it( 'should be an object', function () {
         expect( validator ).to.be.an( 'object' );
@@ -841,7 +866,7 @@ var Suite = function ( Validator, expect, AssertExtra ) {
           var asserts = [ new Assert().Length( { min: 5, max: 10 } ), new Assert().NotBlank() ];
           var violations = validator.validate( '', asserts );
           expect( violations ).to.have.length( 2 );
-          expect( violations[ 0 ] ).to.be.a( Validator.Violation );
+          expect( violations[ 0 ] ).to.be.a( validatorjs.Violation );
           expect( violations[ 0 ].assert.__class__ ).to.be( 'Length' );
           expect( violations[ 1 ].assert.__class__ ).to.be( 'NotBlank' );
           violations = validator.validate( 'foo', asserts );
