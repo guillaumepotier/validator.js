@@ -21,6 +21,12 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
       } )
 
+      describe('static constructor', function() {
+        it( 'should create an instance of `Assert`', function () {
+          expect( validatorjs.assert() ).to.be.an( Assert );
+        } )
+      } )
+
       describe( 'extend', function() {
         it( 'should throw an error if the extend parameter is missing', function () {
           try {
@@ -195,6 +201,12 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
       describe( 'constructor', function () {
         it( 'should not require the new keyword', function () {
           expect( Violation( new Assert().NotBlank(), '' ) ).to.be.an( Violation );
+        } )
+      } )
+
+      describe('static constructor', function() {
+        it( 'should create an instance of `Violation`', function () {
+          expect( validatorjs.violation( new Assert().NotBlank(), '' ) ).to.be.an( Violation );
         } )
       } )
 
@@ -748,6 +760,12 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
       } )
 
+      describe('static constructor', function() {
+        it( 'should create an instance of `Constraint`', function () {
+          expect( validatorjs.constraint() ).to.be.an( Constraint );
+        } )
+      } )
+
       it( 'should be an object', function () {
         expect( constraint ).to.be.an( 'object' );
       } )
@@ -836,6 +854,12 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
       describe( 'constructor', function () {
         it( 'should not require the new keyword', function () {
           expect( Validator() ).to.be.an( Validator );
+        } )
+      } )
+
+      describe('static constructor', function() {
+        it( 'should create an instance of `Validator`', function () {
+          expect( validatorjs.validator() ).to.be.an( Validator );
         } )
       } )
 

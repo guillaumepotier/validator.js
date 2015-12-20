@@ -965,12 +965,6 @@
     }
   };
 
-  // expose to the world these awesome classes
-  exports.Assert = Assert;
-  exports.Validator = Validator;
-  exports.Violation = Violation;
-  exports.Constraint = Constraint;
-
   /**
   * Some useful object prototypes / functions here
   */
@@ -1027,6 +1021,28 @@
 
   var _isString = function (str ) {
     return Object.prototype.toString.call( str ) === '[object String]';
+  };
+
+  // expose to the world these awesome classes
+  exports.Assert = Assert;
+  exports.Constraint = Constraint;
+  exports.Validator = Validator;
+  exports.Violation = Violation;
+
+  exports.assert = function( group ) {
+    return new Assert( group );
+  };
+
+  exports.constraint = function( data, options ) {
+    return new Constraint( data, options );
+  };
+
+  exports.validator = function( options ) {
+    return new Validator( options );
+  };
+
+  exports.violation = function( assert, value, violation ) {
+    return new Violation( assert, value, violation );
   };
 
   // AMD export
