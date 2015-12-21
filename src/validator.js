@@ -396,7 +396,7 @@
       Extended.prototype[ key ] = asserts[ key ];
     }
 
-    return Extended;
+    return _prettify( Extended );
   };
 
   Assert.prototype = {
@@ -1019,9 +1019,62 @@
     return typeof obj === 'object' && Object.getPrototypeOf( obj ) === Object.prototype;
   };
 
-  var _isString = function (str ) {
+  var _isString = function ( str ) {
     return Object.prototype.toString.call( str ) === '[object String]';
   };
+
+  var _toCamelCase = function ( str ) {
+    return str
+      .replace(/\s(.)/g, function( $1 ) { return $1.toUpperCase(); })
+      .replace(/\s/g, '')
+      .replace(/^(.)/, function( $1 ) { return $1.toLowerCase(); });
+  };
+
+  var _staticCall = function ( klass, name ) {
+    var args = new Array(arguments.length - 2);
+
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i + 2];
+    }
+
+    var instance = new klass();
+
+    return instance[ name ].apply( instance, args );
+  };
+
+  var _prettify = function _prettify ( object ) {
+    // Copy prototype properties.
+    for ( var property in object.prototype ) {
+      var matches = property.match(/^(.*?[A-Z]{2,})(.*)$/);
+      var camelCaseProperty = _toCamelCase( property );
+
+      if ( matches !== null ) {
+        camelCaseProperty = matches[1] + _toCamelCase( matches[2] );
+      }
+
+      if (camelCaseProperty === property) {
+        continue;
+      }
+
+      // Set aliased static methods.
+      object.prototype[ camelCaseProperty ] = object.prototype[ property ];
+      object[ camelCaseProperty ] = _staticCall.bind(null, object, camelCaseProperty);
+    }
+
+    return object;
+  };
+
+  var _alias = function _alias ( from, to ) {
+    var descriptor = Object.getOwnPropertyDescriptor(Assert.prototype, from);
+
+    Object.defineProperty(Assert.prototype, to, descriptor);
+  }
+
+  // aliases
+  _alias( 'Length', 'OfLength' );
+  _alias( 'HaveProperty', 'PropertyDefined' );
+  _alias( 'IsString', 'String' );
+  _prettify( Assert );
 
   // expose to the world these awesome classes
   exports.Assert = Assert;

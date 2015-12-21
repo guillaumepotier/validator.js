@@ -287,6 +287,10 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         expect( validate( { bar: 'baz' }, assert ) ).not.to.be( true );
       } )
 
+      it( 'HaveProperty alias PropertyDefined', function () {
+        expect( new Assert().HaveProperty( 'foo' ).__class__ ).to.eql( new Assert().PropertyDefined( 'foo' ).__class__ );
+      } )
+
       it( 'Length', function () {
         assert = new Assert().Length( { min: 3 } );
 
@@ -319,6 +323,10 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         expect( validator.validate(['foo'], assert) ).not.to.be( true );
         expect( validator.validate(['foo', 'bar', 'baz'], assert) ).to.be( true );
         expect( validator.validate(['foo', 'bar', 'baz', 'qux', 'bux', 'pux'], assert) ).not.to.be( true );
+      } )
+
+      it( 'Length alias OfLength', function () {
+        expect( new Assert().Length( { min: 0, max: 1 } ).__class__ ).to.eql( new Assert().OfLength( { min: 0, max: 1 } ).__class__ );
       } )
 
       it( 'Email', function () {
@@ -360,6 +368,10 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         expect( validate( [1, 2, 3], assert ) ).not.to.be( true );
         expect( validate( [1, 2, 3], assert ).show() ).to.eql( { assert: 'IsString', value: [1, 2, 3], violation: { value: 'must_be_a_string' } } );
         expect( validate( [1, 2, 3], assert ).__toString() ).to.eql( 'IsString assert failed for "1,2,3", value expected was must_be_a_string' );
+      } )
+
+      it( 'IsString alias String', function () {
+        expect( new Assert().IsString( 'foo' ).__class__ ).to.eql( new Assert().String( 'foo' ).__class__ );
       } )
 
       it( 'EqualTo', function () {
