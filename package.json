@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "grunt build",
-    "test": "mocha tests/server.js -R dot",
+    "test": "mocha tests/server.js",
     "test-dist": "mocha tests/server.min.js -R dot"
   }
 }
