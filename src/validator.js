@@ -1030,21 +1030,9 @@
       .replace(/^(.)/, function( $1 ) { return $1.toLowerCase(); });
   };
 
-  var _staticCall = function ( klass, name ) {
-    var args = new Array(arguments.length - 2);
-
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i + 2];
-    }
-
-    var instance = new klass();
-
-    return instance[ name ].apply( instance, args );
-  };
-
-  var _prettify = function _prettify ( object ) {
+  var _prettify = function _prettify ( Fn ) {
     // Copy prototype properties.
-    for ( var property in object.prototype ) {
+    for ( var property in Fn.prototype ) {
       var matches = property.match(/^(.*?[A-Z]{2,})(.*)$/);
       var camelCaseProperty = _toCamelCase( property );
 
@@ -1056,24 +1044,34 @@
         continue;
       }
 
-      // Set aliased static methods.
-      object.prototype[ camelCaseProperty ] = object.prototype[ property ];
-      object[ camelCaseProperty ] = _staticCall.bind(null, object, camelCaseProperty);
+      // Add static methods as aliases.
+      Fn[ camelCaseProperty ] = (function( prop ) {
+        return function() {
+          var assert = new Fn();
+
+          return assert[ prop ].apply( assert, arguments );
+        }
+      })( property );
+
+      // Create `camelCase` aliases.
+      _alias( Fn, camelCaseProperty, property );
     }
 
-    return object;
+    return Fn;
   };
 
-  var _alias = function _alias ( from, to ) {
-    var descriptor = Object.getOwnPropertyDescriptor(Assert.prototype, from);
+  var _alias = function _alias ( object, from, to ) {
+    var descriptor = Object.getOwnPropertyDescriptor( object, from );
 
-    Object.defineProperty(Assert.prototype, to, descriptor);
+    Object.defineProperty( object, to, descriptor );
   }
 
   // aliases
-  _alias( 'Length', 'OfLength' );
-  _alias( 'HaveProperty', 'PropertyDefined' );
-  _alias( 'IsString', 'String' );
+  _alias( Assert.prototype, 'Length', 'OfLength' );
+  _alias( Assert.prototype, 'HaveProperty', 'PropertyDefined' );
+  _alias( Assert.prototype, 'IsString', 'String' );
+
+  // prettify
   _prettify( Assert );
 
   // expose to the world these awesome classes
