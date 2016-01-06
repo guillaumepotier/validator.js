@@ -1,6 +1,3 @@
-
-var sinon = require('sinon');
-
 ( function ( exports ) {
 
 var Suite = function ( validatorjs, expect, AssertExtra ) {
@@ -65,20 +62,11 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should call the `Assert` constructor', function () {
-          sinon.spy(Assert, 'apply');
-
           var fn = function() {};
           var Extended = Assert.extend({ Foobar: fn });
+          var extended = new Extended('foobar');
 
-          new Extended();
-
-          expect(Assert.apply.callCount).to.equal(1);
-          expect(Assert.apply.firstCall.args[0].__class__).to.equal('Assert');
-          expect(Assert.apply.firstCall.args[0].__parentClass__).to.equal('Assert');
-          expect(Assert.apply.firstCall.args[0].groups).to.eql([]);
-
-          // Restore spy.
-          Assert.apply.restore();
+          expect( extended.groups ).to.eql( ['foobar' ]);
         } )
 
         it( 'should inherit the `Assert` prototype', function () {
