@@ -20,9 +20,33 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
 
       describe('static constructor', function() {
         it( 'should create an instance of `Assert`', function () {
-          expect( validatorjs.assert() ).to.be.an( Assert );
+          var assert = validatorjs.assert( 'foobar' );
+
+          expect( assert ).to.be.an( Assert );
+          expect( assert.groups ).to.eql( ['foobar'] );
         } )
       } )
+
+      describe( 'static methods', function () {
+        it('should create an instance of `Assert`', function () {
+          var assert = Assert.Range( 5, 10 );
+
+          expect( assert ).to.be.an( Assert );
+          expect( assert.__class__ ).to.be( 'Range' );
+          expect( assert.min ).to.be( 5 );
+          expect( assert.max ).to.be( 10 );
+        });
+
+        it('should have a camel case alias', function () {
+          expect( Assert.NotBlank().__class__ ).to.be( Assert.notBlank().__class__ );
+        });
+
+        it('should create new instances', function () {
+          const assert = Assert.NotBlank();
+
+          expect( assert ).to.not.equal( Assert.notBlank() );
+        });
+      });
 
       describe( 'extend', function() {
         it( 'should throw an error if the extend parameter is missing', function () {
@@ -194,7 +218,11 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
 
       describe('static constructor', function() {
         it( 'should create an instance of `Violation`', function () {
-          expect( validatorjs.violation( new Assert().NotBlank(), '' ) ).to.be.an( Violation );
+          var notNullViolation = new Violation( new Assert().NotNull() );
+          var violation = validatorjs.violation( new Assert().NotBlank(), '', notNullViolation );
+
+          expect( notNullViolation ).to.be.an( Violation );
+          expect( violation.violation ).to.equal( notNullViolation );
         } )
       } )
 
@@ -762,7 +790,11 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
 
       describe('static constructor', function() {
         it( 'should create an instance of `Constraint`', function () {
-          expect( validatorjs.constraint() ).to.be.an( Constraint );
+          var constraint = validatorjs.constraint( { foo: new Assert().NotBlank() }, { bar: 'biz' } );
+
+          expect( constraint ).to.be.an( Constraint );
+          expect( constraint.nodes ).to.have.key( 'foo' );
+          expect( constraint.options ).to.have.property( 'bar', 'biz' );
         } )
       } )
 
@@ -859,7 +891,10 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
 
       describe('static constructor', function() {
         it( 'should create an instance of `Validator`', function () {
-          expect( validatorjs.validator() ).to.be.an( Validator );
+          var validator = validatorjs.validator( { foo: 'bar' } );
+
+          expect( validator ).to.be.an( Validator );
+          expect( validator.options ).to.have.property('foo', 'bar');
         } )
       } )
 
