@@ -332,8 +332,7 @@ expect( validate( 10, new ExtendedAssert().Integer() ).to.be( true );
 ## Run Tests
 
 - On node:
-  - `npm install mocha`
-  - `npm install expect.js`
+  - `npm install mocha expect.js sinon`
   - `mocha tests/server.js`
 
 - On browser:
