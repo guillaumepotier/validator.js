@@ -109,6 +109,11 @@ var Suite = function ( Validator, expect, extras ) {
         expect( Length.validate( 'foo bar baz' ) ).to.be( true );
       } )
 
+      it( 'should return true if validate success with astral code points', function () {
+        var Length = new Assert().Length( { max: 1 } );
+        expect( Length.validate( '🤔' ) ).to.be( true );
+      } )
+
       it( 'should throw a Violation exception if fails', function () {
         var Length = new Assert().Length( { min: 10 } );
         try {

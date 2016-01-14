@@ -717,6 +717,11 @@
       this.max = parseInt(boundaries.max);
 
       this.validate = function ( value ) {
+        if ( 'string' === typeof value ) {
+          var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+          value = value.replace( regexAstralSymbols, '_' );
+        }
+
         if ( 'string' !== typeof value && !_isArray( value ) )
           throw new Violation( this, value, { value: Validator.errorCode.must_be_a_string_or_array } );
 
