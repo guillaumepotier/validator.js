@@ -231,6 +231,7 @@ on the validated object.
 - Required() (alias: `required`)
 - Unique() (alias: `unique`)
 - Unique( { key: value } ) (alias: `unique`)
+- When( 'field', { is: Assert, then: Assert, otherwise: Assert } );
 
 ### Additional asserts via extras.js
 
@@ -309,6 +310,57 @@ it( 'Callback', function () {
   }, 'bar', 'baz' );
   expect( validate( 'foo', assert ) ).to.be( true );
   expect( validate( 'bar', assert ) ).to.be( false );
+} )
+```
+
+### When Assert
+
+This assert adds conditional asserts to the schema based on another key.
+
+Here is an example showing how this assert works:
+
+```js
+it( 'When', function () {
+  // Using `is` and `otherwise`.
+  assert = {
+    foo: is.when( 'bar', {
+      is: is.ofLength( { min: 4 } ) ],
+      otherwise: is.Length( { min: 5 } )
+    } )
+  };
+
+  expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+  expect( validator.validate( { foo: 'foobar', bar: 'bar' }, assert ) ).to.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.be( true );
+
+  // Using `is` and `then`.
+  assert = {
+    foo: is.when( 'bar', {
+      is: is.ofLength( { min: 4 } ),
+      then: is.ofLength( { min: 5 } )
+    } )
+  };
+
+  expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.not.be( true );
+  expect( validator.validate( { foo: 'foobar', bar: 'foobar' }, assert ) ).to.be( true );
+
+  // Using `is`, `then` and `otherwise`.
+  assert = {
+    foo: is.when( 'bar', {
+      is: is.ofLength( { min: 4 } ),
+      then: is.ofLength( { min: 5 } ),
+      otherwise: is.ofLength( { min: 4 } )
+    } )
+  };
+
+  expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+  expect( validator.validate( { foo: 'foobar', bar: 'bar' }, assert ) ).to.be( true );
+  expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.not.be( true );
+  expect( validator.validate( { foo: 'foobar', bar: 'foobar' }, assert ) ).to.be( true );
 } )
 ```
 

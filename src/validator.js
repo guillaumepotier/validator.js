@@ -965,6 +965,56 @@
       };
 
       return this;
+    },
+
+    // When assert
+    When: function( ref, options ) {
+      this.__class__ = 'When';
+
+      if ( 'string' !== typeof ref )
+        throw new Error( 'When assert expects ref to be a string' );
+
+      if ( !_isPlainObject( options ) )
+        throw new Error( 'When assert expects options to be a plain object' );
+
+      if ( 'undefined' ===  typeof options.is )
+        throw new Error( 'When assert expects an is constraint' );
+
+      if ( 'undefined' ===  typeof options.otherwise && 'undefined' ===  typeof  options.then )
+        throw new Error( 'When assert expects a otherwise constraint or a then constraint or both' );
+
+      this.options = {
+        is: _isPlainObject( options.is ) ? new Constraint( options.is ) : options.is,
+        otherwise: _isPlainObject( options.otherwise ) ? new Constraint( options.otherwise ) : options.otherwise,
+        then: _isPlainObject( options.then ) ? new Constraint( options.then ) : options.then
+      };
+      this.ref = ref;
+
+      this.validate = function ( value, group, context ) {
+        if ( 'undefined' === typeof context )
+          throw new Error( 'When assert expects context to be defined' );
+
+        if ( 'undefined' !== typeof context[ this.ref ] ) {
+          var failures = {}, validator = new Validator();
+
+          try {
+            failures = validator.validate( context[ this.ref ], this.options.is );
+
+            if ( !_isEmptyObject( failures ) )
+              throw new Error();
+
+            if ( this.options.then )
+              failures = validator.validate( value, this.options.then );
+          } catch ( e ) {
+            if ( this.options.otherwise )
+              failures = validator.validate( value, this.options.otherwise );
+          }
+        }
+
+        return !_isEmptyObject( failures ) ? failures : true;
+      };
+
+      return this;
     }
   };
 

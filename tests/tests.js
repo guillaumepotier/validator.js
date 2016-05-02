@@ -794,6 +794,49 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         expect( validate( 7, assert ).show() ).to.eql( { assert: 'LessThanOrEqual', value: 7, violation: { threshold: 5 } } );
       } )
 
+      it( 'When', function () {
+        // Using `is` and `otherwise`.
+        assert = {
+          foo: new Assert().When( 'bar', {
+            is: new Assert().Length( { min: 4 } ),
+            otherwise: new Assert().Length( { min: 5 } )
+          } )
+        };
+
+        expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+        expect( validator.validate( { foo: 'foobar', bar: 'bar' }, assert ) ).to.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.be( true );
+
+        // Using `is` and `then`.
+        assert = {
+          foo: new Assert().When( 'bar', {
+            is: new Assert().Length( { min: 4 } ),
+            then: new Assert().Length( { min: 5 } )
+          } )
+        };
+
+        expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.not.be( true );
+        expect( validator.validate( { foo: 'foobar', bar: 'foobar' }, assert ) ).to.be( true );
+
+        // Using `is`, `then` and `otherwise`.
+        assert = {
+          foo: new Assert().When( 'bar', {
+            is: new Assert().Length( { min: 4 } ),
+            otherwise: new Assert().Length( { min: 4 } ),
+            then: new Assert().Length( { min: 5 } )
+          } )
+        };
+
+        expect( validator.validate( { foo: 'foo' }, assert ) ).to.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'bar' }, assert ) ).to.not.be( true );
+        expect( validator.validate( { foo: 'foobar', bar: 'bar' }, assert ) ).to.be( true );
+        expect( validator.validate( { foo: 'foo', bar: 'foobar' }, assert ) ).to.not.be( true );
+        expect( validator.validate( { foo: 'foobar', bar: 'foobar' }, assert ) ).to.be( true );
+      } )
+
       if ( !AssertExtra )
         return;
 
