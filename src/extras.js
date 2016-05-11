@@ -12,60 +12,62 @@
     factory( window[ 'undefined' !== typeof validatorjs_ns ? validatorjs_ns : 'Validator' ] ); // Browser global
   }
 }( function ( validator ) {
-  validator.Assert.prototype.Eql = function ( eql ) {
-    this.__class__ = 'Eql';
+  var asserts = {
+    Eql: function ( eql ) {
+      this.__class__ = 'Eql';
 
-    if ( 'undefined' === typeof eql )
-      throw new Error( 'Equal must be instanciated with an Array or an Object' );
+      if ( 'undefined' === typeof eql )
+        throw new Error( 'Equal must be instanciated with an Array or an Object' );
 
-    this.eql = eql;
+      this.eql = eql;
 
-    this.validate = function ( value ) {
-      var eql = 'function' === typeof this.eql ? this.eql( value ) : this.eql;
+      this.validate = function ( value ) {
+        var eql = 'function' === typeof this.eql ? this.eql( value ) : this.eql;
 
-      if ( !expect.eql( eql, value ) )
-        throw new validator.Violation( this, value, { eql: eql } );
+        if ( !expect.eql( eql, value ) )
+          throw new validator.Violation( this, value, { eql: eql } );
 
-      return true;
-    };
+        return true;
+      };
 
-    return this;
-  };
+      return this;
+    },
 
-  validator.Assert.prototype.Mac = function () {
-    this.__class__ = 'Mac';
+    Mac: function () {
+      this.__class__ = 'Mac';
 
-    this.validate = function ( value ) {
-      var regExp = /^(?:[0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
+      this.validate = function ( value ) {
+        var regExp = /^(?:[0-9A-F]{2}:){5}[0-9A-F]{2}$/i;
 
-      if ( 'string' !== typeof value )
-        throw new validator.Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+        if ( 'string' !== typeof value )
+          throw new validator.Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
-      if ( !regExp.test( value ) )
-        throw new validator.Violation( this, value );
+        if ( !regExp.test( value ) )
+          throw new validator.Violation( this, value );
 
-      return true;
-    };
+        return true;
+      };
 
-    return this;
-  };
+      return this;
+    },
 
-  validator.Assert.prototype.IPv4 = function () {
-    this.__class__ = 'IPv4';
+    IPv4: function () {
+      this.__class__ = 'IPv4';
 
-    this.validate = function ( value ) {
-      var regExp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+      this.validate = function ( value ) {
+        var regExp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
-      if ( 'string' !== typeof value )
-        throw new validator.Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
+        if ( 'string' !== typeof value )
+          throw new validator.Violation( this, value, { value: Validator.errorCode.must_be_a_string } );
 
-      if ( !regExp.test( value ) )
-        throw new validator.Violation( this, value );
+        if ( !regExp.test( value ) )
+          throw new validator.Violation( this, value );
 
-      return true;
-    };
+        return true;
+      };
 
-    return this;
+      return this;
+    }
   };
 
   // https://github.com/LearnBoost/expect.js/blob/master/expect.js
@@ -145,4 +147,6 @@
       }
     }
   };
+
+  return validator.Assert.extend(asserts);
 } ) );

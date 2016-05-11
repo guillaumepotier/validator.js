@@ -1,6 +1,6 @@
 # validator.js
 
-Powerful objects and strings validation in javascript for Node and the browser
+Powerful objects and strings validation in javascript for Node and modern browsers (evergreen browsers).
 
 ## Version
 
@@ -35,14 +35,19 @@ MIT - See LICENSE.md
 ## General usage
 
 - On node:
+
 ```
 $ npm install -g validator.js
 ```
+
 Then
+
 ```js
-Validator = require( 'validator.js' );
+var Validator = require( 'validator.js' );
 ```
+
 - On browser:
+
 ```js
 <script src="../validator.js"></script>
 <script>
@@ -53,37 +58,38 @@ Validator = require( 'validator.js' );
 ## Validate a string
 
 ```js
-var Assert = Validator.Assert;
+var is = require( 'validator.js' ).Assert;
+var validator = require( 'validator.js' ).validator();
 
-Validator.Validator().validate( 'foo', new Assert().Length( { min: 4 } ) );
-Validator.Validator().validate( 'foo', [ new Assert().Length( { min: 4 } ), new Assert().Email() ] );
-
+validator.validate( 'foo', is.ofLength( { min: 4 } ) );
+validator.validate( 'foo', [ is.ofLength( { min: 4 } ), is.email() ] );
 ```
+
 will return `true` if validation passes, a `Violation`'s array otherwise.
 
 ## Validate an object
 
 ```js
-var Assert = Validator.Assert,
-    validator = new Validator.Validator();
+var is = require( 'validator.js' ).Assert;
+var validator = require( 'validator.js' ).validator();
 
 var object = {
     name: 'john doe',
     email: 'wrong@email',
-    firstname: null,
+    firstName: null,
     phone: null
   },
   constraint = {
-    name:      [ new Assert().NotBlank(), new Assert().Length( { min: 4, max: 25 } ) ],
-    email:     new Assert().Email(),
-    firstname: new Assert().NotBlank(),
-    phone:     new Assert().NotBlank()
+    name: [ is.notBlank(), is.ofLength( { min: 4, max: 25 } ) ],
+    email: is.email(),
+    firstName: is.notBlank(),
+    phone: is.notBlank()
   };
 
 validator.validate( object, constraint );
 ```
-will return `true` if validation passes,
-`{ email: [ Violation ], firstname: [ Violation ] }` in this case.
+
+will return `true` if validation passes, `{ email: [ Violation ], firstname: [ Violation ] }` in this case.
 
 ## Validation groups
 
@@ -91,15 +97,17 @@ With same objects than above, just by adding validation groups:
 
 ```js
   constraint = {
-    name:      [ new Assert().NotBlank(), new Assert( 'edit' ).Length( { min: 4, max: 25 } ) ],
-    email:     new Assert().Email(),
-    firstname: new Assert( [ 'edit', 'register'] ).NotBlank(),
-    phone:     new Assert( 'edit' ).NotBlank()
+    name:      [ is.notBlank(), is( 'edit' ).ofLength( { min: 4, max: 25 } ) ],
+    email:     is.email(),
+    firstname: is( [ 'edit', 'register'] ).notBlank(),
+    phone:     is( 'edit' ).notBlank()
   };
 
 validator.validate( object, constraint, 'edit' );
 ```
+
 will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
+
 There are two special groups: "Any" and "Default". Validating against `"Any"` group will validate
 against all Asserts, regardless their groups. Validating against `"Default"` group will only
 validate against Asserts that do not have a validation group.
@@ -107,9 +115,10 @@ validate against Asserts that do not have a validation group.
 ## Bind a constraint to an object
 
 ```js
-Validator.bind( object, constraint );
-Validator.validate( object, groups );
+validator.bind( object, constraint );
+validator.validate( object, groups );
 ```
+
 Under the hood, by default, a `_validatorjsConstraint` key will be created in object
 in order to store here the constraint. You could override this default key name by
 passing an option to Validator constructor.
@@ -124,10 +133,11 @@ Validator.js (see below), but you can implement yours for your needs using the
 `Callback()` assert (see below).
 
 ```js
-var length = new Validator.Assert().Length( { min: 10 } );
+var length = is.ofLength( { min: 10 } );
 try {
   length.check( 'foo' );
-} catch ( violation ) {}
+} catch ( violation ) {
+}
 ```
 
 ## Constraint definition
@@ -135,9 +145,9 @@ try {
 A Constraint is a set of asserts nodes that would be used to validate an object.
 
 ```js
-var length = new Validator.Assert().Length( { min: 10 } );
-var notBlank = new Validator.Assert().NotBlank();
-var constraint = new Constraint( { foo: length, bar: notBlank } );
+var length = is.ofLength( { min: 10 } );
+var notBlank = is.notBlank();
+var constraint = validator.constraint( { foo: length, bar: notBlank } );
 
 constraint.check( { foo: 'foo', bar: 'bar' } );
 ```
@@ -151,14 +161,14 @@ an optional parameter to your Constraint:
 
 ```js
 var object = {
-    foo: 'foo',
-    bar: 'bar'
+  foo: 'foo',
+  bar: 'bar'
 };
 
-var constraint = new Constraint( {
-    foo: new Assert().NotBlank(),
-    bar: new Assert().NotBlank(),
-    baz: new Assert().NotBlank()
+var constraint = validator.constraint( {
+  foo: is.notBlank(),
+  bar: is.notBlank(),
+  baz: is.notBlank()
 }, { strict: true });
 
 constraint.check( object );
@@ -175,14 +185,15 @@ constraints, no matter the validated object, you have to enable the `deepRequire
 ```js
 var object = { };
 
-var constraint = new Constraint({
+var constraint = validator.constraint({
   foo: {
-    bar: new Assert().Required()
+    bar: is.required()
   }
 }, { deepRequired: true });
 
 constraint.check(object);
 ```
+
 will return a `HaveProperty` Violation, saying that `foo` property does not exist.
 
 This option also works when `Collection` is used, but doesn't enforce a non empty array
@@ -190,44 +201,43 @@ on the validated object.
 
 ## Available asserts
 
-```js
-new Assert().Blank();
-new Assert().Callback( fn ( value ) {} [, arg1 ...] );
-new Assert().Choice( [] );
-new Assert().Choice( fn () {} );
-new Assert().Collection ( Assert );
-new Assert().Collection ( Constraint );
-new Assert().Count( value );
-new Assert().Count( fn ( [] ) {} );
-new Assert().Email();
-new Assert().EqualTo( value );
-new Assert().EqualTo( fn ( value ) {} );
-new Assert().GreaterThan( threshold );
-new Assert().GreaterThanOrEqual( threshold );
-new Assert().InstanceOf( classRef );
-new Assert().IsString();
-new Assert().Length( { min: value, max: value } );
-new Assert().HaveProperty( propertyName );
-new Assert().LessThan( threshold );
-new Assert().LessThanOrEqual( threshold );
-new Assert().EqualTo( value );
-new Assert().EqualTo( fn ( value ) {} );
-new Assert().NotBlank();
-new Assert().NotEqualTo( value );
-new Assert().NotNull();
-new Assert().Null();
-new Assert().Range( min, max );
-new Assert().Regexp( value );
-new Assert().Required();
-new Assert().Unique();
-new Assert().Unique( { key: value } );
+- Blank() (alias: `blank`)
+- Callback( fn ( value ) {} [, arg1 ...] ) (alias: `callback`)
+- Choice( [] ) (alias: `choice`)
+- Choice( fn () {} ) (alias: `choice`)
+- Collection ( Assert ) (alias: `collection`)
+- Collection ( Constraint ) (alias: `collection`)
+- Count( value ) (alias: `count`)
+- Count( fn ( [] ) {} ) (alias: `count`)
+- Email() (alias: `email`)
+- EqualTo( value ) (alias: `equalTo`)
+- EqualTo( fn ( value ) {} ) (alias: `equalTo`)
+- GreaterThan( threshold ) (alias: `greaterThan`)
+- GreaterThanOrEqual( threshold ) (alias: `greaterThanOrEqual`)
+- InstanceOf( classRef ) (alias: `instanceOf`)
+- IsString() (alias: `isString`)
+- Length( { min: value, max: value } ) (alias: `length`)
+- HaveProperty( propertyName ) (alias: `haveProperty`)
+- LessThan( threshold ) (alias: `lessThan`)
+- LessThanOrEqual( threshold ) (alias: `lessThanOrEqual`)
+- EqualTo( value ) (alias: `equalTo`)
+- EqualTo( fn ( value ) {} ) (alias: `equalTo`)
+- NotBlank() (alias: `notBlank`)
+- NotEqualTo( value ) (alias: `notEqualTo`)
+- NotNull() (alias: `notNull`)
+- Null() (alias: `null`)
+- Range( min, max ) (alias: `range`)
+- Regexp( value ) (alias: `regexp`)
+- Required() (alias: `required`)
+- Unique() (alias: `unique`)
+- Unique( { key: value } ) (alias: `unique`)
 
-// in extras.js
-new Assert().Eql( object );
-new Assert().Eql( fn ( value ) {} );
-new Assert().IPv4();
-new Assert().Mac();
-```
+### Additional asserts via extras.js
+
+- Eql( object ) (alias: `eql`)
+- Eql( fn ( value ) {} ) (alias: `eql`)
+- IPv4() (alias: `ipv4`)
+- Mac() (alias: `mac`)
 
 ### Community-driven asserts
 
@@ -245,7 +255,7 @@ Here is an example of test suite test showing how this assert works:
 
 ```js
 it( 'Collection', function () {
-  var itemConstraint = new Constraint( { foobar: new Assert().NotNull(), foobaz: new Assert().NotNull() } ),
+  var itemConstraint = validator.constraint( { foobar: is.notNull(), foobaz: is.notNull() } ),
     object = {
       foo: null,
       items: [
@@ -255,8 +265,8 @@ it( 'Collection', function () {
       ]
     },
     constraint = {
-      foo: new Assert().NotNull(),
-      items: [ new Assert().Collection( itemConstraint ), new Assert().Count( 2 ) ]
+      foo: is.notNull(),
+      items: [ is.collection( itemConstraint ), is.count( 2 ) ]
     };
 
   var result = validator.validate( object, constraint );
@@ -283,7 +293,7 @@ Here is an example from test suite test showing how this assert works:
 
 ```js
 it( 'Callback', function () {
-  assert = new Assert().Callback( function ( value ) {
+  assert = is.callback( function ( value ) {
     var calc = ( 42 / value ) % 2;
 
     return calc ? true : calc;
@@ -294,7 +304,7 @@ it( 'Callback', function () {
   expect( validate( 42, assert ) ).to.be( true );
 
   // improved Callback
-  assert = new Assert().Callback( function ( value, string1, string2 ) {
+  assert = is.callback( function ( value, string1, string2 ) {
     return value + string1 + string2 === 'foobarbaz';
   }, 'bar', 'baz' );
   expect( validate( 'foo', assert ) ).to.be( true );
@@ -304,12 +314,11 @@ it( 'Callback', function () {
 
 ### A note on type checking
 Note that `Length` assertion works for both String and Array type, so if you want to validate only strings, you should write an additional assertion:
-```js
-var Assert = Validator.Assert;
 
-Validator.Validator().validate( 'foo', [
-  new Assert().Length( { min: 4, max: 100 } ),
-  new Assert().IsString()
+```js
+validator.validate( 'foo', [
+  is.ofLength( { min: 4, max: 100 } ),
+  is.string()
 ] );
 ```
 
@@ -321,19 +330,17 @@ Example:
 
 ```js
 var Assert = Validator.Assert;
-var ExtendedAssert = Assert.extend({
-  Integer: Number.isInteger,
+var isExtended = Assert.extend({
+  integer: Number.isInteger,
   NaN: Number.isNaN
 });
 
-expect( validate( 10, new ExtendedAssert().Integer() ).to.be( true );
+expect( validate( 10, isExtended.integer() ).to.be( true );
 ```
 
 ## Run Tests
 
 - On node:
-  - `npm install mocha`
-  - `npm install expect.js`
   - `mocha tests/server.js`
 
 - On browser:

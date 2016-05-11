@@ -13,7 +13,11 @@
   * Validator
   */
 
-  var Validator = function ( options ) {
+  function Validator ( options ) {
+    if ( ! ( this instanceof Validator ) ) {
+      return new Validator( options );
+    }
+
     this.__class__ = 'Validator';
     this.__version__ = '@@version';
     this.options = options || {};
@@ -119,7 +123,11 @@
   * Constraint
   */
 
-  var Constraint = function ( data, options ) {
+  function Constraint ( data, options ) {
+    if ( ! ( this instanceof Constraint ) ) {
+      return new Constraint( data, options );
+    }
+
     this.__class__ = 'Constraint';
     this.options = options || {};
     this.nodes = {};
@@ -290,7 +298,11 @@
   * Violation
   */
 
-  var Violation = function ( assert, value, violation ) {
+  function Violation ( assert, value, violation ) {
+    if ( ! ( this instanceof Violation ) ) {
+      return new Violation( assert, value, violation );
+    }
+
     this.__class__ = 'Violation';
 
     if ( ! ( assert instanceof Assert ) )
@@ -340,7 +352,10 @@
   * Assert
   */
 
-  var Assert = function ( group ) {
+  function Assert ( group ) {
+    if ( ! ( this instanceof Assert ) )
+      return new Assert( group );
+
     this.__class__ = 'Assert';
     this.__parentClass__ = this.__class__;
     this.groups = [];
@@ -368,6 +383,11 @@
     Extended.prototype = Object.create( Assert.prototype );
     Extended.prototype.constructor = Extended;
 
+    // Copy all the static methods.
+    Object.keys( Assert ).forEach( function( key ) {
+      Extended[ key ] = Assert[ key ];
+    } );
+
     // Extend with custom asserts.
     for ( var key in asserts ) {
       if ( 'function' !== typeof asserts[ key ] )
@@ -376,7 +396,7 @@
       Extended.prototype[ key ] = asserts[ key ];
     }
 
-    return Extended;
+    return _prettify( Extended );
   };
 
   Assert.prototype = {
@@ -945,12 +965,6 @@
     }
   };
 
-  // expose to the world these awesome classes
-  exports.Assert = Assert;
-  exports.Validator = Validator;
-  exports.Violation = Violation;
-  exports.Constraint = Constraint;
-
   /**
   * Some useful object prototypes / functions here
   */
@@ -1005,8 +1019,81 @@
     return typeof obj === 'object' && Object.getPrototypeOf( obj ) === Object.prototype;
   };
 
-  var _isString = function (str ) {
+  var _isString = function ( str ) {
     return Object.prototype.toString.call( str ) === '[object String]';
+  };
+
+  var _toCamelCase = function ( str ) {
+    return str
+      .replace(/\s(.)/g, function( $1 ) { return $1.toUpperCase(); })
+      .replace(/\s/g, '')
+      .replace(/^(.)/, function( $1 ) { return $1.toLowerCase(); });
+  };
+
+  var _prettify = function _prettify ( Fn ) {
+    // Copy prototype properties.
+    for ( var property in Fn.prototype ) {
+      var matches = property.match(/^(.*?[A-Z]{2,})(.*)$/);
+      var camelCaseProperty = _toCamelCase( property );
+
+      if ( matches !== null ) {
+        camelCaseProperty = matches[1] + _toCamelCase( matches[2] );
+      }
+
+      if (camelCaseProperty === property) {
+        continue;
+      }
+
+      // Add static methods as aliases.
+      Fn[ camelCaseProperty ] = (function( prop ) {
+        return function() {
+          var assert = new Fn();
+
+          return assert[ prop ].apply( assert, arguments );
+        }
+      })( property );
+
+      // Create `camelCase` aliases.
+      _alias( Fn, camelCaseProperty, property );
+    }
+
+    return Fn;
+  };
+
+  var _alias = function _alias ( object, from, to ) {
+    var descriptor = Object.getOwnPropertyDescriptor( object, from );
+
+    Object.defineProperty( object, to, descriptor );
+  }
+
+  // aliases
+  _alias( Assert.prototype, 'Length', 'OfLength' );
+  _alias( Assert.prototype, 'HaveProperty', 'PropertyDefined' );
+  _alias( Assert.prototype, 'IsString', 'String' );
+
+  // prettify
+  _prettify( Assert );
+
+  // expose to the world these awesome classes
+  exports.Assert = Assert;
+  exports.Constraint = Constraint;
+  exports.Validator = Validator;
+  exports.Violation = Violation;
+
+  exports.assert = function( group ) {
+    return new Assert( group );
+  };
+
+  exports.constraint = function( data, options ) {
+    return new Constraint( data, options );
+  };
+
+  exports.validator = function( options ) {
+    return new Validator( options );
+  };
+
+  exports.violation = function( assert, value, violation ) {
+    return new Violation( assert, value, violation );
   };
 
   // AMD export
