@@ -5,7 +5,7 @@
     <title>Validator.js by guillaumepotier</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -20,33 +20,33 @@
 
     <section class="main-content">
       <h1>
-<a id="validatorjs" class="anchor" href="#validatorjs" aria-hidden="true"><span class="octicon octicon-link"></span></a>validator.js</h1>
+<a id="validatorjs" class="anchor" href="#validatorjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>validator.js</h1>
 
-<p>Powerful objects and strings validation in javascript for Node and the browser</p>
-
-<h2>
-<a id="version" class="anchor" href="#version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version</h2>
-
-<p>1.1.1</p>
+<p>Powerful objects and strings validation in javascript for Node and modern browsers (evergreen browsers).</p>
 
 <h2>
-<a id="status" class="anchor" href="#status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Status</h2>
+<a id="version" class="anchor" href="#version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version</h2>
+
+<p>1.2.3</p>
+
+<h2>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status</h2>
 
 <p><a href="https://travis-ci.org/guillaumepotier/validator.js"><img src="https://travis-ci.org/guillaumepotier/validator.js.png?branch=master" alt="Build Status"></a>
 <a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/guillaumepotier/validator.js/trend.png" alt="Bitdeli Badge"></a></p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT - See LICENSE.md</p>
 
 <h2>
-<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
 
 <p><code>bower install validator.js</code></p>
 
 <h1>
-<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary</h1>
+<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h1>
 
 <ul>
 <li><a href="#general-usage">General usage</a></li>
@@ -62,7 +62,7 @@
 </ul>
 
 <h2>
-<a id="general-usage" class="anchor" href="#general-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>General usage</h2>
+<a id="general-usage" class="anchor" href="#general-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>General usage</h2>
 
 <ul>
 <li>On node:</li>
@@ -73,181 +73,222 @@
 
 <p>Then</p>
 
-<div class="highlight highlight-js"><pre>Validator <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> );</pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Validator <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> );</pre></div>
 
 <ul>
 <li>On browser:</li>
 </ul>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">&lt;</span>script src<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>../validator.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span>/script<span class="pl-k">&gt;</span>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">&lt;</span>script src<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>../validator.js<span class="pl-pds">"</span></span><span class="pl-k">&gt;&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span>
 <span class="pl-k">&lt;</span>script<span class="pl-k">&gt;</span>
-    <span class="pl-en">console</span><span class="pl-c1">.log</span>(Validator);
-<span class="pl-k">&lt;</span>/script<span class="pl-k">&gt;</span></pre></div>
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(Validator);
+<span class="pl-k">&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span></pre></div>
 
 <h2>
-<a id="validate-a-string" class="anchor" href="#validate-a-string" aria-hidden="true"><span class="octicon octicon-link"></span></a>Validate a string</h2>
+<a id="validate-a-string" class="anchor" href="#validate-a-string" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validate a string</h2>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> Assert <span class="pl-k">=</span> Validator.Assert;
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> is <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> ).<span class="pl-smi">Assert</span>;
+<span class="pl-k">var</span> validator <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> ).<span class="pl-en">validator</span>();
 
-Validator.Validator().validate( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">4</span> } ) );
-Validator.Validator().validate( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, [ <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">4</span> } ), <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Email() ] );
-</pre></div>
+<span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">4</span> } ) );
+<span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, [ <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">4</span> } ), <span class="pl-smi">is</span>.<span class="pl-en">email</span>() ] );</pre></div>
 
 <p>will return <code>true</code> if validation passes, a <code>Violation</code>'s array otherwise.</p>
 
 <h2>
-<a id="validate-an-object" class="anchor" href="#validate-an-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Validate an object</h2>
+<a id="validate-an-object" class="anchor" href="#validate-an-object" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validate an object</h2>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> Assert <span class="pl-k">=</span> Validator.Assert,
-    validator <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Validator.Validator</span>();
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> is <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> ).<span class="pl-smi">Assert</span>;
+<span class="pl-k">var</span> validator <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>validator.js<span class="pl-pds">'</span></span> ).<span class="pl-en">validator</span>();
 
 <span class="pl-k">var</span> object <span class="pl-k">=</span> {
     name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>john doe<span class="pl-pds">'</span></span>,
     email<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>wrong@email<span class="pl-pds">'</span></span>,
-    firstname<span class="pl-k">:</span> <span class="pl-c1">null</span>,
+    firstName<span class="pl-k">:</span> <span class="pl-c1">null</span>,
     phone<span class="pl-k">:</span> <span class="pl-c1">null</span>
   },
   constraint <span class="pl-k">=</span> {
-    name<span class="pl-k">:</span>      [ <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank(), <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">25</span> } ) ],
-    email<span class="pl-k">:</span>     <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Email(),
-    firstname<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank(),
-    phone<span class="pl-k">:</span>     <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank()
+    name<span class="pl-k">:</span> [ <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>(), <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">25</span> } ) ],
+    email<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">email</span>(),
+    firstName<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>(),
+    phone<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>()
   };
 
-validator.validate( object, constraint );</pre></div>
+<span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( object, constraint );</pre></div>
 
-<p>will return <code>true</code> if validation passes,
-<code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
+<p>will return <code>true</code> if validation passes, <code>{ email: [ Violation ], firstname: [ Violation ] }</code> in this case.</p>
 
 <h2>
-<a id="validation-groups" class="anchor" href="#validation-groups" aria-hidden="true"><span class="octicon octicon-link"></span></a>Validation groups</h2>
+<a id="validation-groups" class="anchor" href="#validation-groups" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Validation groups</h2>
 
 <p>With same objects than above, just by adding validation groups:</p>
 
-<div class="highlight highlight-js"><pre>  constraint <span class="pl-k">=</span> {
-    name<span class="pl-k">:</span>      [ <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank(), <span class="pl-k">new</span> <span class="pl-en">Assert</span>( <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> ).Length( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">25</span> } ) ],
-    email<span class="pl-k">:</span>     <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Email(),
-    firstname<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>( [ <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>register<span class="pl-pds">'</span></span>] ).NotBlank(),
-    phone<span class="pl-k">:</span>     <span class="pl-k">new</span> <span class="pl-en">Assert</span>( <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> ).NotBlank()
+<div class="highlight highlight-source-js"><pre>  constraint <span class="pl-k">=</span> {
+    name<span class="pl-k">:</span>      [ <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>(), <span class="pl-en">is</span>( <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> ).<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">25</span> } ) ],
+    email<span class="pl-k">:</span>     <span class="pl-smi">is</span>.<span class="pl-en">email</span>(),
+    firstname<span class="pl-k">:</span> <span class="pl-en">is</span>( [ <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>register<span class="pl-pds">'</span></span>] ).<span class="pl-en">notBlank</span>(),
+    phone<span class="pl-k">:</span>     <span class="pl-en">is</span>( <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> ).<span class="pl-en">notBlank</span>()
   };
 
-validator.validate( object, constraint, <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> );</pre></div>
+<span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( object, constraint, <span class="pl-s"><span class="pl-pds">'</span>edit<span class="pl-pds">'</span></span> );</pre></div>
 
-<p>will return <code>true</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.
-There are two special groups: "Any" and "Default". Validating against <code>"Any"</code> group will validate
+<p>will return <code>true</code> in this case <code>{ firstname: [ Violation ], phone: [ Violation ] }</code>.</p>
+
+<p>There are two special groups: "Any" and "Default". Validating against <code>"Any"</code> group will validate
 against all Asserts, regardless their groups. Validating against <code>"Default"</code> group will only
 validate against Asserts that do not have a validation group.</p>
 
 <h2>
-<a id="bind-a-constraint-to-an-object" class="anchor" href="#bind-a-constraint-to-an-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bind a constraint to an object</h2>
+<a id="bind-a-constraint-to-an-object" class="anchor" href="#bind-a-constraint-to-an-object" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bind a constraint to an object</h2>
 
-<div class="highlight highlight-js"><pre>Validator.bind( object, constraint );
-Validator.validate( object, groups );</pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">validator</span>.<span class="pl-en">bind</span>( object, constraint );
+<span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( object, groups );</pre></div>
 
 <p>Under the hood, by default, a <code>_validatorjsConstraint</code> key will be created in object
 in order to store here the constraint. You could override this default key name by
 passing an option to Validator constructor.</p>
 
 <h1>
-<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h1>
 
 <h2>
-<a id="assert-definition" class="anchor" href="#assert-definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Assert definition</h2>
+<a id="assert-definition" class="anchor" href="#assert-definition" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Assert definition</h2>
 
 <p>An assert implements Assert Interface, and is an assertion that your string or object
 property must pass during validation process. There are several Asserts built in
 Validator.js (see below), but you can implement yours for your needs using the
 <code>Callback()</code> assert (see below).</p>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> length <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Validator.Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">10</span> } );
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> length <span class="pl-k">=</span> <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">10</span> } );
 <span class="pl-k">try</span> {
-  length.check( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> );
-} <span class="pl-k">catch</span> ( violation ) {}</pre></div>
+  <span class="pl-smi">length</span>.<span class="pl-en">check</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> );
+} <span class="pl-k">catch</span> ( violation ) {
+}</pre></div>
 
 <h2>
-<a id="constraint-definition" class="anchor" href="#constraint-definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Constraint definition</h2>
+<a id="constraint-definition" class="anchor" href="#constraint-definition" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Constraint definition</h2>
 
 <p>A Constraint is a set of asserts nodes that would be used to validate an object.</p>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> length <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Validator.Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">10</span> } );
-<span class="pl-k">var</span> notBlank <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Validator.Assert</span>().NotBlank();
-<span class="pl-k">var</span> constraint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Constraint</span>( { foo<span class="pl-k">:</span> length, bar<span class="pl-k">:</span> notBlank } );
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> length <span class="pl-k">=</span> <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">10</span> } );
+<span class="pl-k">var</span> notBlank <span class="pl-k">=</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>();
+<span class="pl-k">var</span> constraint <span class="pl-k">=</span> <span class="pl-smi">validator</span>.<span class="pl-en">constraint</span>( { foo<span class="pl-k">:</span> length, bar<span class="pl-k">:</span> notBlank } );
 
-constraint.check( { foo<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, bar<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> } );</pre></div>
+<span class="pl-smi">constraint</span>.<span class="pl-en">check</span>( { foo<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, bar<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> } );</pre></div>
 
 <h3>
-<a id="strict-constraint-validation" class="anchor" href="#strict-constraint-validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Strict Constraint validation</h3>
+<a id="strict-constraint-validation" class="anchor" href="#strict-constraint-validation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Strict Constraint validation</h3>
 
 <p>By default, Validator.js checks properties that are defined in the Constraint object
 and exists on the validated object unless the constraint is <code>Required</code>. If you want a
 strict validation (ie ensure that <strong>every</strong>) Constraint node is valid, you'll have to pass
 an optional parameter to your Constraint:</p>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> object <span class="pl-k">=</span> {
-    foo<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,
-    bar<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> object <span class="pl-k">=</span> {
+  foo<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>,
+  bar<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>
 };
 
-<span class="pl-k">var</span> constraint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Constraint</span>( {
-    foo<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank(),
-    bar<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank(),
-    baz<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank()
+<span class="pl-k">var</span> constraint <span class="pl-k">=</span> <span class="pl-smi">validator</span>.<span class="pl-en">constraint</span>( {
+  foo<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>(),
+  bar<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>(),
+  baz<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notBlank</span>()
 }, { strict<span class="pl-k">:</span> <span class="pl-c1">true</span> });
 
-constraint.check( object );</pre></div>
+<span class="pl-smi">constraint</span>.<span class="pl-en">check</span>( object );</pre></div>
 
 <p>will return a <code>HaveProperty</code> Violation, saying that <code>baz</code> property does not exist
 in validated object. Without <code>{ strict: true }</code> this check would return <code>true</code>.</p>
 
+<h3>
+<a id="deep-required-validation" class="anchor" href="#deep-required-validation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Deep required validation</h3>
+
+<p>By default, a <code>Required</code> constraint fails if the parent property exists in the validated
+object and the property doesn't. To force Validator.js to take into account all <code>Required</code>
+constraints, no matter the validated object, you have to enable the <code>deepRequired</code> option:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> object <span class="pl-k">=</span> { };
+
+<span class="pl-k">var</span> constraint <span class="pl-k">=</span> <span class="pl-smi">validator</span>.<span class="pl-en">constraint</span>({
+  foo<span class="pl-k">:</span> {
+    bar<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">required</span>()
+  }
+}, { deepRequired<span class="pl-k">:</span> <span class="pl-c1">true</span> });
+
+<span class="pl-smi">constraint</span>.<span class="pl-en">check</span>(object);</pre></div>
+
+<p>will return a <code>HaveProperty</code> Violation, saying that <code>foo</code> property does not exist.</p>
+
+<p>This option also works when <code>Collection</code> is used, but doesn't enforce a non empty array
+on the validated object.</p>
+
 <h2>
-<a id="available-asserts" class="anchor" href="#available-asserts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available asserts</h2>
+<a id="available-asserts" class="anchor" href="#available-asserts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Available asserts</h2>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">new</span> <span class="pl-en">Assert</span>().Blank();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Callback( fn ( value ) {} [, arg1 ...] );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Choice( [] );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Choice( fn () {} );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Collection ( Assert );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Collection ( Constraint );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Count( value );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Count( fn ( [] ) {} );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Email();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().EqualTo( value );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().EqualTo( fn ( value ) {} );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().GreaterThan( threshold );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().GreaterThanOrEqual( threshold );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().InstanceOf( classRef );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().IsString();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Length( { min<span class="pl-k">:</span> value, max<span class="pl-k">:</span> value } );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().HaveProperty( propertyName );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().LessThan( threshold );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().LessThanOrEqual( threshold );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().EqualTo( value );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().EqualTo( fn ( value ) {} );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotBlank();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotNull();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Null();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Range( min, max );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Regexp( value );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Required();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Unique();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Unique( { key<span class="pl-k">:</span> value } );
-
-<span class="pl-c">// in extras.js</span>
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Eql( object );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Eql( fn ( value ) {} );
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().IPv4();
-<span class="pl-k">new</span> <span class="pl-en">Assert</span>().Mac();</pre></div>
+<ul>
+<li>Blank() (alias: <code>blank</code>)</li>
+<li>Callback( fn ( value ) {} [, arg1 ...] ) (alias: <code>callback</code>)</li>
+<li>Choice( [] ) (alias: <code>choice</code>)</li>
+<li>Choice( fn () {} ) (alias: <code>choice</code>)</li>
+<li>Collection ( Assert ) (alias: <code>collection</code>)</li>
+<li>Collection ( Constraint ) (alias: <code>collection</code>)</li>
+<li>Count( value ) (alias: <code>count</code>)</li>
+<li>Count( fn ( [] ) {} ) (alias: <code>count</code>)</li>
+<li>Email() (alias: <code>email</code>)</li>
+<li>EqualTo( value ) (alias: <code>equalTo</code>)</li>
+<li>EqualTo( fn ( value ) {} ) (alias: <code>equalTo</code>)</li>
+<li>GreaterThan( threshold ) (alias: <code>greaterThan</code>)</li>
+<li>GreaterThanOrEqual( threshold ) (alias: <code>greaterThanOrEqual</code>)</li>
+<li>InstanceOf( classRef ) (alias: <code>instanceOf</code>)</li>
+<li>IsString() (alias: <code>isString</code>)</li>
+<li>Length( { min: value, max: value } ) (alias: <code>length</code>)</li>
+<li>HaveProperty( propertyName ) (alias: <code>haveProperty</code>)</li>
+<li>LessThan( threshold ) (alias: <code>lessThan</code>)</li>
+<li>LessThanOrEqual( threshold ) (alias: <code>lessThanOrEqual</code>)</li>
+<li>EqualTo( value ) (alias: <code>equalTo</code>)</li>
+<li>EqualTo( fn ( value ) {} ) (alias: <code>equalTo</code>)</li>
+<li>NotBlank() (alias: <code>notBlank</code>)</li>
+<li>NotEqualTo( value ) (alias: <code>notEqualTo</code>)</li>
+<li>NotNull() (alias: <code>notNull</code>)</li>
+<li>Null() (alias: <code>null</code>)</li>
+<li>Range( min, max ) (alias: <code>range</code>)</li>
+<li>Regexp( value ) (alias: <code>regexp</code>)</li>
+<li>Required() (alias: <code>required</code>)</li>
+<li>Unique() (alias: <code>unique</code>)</li>
+<li>Unique( { key: value } ) (alias: <code>unique</code>)</li>
+</ul>
 
 <h3>
-<a id="collection-assert" class="anchor" href="#collection-assert" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collection Assert</h3>
+<a id="additional-asserts-via-extrasjs" class="anchor" href="#additional-asserts-via-extrasjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Additional asserts via extras.js</h3>
+
+<ul>
+<li>Eql( object ) (alias: <code>eql</code>)</li>
+<li>Eql( fn ( value ) {} ) (alias: <code>eql</code>)</li>
+<li>IPv4() (alias: <code>ipv4</code>)</li>
+<li>Mac() (alias: <code>mac</code>)</li>
+</ul>
+
+<h3>
+<a id="community-driven-asserts" class="anchor" href="#community-driven-asserts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Community-driven asserts</h3>
+
+<p>You can extend validator.js with more asserts should you need them. There are several extra asserts built by the community that seamlessly integrate with this package.
+See the <a href="#extending">Extending</a> section for more information.</p>
+
+<ul>
+<li>
+<a href="https://github.com/seegno/validator.js-asserts">validator.js-asserts</a>: a set of extra asserts for <code>validator.js</code>.</li>
+</ul>
+
+<h3>
+<a id="collection-assert" class="anchor" href="#collection-assert" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Collection Assert</h3>
 
 <p>Collection Assert is quite special yet powerful. It allows you to validate
 an object's array by checking each one of them against a constraint.</p>
 
 <p>Here is an example of test suite test showing how this assert works:</p>
 
-<div class="highlight highlight-js"><pre>it( <span class="pl-s"><span class="pl-pds">'</span>Collection<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
-  <span class="pl-k">var</span> itemConstraint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Constraint</span>( { foobar<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotNull(), foobaz<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotNull() } ),
+<div class="highlight highlight-source-js"><pre><span class="pl-en">it</span>( <span class="pl-s"><span class="pl-pds">'</span>Collection<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
+  <span class="pl-k">var</span> itemConstraint <span class="pl-k">=</span> <span class="pl-smi">validator</span>.<span class="pl-en">constraint</span>( { foobar<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notNull</span>(), foobaz<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notNull</span>() } ),
     object <span class="pl-k">=</span> {
       foo<span class="pl-k">:</span> <span class="pl-c1">null</span>,
       items<span class="pl-k">:</span> [
@@ -257,25 +298,25 @@ an object's array by checking each one of them against a constraint.</p>
       ]
     },
     constraint <span class="pl-k">=</span> {
-      foo<span class="pl-k">:</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().NotNull(),
-      items<span class="pl-k">:</span> [ <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Collection( itemConstraint ), <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Count( <span class="pl-c1">2</span> ) ]
+      foo<span class="pl-k">:</span> <span class="pl-smi">is</span>.<span class="pl-en">notNull</span>(),
+      items<span class="pl-k">:</span> [ <span class="pl-smi">is</span>.<span class="pl-en">collection</span>( itemConstraint ), <span class="pl-smi">is</span>.<span class="pl-en">count</span>( <span class="pl-c1">2</span> ) ]
     };
 
-  <span class="pl-k">var</span> result <span class="pl-k">=</span> validator.validate( object, constraint );
-  expect( result ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> );
-  expect( result ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>items<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ] ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ] ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>2<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ][ <span class="pl-c1">0</span> ] ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ][ <span class="pl-c1">0</span> ] ).not.to.have.key( <span class="pl-s"><span class="pl-pds">'</span>foobaz<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ][ <span class="pl-c1">2</span> ] ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">0</span> ][ <span class="pl-c1">2</span> ] ).to.have.key( <span class="pl-s"><span class="pl-pds">'</span>foobaz<span class="pl-pds">'</span></span> );
-  expect( result.items[ <span class="pl-c1">1</span> ] ).to.be.a( Violation );
-  expect( result.items[ <span class="pl-c1">1</span> ]<span class="pl-c1">.assert</span> ).to.be( <span class="pl-s"><span class="pl-pds">'</span>Count<span class="pl-pds">'</span></span> );
+  <span class="pl-k">var</span> result <span class="pl-k">=</span> <span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( object, constraint );
+  <span class="pl-en">expect</span>( result ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( result ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>items<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>2<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ][ <span class="pl-c1">0</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ][ <span class="pl-c1">0</span> ] ).<span class="pl-smi">not</span>.<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>foobaz<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ][ <span class="pl-c1">2</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>foobar<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">0</span> ][ <span class="pl-c1">2</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">have</span>.<span class="pl-en">key</span>( <span class="pl-s"><span class="pl-pds">'</span>foobaz<span class="pl-pds">'</span></span> );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">1</span> ] ).<span class="pl-smi">to</span>.<span class="pl-smi">be</span>.<span class="pl-en">a</span>( Violation );
+  <span class="pl-en">expect</span>( <span class="pl-smi">result</span>.<span class="pl-smi">items</span>[ <span class="pl-c1">1</span> ].<span class="pl-smi">assert</span> ).<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-s"><span class="pl-pds">'</span>Count<span class="pl-pds">'</span></span> );
 } )</pre></div>
 
 <h3>
-<a id="callback-assert" class="anchor" href="#callback-assert" aria-hidden="true"><span class="octicon octicon-link"></span></a>Callback Assert</h3>
+<a id="callback-assert" class="anchor" href="#callback-assert" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Callback Assert</h3>
 
 <p>This assert allows you to add the custom rules / assert you want. Just give a
 callback function that will be called with the value to be tested against.
@@ -283,47 +324,58 @@ Return true for validation success, everything else if there is an error.</p>
 
 <p>Here is an example from test suite test showing how this assert works:</p>
 
-<div class="highlight highlight-js"><pre>it( <span class="pl-s"><span class="pl-pds">'</span>Callback<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
-  assert <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Callback( <span class="pl-k">function</span> ( <span class="pl-smi">value</span> ) {
-    <span class="pl-k">var</span> calc <span class="pl-k">=</span> ( <span class="pl-c1">42</span> / value ) <span class="pl-k">%</span> <span class="pl-c1">2</span>;
+<div class="highlight highlight-source-js"><pre><span class="pl-en">it</span>( <span class="pl-s"><span class="pl-pds">'</span>Callback<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
+  assert <span class="pl-k">=</span> <span class="pl-smi">is</span>.<span class="pl-en">callback</span>( <span class="pl-k">function</span> ( <span class="pl-smi">value</span> ) {
+    <span class="pl-k">var</span> calc <span class="pl-k">=</span> ( <span class="pl-c1">42</span> <span class="pl-k">/</span> value ) <span class="pl-k">%</span> <span class="pl-c1">2</span>;
 
-    <span class="pl-k">return</span> calc <span class="pl-k">?</span> true <span class="pl-k">:</span> calc;
+    <span class="pl-k">return</span> calc <span class="pl-k">?</span> <span class="pl-c1">true</span> <span class="pl-k">:</span> calc;
   } );
 
-  expect( validate( <span class="pl-c1">3</span>, assert ) ).not.to.be( <span class="pl-c1">true</span> );
-  expect( validate( <span class="pl-c1">3</span>, assert ).show() ).to.eql( { assert<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Callback<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-c1">3</span>, violation<span class="pl-k">:</span> { result<span class="pl-k">:</span> <span class="pl-c1">0</span> } } );
-  expect( validate( <span class="pl-c1">42</span>, assert ) ).to.be( <span class="pl-c1">true</span> );
+  <span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-c1">3</span>, assert ) ).<span class="pl-smi">not</span>.<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-c1">true</span> );
+  <span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-c1">3</span>, assert ).<span class="pl-en">show</span>() ).<span class="pl-smi">to</span>.<span class="pl-en">eql</span>( { assert<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Callback<span class="pl-pds">'</span></span>, value<span class="pl-k">:</span> <span class="pl-c1">3</span>, violation<span class="pl-k">:</span> { result<span class="pl-k">:</span> <span class="pl-c1">0</span> } } );
+  <span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-c1">42</span>, assert ) ).<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-c1">true</span> );
 
   <span class="pl-c">// improved Callback</span>
-  assert <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Callback( <span class="pl-k">function</span> ( <span class="pl-smi">value</span>, <span class="pl-smi">string1</span>, <span class="pl-smi">string2</span> ) {
+  assert <span class="pl-k">=</span> <span class="pl-smi">is</span>.<span class="pl-en">callback</span>( <span class="pl-k">function</span> ( <span class="pl-smi">value</span>, <span class="pl-smi">string1</span>, <span class="pl-smi">string2</span> ) {
     <span class="pl-k">return</span> value <span class="pl-k">+</span> string1 <span class="pl-k">+</span> string2 <span class="pl-k">===</span> <span class="pl-s"><span class="pl-pds">'</span>foobarbaz<span class="pl-pds">'</span></span>;
   }, <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span> );
-  expect( validate( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, assert ) ).to.be( <span class="pl-c1">true</span> );
-  expect( validate( <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>, assert ) ).to.be( <span class="pl-c1">false</span> );
+  <span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, assert ) ).<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-c1">true</span> );
+  <span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span>, assert ) ).<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-c1">false</span> );
 } )</pre></div>
 
 <h3>
-<a id="a-note-on-type-checking" class="anchor" href="#a-note-on-type-checking" aria-hidden="true"><span class="octicon octicon-link"></span></a>A note on type checking</h3>
+<a id="a-note-on-type-checking" class="anchor" href="#a-note-on-type-checking" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A note on type checking</h3>
 
 <p>Note that <code>Length</code> assertion works for both String and Array type, so if you want to validate only strings, you should write an additional assertion:</p>
 
-<div class="highlight highlight-js"><pre><span class="pl-k">var</span> Assert <span class="pl-k">=</span> Validator.Assert;
-
-Validator.Validator().validate( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, [
-  <span class="pl-k">new</span> <span class="pl-en">Assert</span>().Length( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">100</span> } ),
-  <span class="pl-k">new</span> <span class="pl-en">Assert</span>().IsString()
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">validator</span>.<span class="pl-en">validate</span>( <span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span>, [
+  <span class="pl-smi">is</span>.<span class="pl-en">ofLength</span>( { min<span class="pl-k">:</span> <span class="pl-c1">4</span>, max<span class="pl-k">:</span> <span class="pl-c1">100</span> } ),
+  <span class="pl-smi">is</span>.<span class="pl-en">string</span>()
 ] );</pre></div>
 
 <h2>
-<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run Tests</h2>
+<a id="extending" class="anchor" href="#extending" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Extending</h2>
+
+<p>If you want to extend the library with your own asserts, you can use <code>Assert.extend()</code> which will return a copy of <code>validator.Assert</code> plus your custom asserts. This means that the original <code>validator.Assert</code> is always pristine.</p>
+
+<p>Example:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Assert <span class="pl-k">=</span> <span class="pl-smi">Validator</span>.<span class="pl-smi">Assert</span>;
+<span class="pl-k">var</span> isExtended <span class="pl-k">=</span> <span class="pl-smi">Assert</span>.<span class="pl-en">extend</span>({
+  integer<span class="pl-k">:</span> <span class="pl-c1">Number</span>.<span class="pl-smi">isInteger</span>,
+  <span class="pl-c1">NaN</span><span class="pl-k">:</span> <span class="pl-c1">Number</span>.<span class="pl-smi">isNaN</span>
+});
+
+<span class="pl-en">expect</span>( <span class="pl-en">validate</span>( <span class="pl-c1">10</span>, <span class="pl-smi">isExtended</span>.<span class="pl-en">integer</span>() ).<span class="pl-smi">to</span>.<span class="pl-en">be</span>( <span class="pl-c1">true</span> );</pre></div>
+
+<h2>
+<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run Tests</h2>
 
 <ul>
 <li>
 <p>On node:</p>
 
 <ul>
-<li><code>npm install mocha</code></li>
-<li><code>npm install expect.js</code></li>
 <li><code>mocha tests/server.js</code></li>
 </ul>
 </li>
@@ -357,4 +409,3 @@ Validator.Validator().validate( <span class="pl-s"><span class="pl-pds">'</span>
 
   </body>
 </html>
-
