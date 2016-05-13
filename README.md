@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and modern browse
 
 ## Version
 
-1.2.3
+2.0.0
 
 ## Status
 
@@ -337,6 +337,11 @@ var isExtended = Assert.extend({
 
 expect( validate( 10, isExtended.integer() ).to.be( true );
 ```
+
+## Browser support
+
+Run on modern browsers (IE10+). Please open an issue or a PR if you find a bug.
+
 
 ## Run Tests
 

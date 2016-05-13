@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**2.0.0**
+
+  - Huge Asserts refacto, now use `is()` syntax
+
 **1.2.3**
 
   - Fix Collection handling of array of assertions (#49)
