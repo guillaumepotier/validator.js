@@ -376,7 +376,10 @@
       throw new Error( 'Invalid parameter: `asserts` should have at least one property' );
 
     // Inherit from Assert.
-    function Extended() {
+    function Extended( group ) {
+      if ( ! ( this instanceof Extended ) )
+        return new Extended( group );
+
       Assert.apply( this, arguments );
     }
 

@@ -85,6 +85,13 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
           }
         } )
 
+        it( 'should not require the new keyword', function () {
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          expect( Extended() ).to.be.an( Extended );
+        } )
+
         it( 'should call the `Assert` constructor', function () {
           var fn = function() {};
           var Extended = Assert.extend({ Foobar: fn });
