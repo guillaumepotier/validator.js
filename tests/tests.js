@@ -28,24 +28,75 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
       } )
 
       describe( 'static methods', function () {
-        it('should create an instance of `Assert`', function () {
+        it( 'should create an instance of `Assert` ', function () {
           var assert = Assert.Range( 5, 10 );
 
           expect( assert ).to.be.an( Assert );
           expect( assert.__class__ ).to.be( 'Range' );
           expect( assert.min ).to.be( 5 );
           expect( assert.max ).to.be( 10 );
-        });
+        } );
 
-        it('should have a camel case alias', function () {
+        it( 'should have a camel case alias', function () {
           expect( Assert.NotBlank().__class__ ).to.be( Assert.notBlank().__class__ );
-        });
+        } );
 
-        it('should create new instances', function () {
+        it( 'should create new instances', function () {
           const assert = Assert.NotBlank();
 
           expect( assert ).to.not.equal( Assert.notBlank() );
-        });
+        } );
+
+        it( 'should support `extend`', function () {
+          const assert = Assert.extend({
+            Foobar: function() {
+              this.__class__ = 'Foobar';
+              this.validate = function() {
+                return false;
+              }
+
+              return this;
+            }
+          } ).Foobar();
+
+          expect( assert ).to.be.an( Assert );
+          expect( assert.__class__ ).to.be( 'Foobar' );
+        } );
+
+        it( 'should support groups', function () {
+          const assert1 = Assert('bizGroup').NotBlank();
+
+          expect( assert1 ).to.be.an( Assert );
+          expect( assert1.__class__ ).to.be( 'NotBlank' );
+          expect( assert1.groups ).to.eql( ['bizGroup'] );
+
+          const assert2 = Assert('fooGroup').notBlank();
+
+          expect( assert2 ).to.be.an( Assert );
+          expect( assert2.__class__ ).to.be( 'NotBlank' );
+          expect( assert2.groups ).to.eql( ['fooGroup'] );
+
+          var fn = function() {
+            this.__class__ = 'Foobar';
+            this.validate = function() {
+              return false;
+            }
+
+            return this;
+          }
+
+          const assert3 = Assert.extend({ Foobar: fn } )('barGroup').Foobar();
+
+          expect( assert3 ).to.be.an( Assert );
+          expect( assert3.__class__ ).to.be( 'Foobar' );
+          expect( assert3.groups ).to.eql( ['barGroup'] );
+
+          const assert4 = Assert.extend({ Foobar: fn } )('quxGroup').foobar();
+
+          expect( assert4 ).to.be.an( Assert );
+          expect( assert4.__class__ ).to.be( 'Foobar' );
+          expect( assert4.groups ).to.eql( ['quxGroup'] );
+        } );
       });
 
       describe( 'extend', function() {
@@ -83,6 +134,13 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
           } catch (err) {
             expect( err.message ).to.be( 'The extension assert must be a function' );
           }
+        } )
+
+        it( 'should not require the new keyword', function () {
+          var fn = function() {};
+          var Extended = Assert.extend({ Foobar: fn });
+
+          expect( Extended() ).to.be.an( Extended );
         } )
 
         it( 'should call the `Assert` constructor', function () {
