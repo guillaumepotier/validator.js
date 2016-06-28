@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**2.0.1**
+
+  - Package dist files
+
 **2.0.0**
 
   - Huge Asserts refacto, now use `is()` syntax

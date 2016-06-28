@@ -24,7 +24,7 @@
     "mocha": "*",
     "expect.js": "*",
     "grunt": "~0.4.2",
-    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-uglify": "~1.0.1",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-replace": "~0.5.1",
     "grunt-npm2bower-sync": "~0.3.0"
