@@ -376,7 +376,10 @@
       throw new Error( 'Invalid parameter: `asserts` should have at least one property' );
 
     // Inherit from Assert.
-    function Extended() {
+    function Extended( group ) {
+      if ( ! ( this instanceof Extended ) )
+        return new Extended( group );
+
       Assert.apply( this, arguments );
     }
 
@@ -1045,16 +1048,22 @@
       }
 
       // Add static methods as aliases.
-      Fn[ camelCaseProperty ] = (function( prop ) {
-        return function() {
-          var assert = new Fn();
+      if (!(camelCaseProperty in Fn)) {
+        Fn[ camelCaseProperty ] = (function( prop ) {
+          return function() {
+            var assert = new Fn();
 
-          return assert[ prop ].apply( assert, arguments );
-        }
-      })( property );
+            return assert[ prop ].apply( assert, arguments );
+          }
+        })( property );
+
+        _alias( Fn, camelCaseProperty, property );
+      }
 
       // Create `camelCase` aliases.
-      _alias( Fn, camelCaseProperty, property );
+      if (!(camelCaseProperty in Fn.prototype)) {
+        _alias( Fn.prototype, property, camelCaseProperty );
+      }
     }
 
     return Fn;
