@@ -563,13 +563,12 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
       it( 'Required', function () {
         assert = new Assert().Required();
 
-        var result = validate( '', assert );
+        var result = validate( undefined, assert );
         expect( result ).not.to.be( true );
         expect( result.assert.__class__ ).to.be("Required");
-        expect( validate( 'bar', assert ) ).to.be( true );
 
-        expect( validate( [], assert ) ).not.to.be( true );
-        expect( validate( [ 'foo' ], assert ) ).to.be( true );
+        expect( validate( '', assert ) ).to.be( true );
+        expect( validate( [], assert ) ).to.be( true );
       } )
 
       it( 'Collection', function () {

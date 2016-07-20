@@ -921,15 +921,6 @@
         if ( 'undefined' === typeof value )
           throw new Violation( this, value );
 
-        try {
-          if ( 'string' === typeof value )
-            new Assert().NotNull().validate( value ) && new Assert().NotBlank().validate( value );
-          else if ( true === _isArray( value ) )
-            new Assert().Length( { min: 1 } ).validate( value );
-        } catch ( violation ) {
-          throw new Violation( this, value );
-        }
-
         return true;
       };
 
