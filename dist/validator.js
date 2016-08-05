@@ -1,7 +1,7 @@
 /*!
 * validator.js
 * Guillaume Potier - <guillaume@wisembly.com>
-* Version 2.0.0 - built Tue Jun 28 2016 17:28:44
+* Version 2.0.2 - built Fri Aug 05 2016 16:16:09
 * MIT Licensed
 *
 */
@@ -19,7 +19,7 @@
     }
 
     this.__class__ = 'Validator';
-    this.__version__ = '2.0.0';
+    this.__version__ = '2.0.2';
     this.options = options || {};
     this.bindingKey = this.options.bindingKey || '_validatorjsConstraint';
   };
@@ -85,7 +85,7 @@
         if ( ! ( assert[ i ] instanceof Assert) )
           throw new Error( 'You must give an Assert or an Asserts array to validate a string' );
 
-        result = assert[ i ].check( string, group );
+        result = assert[ i ].check( string, group, string );
 
         if ( true !== result )
           failures.push( result );
@@ -99,16 +99,16 @@
         throw new Error( 'You must give a constraint to validate an object' );
 
       if ( constraint instanceof Assert )
-        return constraint.check( object, group );
+        return constraint.check( object, group, object );
 
       if ( constraint instanceof Constraint )
-        return constraint.check( object, group );
+        return constraint.check( object, group, object );
 
       return new Constraint( constraint ).check( object, group );
     },
 
     _validateBindedObject: function ( object, group ) {
-      return object[ this.bindingKey ].check( object, group );
+      return object[ this.bindingKey ].check( object, group, object);
     }
   };
 
@@ -196,7 +196,7 @@
             new Assert().HaveProperty( property ).validate( object );
           }
 
-          result = this._check( property, object[ property ], group );
+          result = this._check( property, object[ property ], group, object );
 
           // check returned an array of Violations or an object mapping Violations
           if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) ) {
@@ -256,27 +256,27 @@
         this.add( node, data[ node ] );
     },
 
-    _check: function ( node, value, group ) {
+    _check: function ( node, value, group, context ) {
       // Assert
       if ( this.nodes[ node ] instanceof Assert )
-        return this._checkAsserts( value, [ this.nodes[ node ] ], group );
+        return this._checkAsserts( value, [ this.nodes[ node ] ], group, context );
 
       // Asserts
       if ( _isArray( this.nodes[ node ] ) )
-        return this._checkAsserts( value, this.nodes[ node ], group );
+        return this._checkAsserts( value, this.nodes[ node ], group, context );
 
       // Constraint -> check api
       if ( this.nodes[ node ] instanceof Constraint )
-        return this.nodes[ node ].check( value, group );
+        return this.nodes[ node ].check( value, group, context );
 
       throw new Error( 'Invalid node', this.nodes[ node ] );
     },
 
-    _checkAsserts: function ( value, asserts, group ) {
+    _checkAsserts: function ( value, asserts, group, context ) {
       var result, failures = [];
 
       for ( var i = 0; i < asserts.length; i++ ) {
-        result = asserts[ i ].check( value, group );
+        result = asserts[ i ].check( value, group, context );
 
         if ( 'undefined' !== typeof result && true !== result )
           failures.push( result );
@@ -376,7 +376,10 @@
       throw new Error( 'Invalid parameter: `asserts` should have at least one property' );
 
     // Inherit from Assert.
-    function Extended() {
+    function Extended( group ) {
+      if ( ! ( this instanceof Extended ) )
+        return new Extended( group );
+
       Assert.apply( this, arguments );
     }
 
@@ -413,12 +416,12 @@
       return true;
     },
 
-    check: function ( value, group ) {
+    check: function ( value, group, context ) {
       if ( !this.requiresValidation( group ) )
         return true;
 
       try {
-        return this.validate( value, group );
+        return this.validate( value, group, context );
       } catch ( violation ) {
         return violation;
       }
@@ -918,15 +921,6 @@
         if ( 'undefined' === typeof value )
           throw new Violation( this, value );
 
-        try {
-          if ( 'string' === typeof value )
-            new Assert().NotNull().validate( value ) && new Assert().NotBlank().validate( value );
-          else if ( true === _isArray( value ) )
-            new Assert().Length( { min: 1 } ).validate( value );
-        } catch ( violation ) {
-          throw new Violation( this, value );
-        }
-
         return true;
       };
 
@@ -959,6 +953,56 @@
         }
 
         return true;
+      };
+
+      return this;
+    },
+
+    // When assert
+    When: function( ref, options ) {
+      this.__class__ = 'When';
+
+      if ( 'string' !== typeof ref )
+        throw new Error( 'When assert expects ref to be a string' );
+
+      if ( !_isPlainObject( options ) )
+        throw new Error( 'When assert expects options to be a plain object' );
+
+      if ( 'undefined' ===  typeof options.is )
+        throw new Error( 'When assert expects an is constraint' );
+
+      if ( 'undefined' ===  typeof options.otherwise && 'undefined' ===  typeof  options.then )
+        throw new Error( 'When assert expects a otherwise constraint or a then constraint or both' );
+
+      this.options = {
+        is: _isPlainObject( options.is ) ? new Constraint( options.is ) : options.is,
+        otherwise: _isPlainObject( options.otherwise ) ? new Constraint( options.otherwise ) : options.otherwise,
+        then: _isPlainObject( options.then ) ? new Constraint( options.then ) : options.then
+      };
+      this.ref = ref;
+
+      this.validate = function ( value, group, context ) {
+        if ( 'undefined' === typeof context )
+          throw new Error( 'When assert expects context to be defined' );
+
+        if ( 'undefined' !== typeof context[ this.ref ] ) {
+          var failures = {}, validator = new Validator();
+
+          try {
+            failures = validator.validate( context[ this.ref ], this.options.is );
+
+            if ( !_isEmptyObject( failures ) )
+              throw new Error();
+
+            if ( this.options.then )
+              failures = validator.validate( value, this.options.then );
+          } catch ( e ) {
+            if ( this.options.otherwise )
+              failures = validator.validate( value, this.options.otherwise );
+          }
+        }
+
+        return !_isEmptyObject( failures ) ? failures : true;
       };
 
       return this;
@@ -1045,16 +1089,22 @@
       }
 
       // Add static methods as aliases.
-      Fn[ camelCaseProperty ] = (function( prop ) {
-        return function() {
-          var assert = new Fn();
+      if (!(camelCaseProperty in Fn)) {
+        Fn[ camelCaseProperty ] = (function( prop ) {
+          return function() {
+            var assert = new Fn();
 
-          return assert[ prop ].apply( assert, arguments );
-        }
-      })( property );
+            return assert[ prop ].apply( assert, arguments );
+          }
+        })( property );
+
+        _alias( Fn, camelCaseProperty, property );
+      }
 
       // Create `camelCase` aliases.
-      _alias( Fn, camelCaseProperty, property );
+      if (!(camelCaseProperty in Fn.prototype)) {
+        _alias( Fn.prototype, property, camelCaseProperty );
+      }
     }
 
     return Fn;

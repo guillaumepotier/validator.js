@@ -4,7 +4,7 @@ Powerful objects and strings validation in javascript for Node and modern browse
 
 ## Version
 
-2.0.0
+2.0.3
 
 ## Status
 
