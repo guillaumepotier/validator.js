@@ -925,6 +925,48 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         expect( myConstraint.has( 'foo' ) ).to.be( true );
       } )
 
+      it( 'should throw an error adding an invalid node', function () {
+        try {
+          new Constraint().add( 'foo', 'bar' );
+          expect().fails();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'Should give an Assert, an Asserts array or Constraint' );
+        }
+      } )
+
+      it( 'should throw an error adding an array without a first assert', function () {
+        try {
+          new Constraint().add( 'foo', [] );
+          expect().fails();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'Should give at least one Assert on array nodes' );
+        }
+      } )
+
+      it( 'should throw an error adding an array with an invalid node', function () {
+        try {
+          new Constraint().add( 'foo', [ new Assert().Required(), 'bar' ] );
+          expect().fails();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'Should give Assert or Constraint on array nodes' );
+        }
+      } )
+
+      it( 'should throw an error adding an array with more than one Constraint node', function () {
+        try {
+          new Constraint().add( 'foo', [ new Assert().Required(), new Constraint(), new Constraint() ] );
+          expect().fails();
+        } catch ( err ) {
+          expect( err.message ).to.be( 'Should not give more than one constraint on array nodes' );
+        }
+      } )
+
+      it( 'should add a node: Array', function () {
+        var myConstraint = new Constraint();
+        myConstraint.add( 'foo', [ new Assert().Required(), new Constraint( { bar: new Assert().Required() } ), new Assert().NotBlank() ] );
+        expect( myConstraint.has( 'foo' ) ).to.be( true );
+      } )
+
       it( 'should add a node: Assert', function () {
         var myConstraint = new Constraint();
         myConstraint.add( 'foo', new Assert().Length( { min: 10 } ) );
