@@ -29,24 +29,24 @@
     constructor: Validator,
 
     /*
-    * Validate string: validate( string, Assert, string ) || validate( string, [ Assert, Assert ], [ string, string ] )
-    * Validate object: validate( object, Constraint, string ) || validate( object, Constraint, [ string, string ] )
-    * Validate binded object: validate( object, string ) || validate( object, [ string, string ] )
+    * Validate string: validate( string, Assert, object ) || validate( string, [ Assert, Assert ], object )
+    * Validate object: validate( object, Constraint, object )
+    * Validate binded object: validate( object, object )
     */
-    validate: function ( objectOrString, AssertsOrConstraintOrGroup, group ) {
+    validate: function ( objectOrString, AssertsOrConstraintOrOptions, options ) {
       if ( 'string' !== typeof objectOrString && 'object' !== typeof objectOrString )
         throw new Error( 'You must validate an object or a string' );
 
       // string / array validation
       if ( 'string' === typeof objectOrString || _isArray(objectOrString) )
-        return this._validateString( objectOrString, AssertsOrConstraintOrGroup, group );
+        return this._validateString( objectOrString, AssertsOrConstraintOrOptions, options );
 
       // binded object validation
       if ( this.isBinded( objectOrString ) )
-        return this._validateBindedObject( objectOrString, AssertsOrConstraintOrGroup );
+        return this._validateBindedObject( objectOrString, AssertsOrConstraintOrOptions );
 
       // regular object validation
-      return this._validateObject( objectOrString, AssertsOrConstraintOrGroup, group );
+      return this._validateObject( objectOrString, AssertsOrConstraintOrOptions, options );
     },
 
     bind: function ( object, constraint ) {
@@ -75,7 +75,7 @@
       return this.isBinded( object ) ? object[ this.bindingKey ] : null;
     },
 
-    _validateString: function ( string, assert, group ) {
+    _validateString: function ( string, assert, options ) {
       var result, failures = [];
 
       if ( !_isArray( assert ) )
@@ -85,7 +85,7 @@
         if ( ! ( assert[ i ] instanceof Assert) )
           throw new Error( 'You must give an Assert or an Asserts array to validate a string' );
 
-        result = assert[ i ].check( string, group, string );
+        result = assert[ i ].check( string, options && options.group, string );
 
         if ( true !== result )
           failures.push( result );
@@ -94,21 +94,22 @@
       return failures.length ? failures : true;
     },
 
-    _validateObject: function ( object, constraint, group ) {
+    _validateObject: function ( object, constraint, options ) {
       if ( 'object' !== typeof constraint )
         throw new Error( 'You must give a constraint to validate an object' );
 
       if ( constraint instanceof Assert )
-        return constraint.check( object, group, object );
+        return constraint.check( object, options && options.group, object );
+
 
       if ( constraint instanceof Constraint )
-        return constraint.check( object, group, object );
+        return constraint.check( object, options, object );
 
-      return new Constraint( constraint ).check( object, group );
+      return new Constraint( constraint ).check( object, options );
     },
 
-    _validateBindedObject: function ( object, group ) {
-      return object[ this.bindingKey ].check( object, group, object);
+    _validateBindedObject: function ( object, options ) {
+      return object[ this.bindingKey ].check( object, options, object);
     }
   };
 
@@ -179,12 +180,12 @@
       return false;
     },
 
-    check: function ( object, group ) {
+    check: function ( object, options ) {
       var result, failures = {};
 
       // check all constraint nodes.
       for ( var property in this.nodes ) {
-        var isRequired = this.isRequired( property, group, this.options.deepRequired );
+        var isRequired = this.isRequired( property, options && options.group, this.options.deepRequired );
 
         if ( ! this.has( property, object ) && ! this.options.strict && ! isRequired ) {
           continue;
@@ -196,7 +197,7 @@
             new Assert().HaveProperty( property ).validate( object );
           }
 
-          result = this._check( property, object[ property ], group, object );
+          result = this._check( property, object[ property ], options, object );
 
           // check returned an array of Violations or an object mapping Violations
           if ( ( _isArray( result ) && result.length > 0 ) || ( !_isArray( result ) && !_isEmptyObject( result ) ) ) {
@@ -256,18 +257,18 @@
         this.add( node, data[ node ] );
     },
 
-    _check: function ( node, value, group, context ) {
+    _check: function ( node, value, options, context ) {
       // Assert
       if ( this.nodes[ node ] instanceof Assert )
-        return this._checkAsserts( value, [ this.nodes[ node ] ], group, context );
+        return this._checkAsserts( value, [ this.nodes[ node ] ], options && options.group, context );
 
       // Asserts
       if ( _isArray( this.nodes[ node ] ) )
-        return this._checkAsserts( value, this.nodes[ node ], group, context );
+        return this._checkAsserts( value, this.nodes[ node ], options && options.group, context );
 
       // Constraint -> check api
       if ( this.nodes[ node ] instanceof Constraint )
-        return this.nodes[ node ].check( value, group, context );
+        return this.nodes[ node ].check( value, options, context );
 
       throw new Error( 'Invalid node', this.nodes[ node ] );
     },
@@ -575,15 +576,15 @@
       this.constraint = _isPlainObject( assertOrConstraint ) ? new Constraint( assertOrConstraint ) : assertOrConstraint;
 
       this.validate = function ( collection, group ) {
-        var result, validator = new Validator(), count = 0, failures = {}, groups = this.groups.length ? this.groups : group;
+        var result, validator = new Validator(), count = 0, failures = {}, options = { group: this.groups.length ? this.groups : group };
 
         if ( !_isArray( collection ) )
           throw new Violation( this, collection, { value: Validator.errorCode.must_be_an_array } );
 
         for ( var i = 0; i < collection.length; i++ ) {
           result = this.constraint ?
-            validator.validate( collection[ i ], this.constraint, groups ) :
-            validator.validate( collection[ i ], groups );
+            validator.validate( collection[ i ], this.constraint, options ) :
+            validator.validate( collection[ i ], options );
 
           if ( !_isEmptyObject( result ) )
             failures[ count ] = result;

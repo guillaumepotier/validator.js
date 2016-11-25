@@ -1036,19 +1036,19 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         it( 'should use groups for validation', function() {
           var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 'bar' ), new Assert().Length( { min: 8 } ).addGroup( 'baz' ), new Assert().Length( { min: 2 } ) ];
           expect( validator.validate( 'foo', asserts ) ).to.be( true );
-          expect( validator.validate( 'foo', asserts, 'bar' ) ).not.to.be( true );
-          expect( validator.validate( 'foofoo', asserts, 'bar' ) ).to.be( true );
-          expect( validator.validate( 'foofoo', asserts, 'baz' ) ).not.to.be( true );
-          expect( validator.validate( 'foofoofoo', asserts, 'baz' ) ).to.be( true );
+          expect( validator.validate( 'foo', asserts, { group: 'bar' } ) ).not.to.be( true );
+          expect( validator.validate( 'foofoo', asserts, { group: 'bar' } ) ).to.be( true );
+          expect( validator.validate( 'foofoo', asserts, { group: 'baz' } ) ).not.to.be( true );
+          expect( validator.validate( 'foofoofoo', asserts, { group: 'baz' } ) ).to.be( true );
         } )
 
         it( 'should use numbers as groups for validation', function () {
           var asserts = [ new Assert().Length( { min: 4 } ).addGroup( 512 ), new Assert().Length( { min: 8 } ).addGroup( 1024 ), new Assert().Length( { min: 2 } ) ];
           expect( validator.validate( 'foo', asserts ) ).to.be( true );
-          expect( validator.validate( 'foo', asserts, 512 ) ).not.to.be( true );
-          expect( validator.validate( 'foofoo', asserts, 512 ) ).to.be( true );
-          expect( validator.validate( 'foofoo', asserts, 1024 ) ).not.to.be( true );
-          expect( validator.validate( 'foofoofoo', asserts, 1024 ) ).to.be( true );
+          expect( validator.validate( 'foo', asserts, { group: 512 } ) ).not.to.be( true );
+          expect( validator.validate( 'foofoo', asserts, { group: 512 } ) ).to.be( true );
+          expect( validator.validate( 'foofoo', asserts, { group: 1024 } ) ).not.to.be( true );
+          expect( validator.validate( 'foofoofoo', asserts, { group: 1024 } ) ).to.be( true );
         } )
       })
 
@@ -1293,14 +1293,14 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
           expect( result ).not.to.have.key( 'name' );
           expect( result ).not.to.have.key( 'phone' );
 
-          var result = validator.validate( object, constraint, 'edit' );
+          var result = validator.validate( object, constraint, { group: 'edit' } );
           expect( result ).not.to.eql( {} );
           expect( result ).not.to.have.key( 'email' );
           expect( result ).not.to.have.key( 'firstname' );
           expect( result ).not.to.have.key( 'name' );
           expect( result ).to.have.key( 'phone' );
 
-          var result = validator.validate( object, constraint, [ 'edit', 'foo' ] );
+          var result = validator.validate( object, constraint, { group: [ 'edit', 'foo' ] } );
           expect( result ).not.to.eql( {} );
           expect( result ).not.to.have.key( 'email' );
           expect( result ).to.have.key( 'firstname' );
@@ -1419,7 +1419,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should validate against all Asserts with "Any" group', function () {
-          var result = validator.validate( object, constraint, 'Any' );
+          var result = validator.validate( object, constraint, { group: 'Any' } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
@@ -1428,7 +1428,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should validate only a specific validation group', function () {
-          var result = validator.validate( object, constraint, 'foo' );
+          var result = validator.validate( object, constraint, { group: 'foo' } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -1437,7 +1437,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should validate only two specific validation groups', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'baz' ] );
+          var result = validator.validate( object, constraint, { group: [ 'foo', 'baz' ] } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -1446,7 +1446,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should validate more validation groups', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'qux', 'bar' ] );
+          var result = validator.validate( object, constraint, { group: [ 'foo', 'qux', 'bar' ] } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).not.to.have.key( 'baz' );
@@ -1455,7 +1455,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         } )
 
         it( 'should validate groups with "Default"', function () {
-          var result = validator.validate( object, constraint, [ 'foo', 'Default' ] );
+          var result = validator.validate( object, constraint, { group: [ 'foo', 'Default' ] } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
@@ -1466,7 +1466,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         it( 'should validate groups with binded object', function () {
           validator.bind( object, constraint );
 
-          var result = validator.validate( object, [ 'foo', 'Default' ] );
+          var result = validator.validate( object, { group: [ 'foo', 'Default' ] } );
           expect( result ).to.have.key( 'foo' );
           expect( result ).not.to.have.key( 'bar' );
           expect( result ).to.have.key( 'baz' );
@@ -1477,7 +1477,7 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
         it( 'should validate groups in Collection constraint', function () {
           validator.bind( object, constraint );
           var nestedObj = { foo: null, items: [ object, object ] },
-            result = validator.validate( nestedObj, { items: new Assert().Collection() }, [ 'foo', 'Default' ] );
+            result = validator.validate( nestedObj, { items: new Assert().Collection() }, { group: [ 'foo', 'Default' ] } );
 
           expect( result ).to.have.key( 'items' );
           expect( result.items[ 0 ] ).to.have.key( '0' );
