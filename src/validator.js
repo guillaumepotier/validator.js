@@ -388,6 +388,11 @@
 
     // Copy all the static methods.
     Object.keys( Assert ).forEach( function( key ) {
+      // Allow extending static methods.
+      if ( Object.keys( asserts ).indexOf( _toPascalCase(key) ) !== -1 ) {
+        return;
+      }
+
       Extended[ key ] = Assert[ key ];
     } );
 
@@ -1072,6 +1077,13 @@
       .replace(/\s(.)/g, function( $1 ) { return $1.toUpperCase(); })
       .replace(/\s/g, '')
       .replace(/^(.)/, function( $1 ) { return $1.toLowerCase(); });
+  };
+
+  var _toPascalCase = function ( str ) {
+    return str
+      .replace(/\s(.)/g, function( $1 ) { return $1.toLowerCase(); })
+      .replace(/\s/g, '')
+      .replace(/^(.)/, function( $1 ) { return $1.toUpperCase(); });
   };
 
   var _prettify = function _prettify ( Fn ) {

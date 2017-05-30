@@ -167,6 +167,18 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
           expect( Extended ).to.have.keys( Object.keys( Assert ) );
         } )
 
+        it( 'should override `Assert` static methods', function () {
+          var Extended = Assert.extend({
+            Collection: function() {
+              this.__class__ = 'Foobar';
+              return this;
+            }
+          });
+
+          expect(Extended.Collection().__class__).to.be('Foobar');
+          expect(Extended.collection().__class__).to.be('Foobar');
+        } )
+
         it( 'should return an Assert extended copy and keep the original `Assert.prototype` unchanged', function () {
           var fn = function() {};
           var Extended = Assert.extend({ Foobar: fn });
