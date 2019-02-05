@@ -305,7 +305,7 @@
 
     this.__class__ = 'Violation';
 
-    if ( ! ( assert instanceof Assert ) )
+    if ( ! ( assert instanceof Assert || assert.__parentClass__ === 'Assert' ) )
       throw new Error( 'Should give an assertion implementing the Assert interface' );
 
     this.assert = assert;
@@ -1088,32 +1088,26 @@
         continue;
       }
 
-      // Add static methods as aliases.
-      if (!(camelCaseProperty in Fn)) {
-        Fn[ camelCaseProperty ] = (function( prop ) {
-          return function() {
-            var assert = new Fn();
-
-            return assert[ prop ].apply( assert, arguments );
-          }
-        })( property );
-
-        _alias( Fn, camelCaseProperty, property );
-      }
-
       // Create `camelCase` aliases.
-      if (!(camelCaseProperty in Fn.prototype)) {
-        _alias( Fn.prototype, property, camelCaseProperty );
-      }
+      _alias( Fn.prototype, property, camelCaseProperty );
+
+      // Add static methods as aliases.
+      Fn[ camelCaseProperty ] = (function( prop ) {
+        return function() {
+          var assert = new Fn();
+
+          return assert[ prop ].apply( assert, arguments );
+        }
+      })( property );
+
+      _alias( Fn, camelCaseProperty, property );
     }
 
     return Fn;
   };
 
   var _alias = function _alias ( object, from, to ) {
-    var descriptor = Object.getOwnPropertyDescriptor( object, from );
-
-    Object.defineProperty( object, to, descriptor );
+    object[ to ] = object[ from ];
   }
 
   // aliases

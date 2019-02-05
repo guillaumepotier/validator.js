@@ -174,6 +174,20 @@ var Suite = function ( validatorjs, expect, AssertExtra ) {
           expect(Assert.prototype.Foobar).to.be(undefined);
           expect(Extended.prototype.Foobar).to.eql(fn);
         } )
+
+        it( 'should return an Assert overriding default asserts', function () {
+          var fn = function() {
+            this.validate = function() { return 'foobar'; };
+
+            return this;
+          };
+          var Extended = Assert.extend({ Email: fn });
+
+          expect(Extended.prototype.Email).to.eql(fn);
+          expect(Extended.prototype.email).to.eql(fn);
+          expect(Extended.Email().validate()).to.equal('foobar');
+          expect(Extended.email().validate()).to.equal('foobar');
+        } )
       } )
 
       it( 'should be an object', function () {
