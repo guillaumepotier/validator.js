@@ -103,7 +103,9 @@ With same objects than above, just by adding validation groups:
     phone:     is( 'edit' ).notBlank()
   };
 
-validator.validate( object, constraint, 'edit' );
+validator.validate( object, constraint, {
+  group: 'edit'
+});
 ```
 
 will return `true` in this case `{ firstname: [ Violation ], phone: [ Violation ] }`.
@@ -116,7 +118,7 @@ validate against Asserts that do not have a validation group.
 
 ```js
 validator.bind( object, constraint );
-validator.validate( object, groups );
+validator.validate( object, options );
 ```
 
 Under the hood, by default, a `_validatorjsConstraint` key will be created in object
