@@ -211,8 +211,41 @@
     },
 
     add: function ( node, object ) {
-      if ( object instanceof Assert || ( _isArray( object ) && object[ 0 ] instanceof Assert ) ) {
+      if ( object instanceof Assert ) {
         this.nodes[ node ] = object;
+
+        return this;
+      }
+
+      if ( _isArray( object ) ) {
+        if ( object[ 0 ] instanceof Assert === false )
+          throw new Error( 'Should give at least one Assert on array nodes', object );
+
+        var clone = []; // Mutating the array can cause side effects.
+        var hasConstraint = false;
+
+        for ( var i = 0; i < object.length; i++ ) {
+          var constraint = object[ i ];
+          var isAssert = constraint instanceof Assert;
+          var isConstraint = constraint instanceof Constraint;
+
+          if ( !isAssert && !_isPlainObject( constraint ) && !isConstraint )
+            throw new Error( 'Should give Assert or Constraint on array nodes', object );
+
+          if ( isAssert ) {
+            clone[ i ] = constraint;
+
+            continue;
+          }
+
+          if ( hasConstraint )
+            throw new Error( 'Should not give more than one constraint on array nodes', object );
+
+          clone[ i ] = isConstraint ? constraint : new Constraint( constraint, this.options );
+          hasConstraint = true;
+        }
+
+        this.nodes[ node ] = clone;
 
         return this;
       }
@@ -223,7 +256,7 @@
         return this;
       }
 
-      throw new Error( 'Should give an Assert, an Asserts array, a Constraint', object );
+      throw new Error( 'Should give an Assert, an Asserts array or Constraint', object );
     },
 
     has: function ( node, nodes ) {
